@@ -36,7 +36,7 @@ public class Grade {
     private List<Chapter> chapters;
 
     @OneToMany(mappedBy = "grade")
-    private List<Client> clients;
+    private List<User> users;
 
     // Getters and Setters
 }

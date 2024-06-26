@@ -20,8 +20,8 @@ public class Exams {
     private String id;
 
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "quiz_matrix_id", nullable = false)

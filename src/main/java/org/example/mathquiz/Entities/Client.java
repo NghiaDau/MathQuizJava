@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 
-public class Client extends CustomUser {
+public class Client extends User {
 
     private Date activeDate;
     private String avatarUrl;
