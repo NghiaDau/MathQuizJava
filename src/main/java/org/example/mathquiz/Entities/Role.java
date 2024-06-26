@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +15,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Role  {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -24,4 +25,5 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
+
 }

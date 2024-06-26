@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('List Account')" > </head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+            <!-- .row -->
+        <div class="container-fluid">
+
+            Content
+            <!-- /.right-sidebar -->
+        </div>
+        <!-- /.container-fluid -->
+        <footer th:replace="/libary/lib.html::footer"></footer>
+    </div>
+    <!-- /#page-wrapper -->
+</div>
+<th:block th:replace="/libary/lib.html :: foot"></th:block>
+
+</body>
+
+</html>
