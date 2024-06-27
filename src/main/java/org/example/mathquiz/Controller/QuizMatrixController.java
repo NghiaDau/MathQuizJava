@@ -18,13 +18,7 @@ public class QuizMatrixController {
     @Autowired
     private QuizMatrixService quizMatrixService;
     @GetMapping("")
-    public List<QuizMatrix> getAll(@NotNull Model model,
-                                   @RequestParam(defaultValue = "0")
-                                   Integer pageNo,
-                                   @RequestParam(defaultValue = "20")
-                                       Integer pageSize,
-                                   @RequestParam(defaultValue = "id")
-                                       String sortBy) {
-        return quizMatrixService.getAllQuizMatrices(pageNo, pageSize, sortBy);
+    public List<QuizMatrix> getAll() {
+        return quizMatrixService.getAllQuizMatrices();
     }
 }

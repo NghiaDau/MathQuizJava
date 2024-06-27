@@ -17,13 +17,8 @@ public class LevelController {
     private LevelService levelService;
 
     @GetMapping("")
-    public String showAllLevels(@NotNull Model model,
-                                @RequestParam(defaultValue = "0") Integer pageNo,
-                                @RequestParam(defaultValue = "20") Integer pageSize,
-                                @RequestParam(defaultValue = "id") String sortBy) {
-        model.addAttribute("levels", levelService.getAllLevels(pageNo, pageSize, sortBy));
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", levelService.getAllLevels(pageNo, pageSize, sortBy).size() / pageSize);
+    public String showAllLevels(@NotNull Model model) {
+        model.addAttribute("levels", levelService.getAllLevels());
         return "level/index";
     }
 

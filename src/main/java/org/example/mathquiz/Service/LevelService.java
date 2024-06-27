@@ -17,10 +17,8 @@ import java.util.Optional;
         rollbackFor = {Exception.class, Throwable.class})
 public class LevelService {
     private final ILevelRepository levelRepository;
-    public List<Level> getAllLevels(Integer pageNo,
-                                          Integer pageSize,
-                                          String sortBy) {
-        return levelRepository.findAllLevels(pageNo, pageSize, sortBy);
+    public List<Level> getAllLevels() {
+        return levelRepository.findAll();
     }
     public Optional<Level> getLevelById(String id) {
         return levelRepository.findById(id);
