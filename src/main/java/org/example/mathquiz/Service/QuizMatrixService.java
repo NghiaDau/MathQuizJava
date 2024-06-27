@@ -16,10 +16,8 @@ import java.util.List;
         rollbackFor = {Exception.class, Throwable.class})
 public class QuizMatrixService {
     private final IQuizMatrixRepository quizMatrixRepository;
-    public List<QuizMatrix> getAllQuizMatrices(Integer pageNo,
-                                  Integer pageSize,
-                                  String sortBy) {
-        return quizMatrixRepository.findAllQuizMatrices(pageNo, pageSize, sortBy);
+    public List<QuizMatrix> getAllQuizMatrices() {
+        return quizMatrixRepository.findAll();
     }
     public QuizMatrix addQuizMatrix(QuizMatrix quizMatrix) {
         return quizMatrixRepository.save(quizMatrix);

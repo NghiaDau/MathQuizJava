@@ -10,12 +10,5 @@ import java.util.List;
 
 @Repository
 public interface IQuizMatrixRepository extends JpaRepository<QuizMatrix, String> {
-    default List<QuizMatrix> findAllQuizMatrices(Integer pageNo,
-                                    Integer pageSize,
-                                    String sortBy) {
-        return findAll(PageRequest.of(pageNo,
-                pageSize,
-                Sort.by(sortBy)))
-                .getContent();
-    }
+
 }
