@@ -23,11 +23,11 @@ public class LevelService {
     public Optional<Level> getLevelById(String id) {
         return levelRepository.findById(id);
     }
-    public Level addLevel(Level quizMatrix) {
-        return levelRepository.save(quizMatrix);
+    public Level addLevel(Level level) {
+        return levelRepository.save(level);
     }
-    public Level updateLevel(Level quizMatrix) {
-        return levelRepository.save(quizMatrix);
+    public Level updateLevel(Level level) {
+        return levelRepository.save(level);
     }
     public void deleteLevelById(String id) {
         levelRepository.deleteById(id);
