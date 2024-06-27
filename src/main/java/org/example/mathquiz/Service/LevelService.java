@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,11 +22,16 @@ public class LevelService {
                                           String sortBy) {
         return levelRepository.findAllLevels(pageNo, pageSize, sortBy);
     }
+    public Optional<Level> getLevelById(String id) {
+        return levelRepository.findById(id);
+    }
     public Level addLevel(Level quizMatrix) {
         return levelRepository.save(quizMatrix);
     }
     public Level updateLevel(Level quizMatrix) {
         return levelRepository.save(quizMatrix);
     }
-
+    public void deleteLevelById(String id) {
+        levelRepository.deleteById(id);
+    }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="/libary/lib.html::head('Thêm cấp học')"></head>
+<head th:replace="/libary/lib.html::head('Xác nhận xoá cấp học')"></head>
 
 <body class="fix-sidebar">
 <!-- Preloader -->
@@ -21,16 +21,14 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="white-box">
-                        <h3 class="box-title m-b-20">Thêm cấp</h3>
-                        <form th:action="@{/levels/add}" th:object="${level}" method="post" id="levelForm">
-                            <div class="mb-4">
-                                <label class="form-label" for="name">Tên cấp:</label><span class="text-danger">*</span>
-                                <input class="form-control" type="text" placeholder="Nhập tên cấp" th:field="*{name}" id="name" required autofocus>
-                                <span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
-                            </div>
+                        <h3 class="box-title m-b-20">Xác nhận xoá</h3>
+                        <p>Bạn có chắc chắn muốn xoá cấp học này không?</p>
+                        <p><strong>Tên cấp: </strong><span th:text="${level.name}"></span></p>
+                        <form th:action="@{/levels/delete}" th:object="${level}" method="post" id="levelForm">
                             <div class="d-flex justify-content-between">
-                                <input type="submit" class="btn btn-primary" value="Lưu"/>
-                                <a th:href="@{/levels}" class="btn btn-secondary">Trở lại danh sách</a>
+                                <input type="hidden" th:field="*{id}">
+                                <input type="submit" class="btn btn-danger" value="Xoá"/>
+                                <a th:href="@{/levels}" class="btn btn-secondary">Huỷ</a>
                             </div>
                         </form>
                     </div>

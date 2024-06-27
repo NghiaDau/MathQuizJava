@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="/libary/lib.html::head('List Account')" > </head>
+<head th:replace="/libary/lib.html::head('Danh sách cấp học')"></head>
 
 <body class="fix-sidebar">
 <!-- Preloader -->
@@ -17,55 +17,44 @@
     <!-- Left navbar-header end -->
     <!-- Page Content -->
     <div id="page-wrapper">
-        <!-- .row -->
         <div class="container-fluid">
-            <!-- .row -->
             <div class="row">
                 <div class="col-lg-12">
                     <div class="white-box">
-                        <h3 class="box-title m-b-0">List Account</h3>
-                        <table id="demo-foo-addrow" class="table table-bordered table-hover toggle-circle" data-page-size="5">
-                            <thead>
-                            <tr>
-                                <th data-sort-initial="true" data-toggle="true">Name</th>
-
-                                <th data-sort-ignore="true" class="min-width">Action</th>
-                            </tr>
-                            </thead>
-                            <div class="form-inline padding-bottom-15">
-                                <div class="row">
-                                    <!--<div class="col-sm-6">
-                                        <div class="form-group">
-                                            <button id="demo-btn-addrow" class="btn btn-outline btn-primary btn-sm"><i class="icon wb-plus" aria-hidden="true"></i>Add New Acoount
-                                            </button>
-                                        </div>
-                                    </div>-->
-                                    <div class="col-sm-6 text-right m-b-20">
-                                        <div class="form-group">
-                                            <input id="demo-input-search2" type="text" placeholder="Search" class="form-control" autocomplete="off">
-                                        </div>
+                        <h3 class="box-title m-b-0">Danh sách cấp</h3>
+                        <div class="form-inline padding-bottom-15">
+                            <div class="row">
+                                <div class="col-sm-6 text-right m-b-20">
+                                    <div class="form-group">
+                                        <input id="demo-input-search2" type="text" placeholder="Tìm kiếm" class="form-control" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <table id="demo-foo-addrow" class="table table-bordered table-hover toggle-circle" data-page-size="5">
+                            <thead>
+                            <tr>
+                                <th data-sort-initial="true" data-toggle="true">Tên cấp</th>
+                                <th data-sort-ignore="true" class="min-width">Thao tác</th>
+                            </tr>
+                            </thead>
                             <tbody>
-                            <!--render thong tin user-->
                             <tr th:each="level : ${levels}">
                                 <td th:text="${level.name}"></td>
-
-
-
                                 <td>
-                                    <a th:href="@{'/level/delete/'+${level.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn" data-toggle="tooltip" style="color:red" data-original-title="Delete">Delete</a>
-                                    <a th:href="@{'/level/update/'+${level.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn" data-toggle="tooltip" style="color:darkgreen"  data-original-title="Delete">Update</a>
+                                    <a th:href="@{'/levels/edit/'+${level.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline update-row-btn" data-toggle="tooltip" style="color:darkgreen" data-original-title="Cập nhật">Cập nhật</a>
+                                    <a th:href="@{'/levels/delete/'+${level.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn" data-toggle="tooltip" style="color:red" data-original-title="Xoá">Xoá</a>
                                 </td>
                             </tr>
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="8">
-                                    <div class="text-right">
-                                        <ul class="pagination">
-                                        </ul>
+                                <td colspan="2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a th:href="@{/levels/add}" class="btn btn-primary">Thêm cấp</a>
+                                        <div class="text-right">
+                                            <ul class="pagination"></ul>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -74,18 +63,12 @@
                     </div>
                 </div>
             </div>
-            <!-- /.row -->
         </div>
-
-            <!-- /.right-sidebar -->
-        </div>
-        <!-- /.container-fluid -->
         <footer th:replace="/libary/lib.html::footer"></footer>
     </div>
-    <!-- /#page-wrapper -->
+</div>
 
-<th:block th:replace="/libary/lib.html :: foot"></th:block>
-
+<th:block th:replace="/libary/lib.html::foot"></th:block>
 </body>
 
 </html>
