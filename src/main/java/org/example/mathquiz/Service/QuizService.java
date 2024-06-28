@@ -1,9 +1,9 @@
 package org.example.mathquiz.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.mathquiz.Entities.Level;
+import org.example.mathquiz.Entities.Quiz;
 
-import org.example.mathquiz.Repositories.ILevelRepository;
+import org.example.mathquiz.Repositories.IQuizRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,21 +15,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(isolation = Isolation.SERIALIZABLE,
         rollbackFor = {Exception.class, Throwable.class})
-public class LevelService {
-    private final ILevelRepository levelRepository;
-    public List<Level> getAllLevels() {
+public class QuizService {
+    private final IQuizRepository levelRepository;
+    public List<Quiz> getAllQuizs() {
         return levelRepository.findAll();
     }
-    public Optional<Level> getLevelById(String id) {
+    public Optional<Quiz> getQuizById(String id) {
         return levelRepository.findById(id);
     }
-    public Level addLevel(Level level) {
+    public Quiz addQuiz(Quiz level) {
         return levelRepository.save(level);
     }
-    public Level updateLevel(Level level) {
+    public Quiz updateQuiz(Quiz level) {
         return levelRepository.save(level);
     }
-    public void deleteLevelById(String id) {
+    public void deleteQuizById(String id) {
         levelRepository.deleteById(id);
     }
 }
