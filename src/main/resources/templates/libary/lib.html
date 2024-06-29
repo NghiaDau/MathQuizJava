@@ -56,7 +56,24 @@
     <!-- Navigation -->
     <nav th:fragment="nav" class="navbar navbar-default navbar-static-top m-b-0">
         <div class="navbar-header"> <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse"><i class="ti-menu"></i></a>
-            <div class="top-left-part"><a class="logo" href="index.html"><b><!--This is dark logo icon--><img src="../plugins/images/eliteadmin-logo.png" alt="home" class="dark-logo" /><!--This is light logo icon--><img src="../plugins/images/eliteadmin-logo-dark.png" alt="home" class="light-logo" /></b><span class="hidden-xs"><!--This is dark logo text--><img src="../plugins/images/eliteadmin-text.png" alt="home" class="dark-logo" /><!--This is light logo text--><img src="../plugins/images/eliteadmin-text-dark.png" alt="home" class="light-logo" /></span></a></div>
+
+            <div class="top-left-part" style="display: flex;align-items: center;justify-content: center">
+                <a class="logo" href="/">
+                    <b class="text-center"><!--This is dark logo icon-->
+<!--                        <img src="../plugins/images/eliteadmin-logo.png" alt="home" class="dark-logo" />-->
+                        <!--This is light logo icon-->
+                        HOME
+
+<!--                        <img src="../plugins/images/eliteadmin-logo-dark.png" alt="home" class="light-logo" />-->
+                    </b>
+                    <!--<span class="hidden-xs ">&lt;!&ndash;This is dark logo text&ndash;&gt;
+                        HOME
+                        &lt;!&ndash;<img src="../plugins/images/eliteadmin-text.png" alt="home" class="dark-logo" />
+                        &lt;!&ndash;This is light logo text&ndash;&gt;<img src="../plugins/images/eliteadmin-text-dark.png" alt="home" class="light-logo" />&ndash;&gt;
+                    </span>-->
+                </a>
+            </div>
+
             <ul class="nav navbar-top-links navbar-left hidden-xs">
                 <li><a href="javascript:void(0)" class="open-close hidden-xs waves-effect waves-light"><i class="icon-arrow-left-circle ti-menu"></i></a></li>
                 <li>
@@ -251,7 +268,7 @@
         <div class="wp-sidebar-nav">
             <div class="user-profile">
                 <div class="dropdown user-pro-body">
-                    <div><img src="../plugins/images/users/varun.jpg" alt="user-img" class="img-circle"></div> <a href="#" class="dropdown-toggle u-dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Steave Gection <span class="caret"></span></a>
+                    <div><img src="/images/avata1.jpg" alt="user-img" class="img-circle" style="width: 50px;height: 50px"></div> <a href="#" class="dropdown-toggle u-dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Steave Gection <span class="caret"></span></a>
                     <ul class="dropdown-menu animated flipInY">
                         <li><a href="#"><i class="ti-user"></i> My Profile</a></li>
                         <li><a href="#"><i class="ti-wallet"></i> My Balance</a></li>
@@ -264,10 +281,10 @@
                 </div>
             </div>
             <ul class="wp-side-menu">
-                <li> <a href="javascript:void(0)" class=""><i class="linea-icon linea-basic fa-fw" data-icon="v"></i> <span class="hide-menu"> Dashboard <span class="fa arrow"></span> <span class="label label-rouded label-inverse pull-right">4</span></span></a>
+                <li> <a href="javascript:void(0)" class=""><i class="linea-icon linea-basic fa-fw" data-icon="v"></i> <span class="hide-menu">Manage User<span class="fa arrow"></span> <span class="label label-rouded label-inverse pull-right"></span></span></a>
                     <ul class="nav-second-level">
-                        <li> <a href="index.html">Minimalistic</a> </li>
-                        <li> <a href="index2.html">Demographical</a> </li>
+                        <li> <a href="/user">Show all user</a> </li>
+                        <li> <a href="/user/new">Add new user</a> </li>
                         <li> <a href="index3.html">Analitical</a> </li>
                         <li> <a href="index4.html">Simpler</a> </li>
                     </ul>
@@ -440,7 +457,7 @@
             <!-- /.right-sidebar -->
         </div>
         <!-- /.container-fluid -->
-        <footer th:fragment="footer" class="footer text-center"> 2017 &copy; Elite Admin brought to you by themedesigner.in </footer>
+        <footer th:fragment="footer" class="footer text-center"> 2024 &copy; MathQuiz online by TOD team</footer>
     </div>
     <!-- /#page-wrapper -->
 </div>
