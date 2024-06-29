@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="/libary/lib.html::head('Danh sách lớp học')"></head>
+<head th:replace="/libary/lib.html::head('Danh sách chương học')"></head>
 
 <body class="fix-sidebar">
 <!-- Preloader -->
@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="white-box">
-                        <h3 class="box-title m-b-0">Danh sách lớp</h3>
+                        <h3 class="box-title m-b-0">Danh sách chương</h3>
                         <div class="form-inline padding-bottom-15">
                             <div class="row">
                                 <div class="col-sm-6 text-right m-b-20">
@@ -34,26 +34,28 @@
                         <table id="demo-foo-addrow" class="table table-bordered table-hover toggle-circle" data-page-size="5">
                             <thead>
                             <tr>
-                                <th data-sort-initial="true" data-toggle="true">Tên lớp</th>
-                                <th data-sort-initial="true" data-toggle="true">Cấp học</th>
+                                <th data-sort-initial="true" data-toggle="true">Tên chương</th>
+                                <th data-sort-initial="true" data-toggle="true">Lớp</th>
+                                <th data-sort-initial="true" data-toggle="true">Loại toán</th>
                                 <th data-sort-ignore="true" class="min-width">Thao tác</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="grade : ${grades}">
-                                <td th:text="${grade.name}"></td>
-                                <td th:text="${grade.getLevel().getName()}"></td>
+                            <tr th:each="chapter : ${chapters}">
+                                <td th:text="${chapter.name}"></td>
+                                <td th:text="${chapter.getGrade().getName()}"></td>
+                                <td th:text="${chapter.getMathType().getName()}"></td>
                                 <td>
-                                    <a th:href="@{'/grades/edit/'+${grade.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline update-row-btn" data-toggle="tooltip" style="color:darkgreen" data-original-title="Cập nhật">Cập nhật</a>
-                                    <a th:href="@{'/grades/delete/'+${grade.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn" data-toggle="tooltip" style="color:red" data-original-title="Xoá">Xoá</a>
+                                    <a th:href="@{'/chapters/edit/'+${chapter.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline update-row-btn" data-toggle="tooltip" style="color:darkgreen" data-original-title="Cập nhật">Cập nhật</a>
+                                    <a th:href="@{'/chapters/delete/'+${chapter.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn" data-toggle="tooltip" style="color:red" data-original-title="Xoá">Xoá</a>
                                 </td>
                             </tr>
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="3">
+                                <td colspan="4">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <a th:href="@{/grades/add}" class="btn btn-primary">Thêm lớp</a>
+                                        <a th:href="@{/chapters/add}" class="btn btn-primary">Thêm chương</a>
                                         <div class="text-right">
                                             <ul class="pagination"></ul>
                                         </div>

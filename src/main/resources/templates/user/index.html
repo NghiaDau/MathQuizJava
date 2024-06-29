@@ -5,9 +5,7 @@
 
 <body class="fix-sidebar">
 <!-- Preloader -->
-<div class="preloader">
-    <div class="cssload-speeding-wheel"></div>
-</div>
+
 <div id="wrapper">
     <!-- Top Navigation -->
     <nav th:replace="/libary/lib.html::nav"></nav>
@@ -32,7 +30,7 @@
                                 <th data-sort-initial="true" data-toggle="true">Full Name</th>
                                 <th data-sort-initial="true" data-toggle="true">Email</th>
                                 <th data-sort-initial="true" data-toggle="true">Phone</th>
-                                <th data-sort-initial="true" data-toggle="true">Active</th>
+<!--                                <th data-sort-initial="true" data-toggle="true">Active</th>-->
                                 <th data-sort-initial="true" data-toggle="true">Avatar</th>
                                 <th data-sort-ignore="true" class="min-width">Action</th>
                             </tr>
@@ -60,14 +58,16 @@
                                 <td th:text="${user.fullName}"></td>
                                 <td th:text="${user.email}"></td>
                                 <td th:text="${user.phoneNumber}"></td>
-                                <td th:text="${user.emailConfirmed ? 'Yes': 'No'}"></td>
-                                <td th:text="${user.avatarUrl}"></td>
+<!--                                <td th:text="${user.emailConfirmed ? 'Yes': 'No'}"></td>-->
+                                <td >
+                                    <img th:src="@{'getimage/' + ${user.avatarUrl}}"  alt="user-img" class="img-circle" style="width: 50px;height: 50px">
+                                </td>
 
 
 
                                 <td>
                                     <a th:href="@{'/user/delete/'+${user.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn" data-toggle="tooltip" style="color:red" data-original-title="Delete">Delete</a>
-                                    <a th:href="@{'/user/update/'+${user.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn" data-toggle="tooltip" style="color:darkgreen"  data-original-title="Delete">Update</a>
+                                    <a th:href="@{'/user/edit/'+${user.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline update-row-btn" >Update</a>
                                 </td>
                             </tr>
                             </tbody>
