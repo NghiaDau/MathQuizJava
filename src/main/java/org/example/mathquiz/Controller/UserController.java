@@ -1,6 +1,7 @@
 package org.example.mathquiz.Controller;
 
 import org.example.mathquiz.Entities.User;
+import org.example.mathquiz.RequesEntities.RequesUpdateUser;
 import org.example.mathquiz.RequesEntities.RequesUser;
 import org.example.mathquiz.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,17 @@ public class UserController {
                              Model model,
                              @RequestParam("photo") MultipartFile multipartFile){
         User use= userService.addNewUser(requesUser,multipartFile);
+        return "redirect:/user";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable String id, Model model) {
+        model.addAttribute("user", userService.findById(id));
+        return "user/edit";
+    }
+    @PostMapping("/save_change")
+    public String saveChange(RequesUpdateUser requesUpdateUser,@RequestParam("photo") MultipartFile multipartFile) {
+        userService.UpdateUser(requesUpdateUser,multipartFile);
         return "redirect:/user";
     }
 }

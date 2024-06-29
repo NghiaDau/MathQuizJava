@@ -2,6 +2,7 @@ package org.example.mathquiz.Service;
 
 import org.example.mathquiz.Entities.User;
 import org.example.mathquiz.Repositories.UserRepository;
+import org.example.mathquiz.RequesEntities.RequesUpdateUser;
 import org.example.mathquiz.RequesEntities.RequesUser;
 import org.example.mathquiz.Utilities.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +44,23 @@ public class UserService {
             throw new RuntimeException("loi add");
         }
     }
+
+    public User findById(String id){
+        return  userRepository.findFirstById(id);
+    }
+
+    public User UpdateUser( RequesUpdateUser requesUpdateUser,MultipartFile multipartFile) {
+        try {
+            User user = userRepository.findFirstById(requesUpdateUser.getId());
+            user.setFullName(requesUpdateUser.getFullName());
+            user.setPhoneNumber(requesUpdateUser.getPhoneNumber());
+            user.setEmail(requesUpdateUser.getEmail());
+            if(!multipartFile.isEmpty())
+                user.setAvatarUrl(FileUtils.saveFile(multipartFile));
+            return  userRepository.save(user);
+        }catch (Exception e){
+            throw  new RuntimeException(e.getMessage());
+        }
+    }
+
 }
