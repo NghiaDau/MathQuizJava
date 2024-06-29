@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +32,7 @@ public class User {
     private String phoneNumber;
     private Date activeDate;
     private String avatarUrl;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createDate;
     private String fullName;
 

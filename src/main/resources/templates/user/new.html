@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('List Account')" > </head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <!-- .row -->
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="white-box">
+                        <h3 class="box-title m-b-0">Creat new account</h3>
+                        <form class="form" action="/user/add_new" method="post" enctype="multipart/form-data" th:object="${user}">
+                            <div class="form-group row">
+                                <label for="email" class="col-2 col-form-label">Email:</label>
+                                <div class="col-10">
+                                    <input class="form-control" type="email" value=""  th:field="*{email}" id="email" name="email">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="firstname" class="col-2 col-form-label">Full Name:</label>
+                                <div class="col-10">
+                                    <input class="form-control" type="text" value="" th:field="*{fullName}" id="firstName" name="firstName">
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="lastname" class="col-2 col-form-label">Phone Number</label>
+                                <div class="col-10">
+                                    <input class="form-control" type="text" value="" th:field="*{phoneNumber}" id="lastName" name="lastName">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="lastname" class="col-2 col-form-label">User Name</label>
+                                <div class="col-10">
+                                    <input class="form-control" type="text" value="" th:field="*{userName}" id="lastName" name="lastName">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="password" class="col-2 col-form-label">Password:</label>
+                                <div class="col-10">
+                                    <input class="form-control" type="text" value="" id="password" th:field="*{passwordHash}" name="password">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="rePassword" class="col-2 col-form-label">RePassword:</label>
+                                <div class="col-10">
+                                    <input class="form-control" type="text" value="" id="rePassword" th:field="*{repasswordHash}" name="rePassword">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="photos" class="col-2 col-form-label">Photo:</label>
+                                <div class="col-10">
+                                    <input class="form-control" type="file"  value="" id="photos" accept="image/*" name="photo">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Add</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- /.right-sidebar -->
+        </div>
+        <!-- /.container-fluid -->
+        <footer th:replace="/libary/lib.html::footer"></footer>
+    </div>
+    <!-- /#page-wrapper -->
+</div>
+<th:block th:replace="/libary/lib.html :: foot"></th:block>
+</body>
+</html>
