@@ -2,15 +2,25 @@ package org.example.mathquiz.Controller;
 
 import jakarta.validation.constraints.NotNull;
 import org.example.mathquiz.Entities.Chapter;
-import org.example.mathquiz.Service.ChapterService;
-import org.example.mathquiz.Service.GradeService;
-import org.example.mathquiz.Service.MathTypeService;
+import org.example.mathquiz.Entities.Quiz;
+import org.example.mathquiz.Entities.QuizMatrix;
+import org.example.mathquiz.Entities.QuizOption;
+import org.example.mathquiz.RequesEntities.RequestModel;
+import org.example.mathquiz.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/chapters")
@@ -21,6 +31,15 @@ public class ChapterController {
     private GradeService gradeService;
     @Autowired
     private MathTypeService mathTypeService;
+    @Autowired
+    private QuizMatrixService quizMatrixService;
+    @Autowired
+    private QuizService quizService;
+    @Autowired
+    private QuizOptionService quizOptionService;
+
+    private static List<Quiz> Quizs;
+
     @GetMapping("")
     public String showAllChapters(@NotNull Model model) {
         model.addAttribute("chapters", chapterService.getAllChapters());
@@ -32,7 +51,7 @@ public class ChapterController {
 
     @GetMapping("/add")
     public String addChapterForm(@NotNull Model model) {
-        model.addAttribute("chapter", new Chapter());
+        model.addAttribute("chapterModel", new RequestModel());
         model.addAttribute("grades",
                 gradeService.getAllGrades());
         model.addAttribute("mathTypes", mathTypeService.getAllMathTypes());
@@ -41,10 +60,26 @@ public class ChapterController {
     }
 
     @PostMapping("/add")
-    public String addChapter(@ModelAttribute("chapter") Chapter chapter,
+    public String addChapter(@ModelAttribute("chapterModel") RequestModel chapterModel,
                            BindingResult bindingResult,
                            Model model) {
-        chapterService.addChapter(chapter);
+        List<Quiz> questionVMs = Quizs;
+        List<QuizOption> quizOptionList = new ArrayList<>();
+        Chapter savedChapter = chapterService.addChapter(chapterModel);
+        chapterModel.setChapter(savedChapter);
+        QuizMatrix quizMatrix =  quizMatrixService.addQuizMatrix(chapterModel,questionVMs);
+        for (Quiz quiz: questionVMs){
+            quiz.setQuizMatrix(quizMatrix);
+        }
+
+        List<Quiz> quizDemon =  quizService.addQuiz(questionVMs);
+        for (Quiz quiz: quizDemon){
+            for ( QuizOption quizOption : quiz.getQuizOptions()){
+                quizOption.setQuiz(quiz);
+                quizOptionList.add(quizOption);
+            }
+        }
+        quizOptionService.addQuizOption(quizOptionList);
         return "redirect:/chapters";
     }
 
@@ -92,5 +127,21 @@ public class ChapterController {
 
         chapterService.updateChapter(chapter);
         return "redirect:/chapters";
+    }
+
+    @PostMapping("/uploadEndpoint")
+    public ResponseEntity<?> handleFileUpload(@RequestParam("files") MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return ResponseEntity.badRequest().body("No file uploaded.");
+        }
+        List<Quiz> questionVMs;
+        try {
+            questionVMs = quizService.readFileLatex(file);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        System.out.println(questionVMs.size());
+        Quizs = questionVMs;
+        return ResponseEntity.ok().build();
     }
 }

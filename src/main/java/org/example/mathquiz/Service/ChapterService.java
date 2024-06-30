@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.mathquiz.Entities.Chapter;
 
 import org.example.mathquiz.Repositories.IChapterRepository;
+import org.example.mathquiz.RequesEntities.RequestModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +24,14 @@ public class ChapterService {
     public Optional<Chapter> getChapterById(String id) {
         return chapterRepository.findById(id);
     }
-    public Chapter addChapter(Chapter chapter) {
-        return chapterRepository.save(chapter);
+    public Chapter addChapter(RequestModel requestModel) {
+        try {
+            Chapter chapter = Chapter.fromRequestModel(requestModel);
+            return chapterRepository.save(chapter);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
     public Chapter updateChapter(Chapter chapter) {
         return chapterRepository.save(chapter);

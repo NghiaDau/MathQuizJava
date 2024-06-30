@@ -1,21 +1,29 @@
 package org.example.mathquiz.Controller;
 
 import jakarta.validation.constraints.NotNull;
+import org.example.mathquiz.Entities.Chapter;
 import org.example.mathquiz.Entities.Quiz;
+import org.example.mathquiz.Entities.QuizMatrix;
 import org.example.mathquiz.Service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/quizs")
 public class QuizController {
     @Autowired
     private QuizService quizService;
-
     @GetMapping("")
     public String showAllQuizs(@NotNull Model model) {
         model.addAttribute("quizs", quizService.getAllQuizs());
@@ -76,4 +84,20 @@ public class QuizController {
         quizService.updateQuiz(quiz);
         return "redirect:/quizs";
     }
+
+    @PostMapping("/IReadFileLatex")
+    public ResponseEntity<?> iReadFileLatex(@RequestParam("files") MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            return ResponseEntity.badRequest().body("No file uploaded.");
+        }
+        List<Quiz> questionVMs;
+        try {
+            questionVMs = quizService.readFileLatex(file);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error reading file.");
+        }
+
+        return ResponseEntity.ok(questionVMs);
+    }
+
 }
