@@ -7,6 +7,10 @@ import org.example.mathquiz.RequesEntities.RequesUser;
 import org.example.mathquiz.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -71,9 +75,17 @@ public class UserController {
         return "redirect:/login";
     }
 
-    @GetMapping("/user/profile")
-    public String profile(Model model){
-
+    @GetMapping("/user/profile/{id}")
+    public String profile(Model model,@PathVariable String id){
+        model.addAttribute("user", userService.findById(id));
         return "/user/profile";
+    }
+    @PostMapping("/user/save_profile")
+    public String saveProfile(RequesUpdateUser requesUpdateUser,@RequestParam("photo") MultipartFile multipartFile) {
+        User user1 = userService.UpdateUser(requesUpdateUser,multipartFile);
+        UserDetails userDetails = userService.loadUserByUsername(user1.getUsername());
+        userService.updatePrincipal(user1);
+
+        return "redirect:/user";
     }
 }

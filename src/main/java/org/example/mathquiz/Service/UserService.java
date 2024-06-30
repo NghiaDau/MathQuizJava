@@ -10,6 +10,9 @@ import org.example.mathquiz.RequesEntities.RequesUser;
 import org.example.mathquiz.Utilities.FileUtils;
 import org.example.mathquiz.constants.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -78,6 +81,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
+
     @Transactional(isolation = Isolation.SERIALIZABLE,
             rollbackFor = {Exception.class, Throwable.class})
     public void save(@NotNull RequesUser requesUser) {
@@ -110,6 +114,12 @@ public class UserService implements UserDetailsService {
 //                .credentialsExpired(false)
 //                .disabled(false)
 //                .build();
+    }
+
+    public void updatePrincipal(User user) {
+        UserDetails userDetails = user;
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
 
