@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.mathquiz.RequesEntities.RequestModel;
+
 import java.util.List;
 
 @Setter
@@ -33,5 +35,13 @@ public class Chapter {
     @OneToMany(mappedBy = "chapter")
     private List<QuizMatrix> quizMatrices;
 
+
+    public static Chapter fromRequestModel(RequestModel requestModel) {
+        Chapter chapter = new Chapter();
+        chapter.setGrade(requestModel.getGrade());
+        chapter.setName(requestModel.getName());
+        chapter.setMathType(requestModel.getMathType());
+        return chapter;
+    }
 }
 
