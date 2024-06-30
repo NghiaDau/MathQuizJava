@@ -73,6 +73,7 @@ public class UserController {
 
     @GetMapping("/user/profile")
     public String profile(Model model){
+
         return "/user/profile";
     }
 }

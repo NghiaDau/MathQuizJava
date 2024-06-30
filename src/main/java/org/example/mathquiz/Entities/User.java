@@ -2,8 +2,10 @@ package org.example.mathquiz.Entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.context.annotation.Bean;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -68,6 +70,8 @@ public class User implements UserDetails {
     public String getUsername() {
         return userName;
     }
+
+
     public String disPlayAvatar(){
         return "DSDSd";
     }
