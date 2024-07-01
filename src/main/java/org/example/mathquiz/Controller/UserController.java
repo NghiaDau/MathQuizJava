@@ -4,18 +4,17 @@ import jakarta.validation.Valid;
 import org.example.mathquiz.Entities.User;
 import org.example.mathquiz.RequesEntities.RequesUpdateUser;
 import org.example.mathquiz.RequesEntities.RequesUser;
+import org.example.mathquiz.RequesEntities.RequestChangePassUser;
 import org.example.mathquiz.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.security.core.Authentication;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -24,6 +23,8 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserService userService;
+
+
     @GetMapping("/user")
     public String displayAllUser(Model model){
 
@@ -88,4 +89,80 @@ public class UserController {
 
         return "redirect:/user";
     }
+
+    @GetMapping("/user/change_password")
+    public String ChangePassword(@AuthenticationPrincipal User user, Model model) {
+        RequestChangePassUser requestChangePassUser = new RequestChangePassUser();
+        requestChangePassUser.setId(user.getId());
+        model.addAttribute("user", requestChangePassUser);
+        return "/user/change_password";
+    }
+
+    @PostMapping("/user/save_change_password")
+    public String ChangePassword_Submit(@AuthenticationPrincipal User user,
+                                        @ModelAttribute("user") RequestChangePassUser requestChangePassUser,
+                                        Model model,
+                                        RedirectAttributes redirectAttributes) {
+        try {
+            if(userService.checkPass(user, requestChangePassUser.getOldPassword())){
+                userService.ChangePassword(user,requestChangePassUser.getNewPassword());
+                return "redirect:/user";
+            }
+            else{
+                redirectAttributes.addFlashAttribute("errormessage"," Mật khẩu cũ không hợp lệ");
+                return "redirect:/user/change_password";
+            }
+        } catch (Exception e) {
+            return "redirect:/user/change_password";
+        }
+    }
+
+    @GetMapping("/forgotpassword")
+    public String ForgotPassword() {
+        return "/user/forgot_password";
+    }
+
+    @PostMapping("/forgot_password")
+    public String ForgotPassword_Submit(@RequestParam("email") String email,RedirectAttributes redirectAttributes) {
+        User user = userService.findUserByEmail(email);
+        if (user != null) {
+            user = userService.createTokenResetPassword(user);
+            String token = user.getResetPasswordToken();
+            String URL = "http://localhost:8080/reset_password?token=" + token;
+            userService.SendMail(user.getEmail(), URL,user.getUsername());
+            redirectAttributes.addFlashAttribute("message","Vui lòng kiểm tra email để thay đổi mật khẩu!");
+            return "redirect:/forgotpassword";
+        }
+        redirectAttributes.addFlashAttribute("message","Email không tồn tại");
+        return "redirect:/forgotpassword";
+    }
+
+    @GetMapping("/reset_password")
+    public String ResetPassword(@Param("token") String token, Model model) {
+        User user = userService.findUserByResetPasswordToken(token);
+        if (user == null) {
+            return "redirect:/forgotpassword";
+        } else {
+            if (user.getResetPasswordTokenExpired().getTime() > System.currentTimeMillis()) {
+                model.addAttribute("token", token);
+                return "/user/reset_password";
+            } else {
+                return "/user/fail_token";
+            }
+
+        }
+    }
+
+    @PostMapping("/reset_password")
+    public String ResetPassword_Submit(@RequestParam("token") String token, @RequestParam("password") String password) {
+        User user = userService.findUserByResetPasswordToken(token);
+        if (user == null) {
+            return "redirect:/forgotpassword";
+        } else {
+            userService.updateResetPasswordToken(user, password);
+            return "redirect:/login";
+        }
+    }
+
+
 }

@@ -19,7 +19,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SercurityConfig {
-    private final UserService userService;
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserService();
@@ -39,8 +38,8 @@ public class SercurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/css/**", "/js/**", "/","/bootstrap/**","/icons/**","/less/**","/plugins/**","/images/**",
-                                "/register", "/error","/user/**" ,"/user/save_change")
+                        .requestMatchers( "/css/**", "/js/**", "/","/**","/bootstrap/**","/icons/**","/less/**","/plugins/**","/images/**",
+                                "/register","/forgotpassword","forgot_password", "/error","/user/**" ,"/user/save_change")
                         .permitAll()
                         .anyRequest().authenticated()
                 )

@@ -8,8 +8,11 @@ import org.example.mathquiz.Repositories.UserRepository;
 import org.example.mathquiz.RequesEntities.RequesUpdateUser;
 import org.example.mathquiz.RequesEntities.RequesUser;
 import org.example.mathquiz.Utilities.FileUtils;
+import org.example.mathquiz.Utilities.RandomUtils;
 import org.example.mathquiz.constants.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +42,12 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private IRoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender emailSender;
     public List<User> getAllUser(){
         List<User> users = userRepository.findAll();
         return users;
@@ -120,6 +130,48 @@ public class UserService implements UserDetailsService {
         UserDetails userDetails = user;
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+    public User ChangePassword(User user, String password){
+        user.setPasswordHash(new BCryptPasswordEncoder().encode(password));
+        return userRepository.save(user);
+    }
+    public boolean checkPass(User user,String oldPassword){
+        return passwordEncoder.matches(oldPassword,user.getPasswordHash());
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+    public User createTokenResetPassword(User user) {
+        String token =  RandomUtils.generateRandomString(45);
+        user.setResetPasswordToken(token);
+        user.setResetPasswordTokenExpired(new Date(System.currentTimeMillis()+10*60*1000));
+        return userRepository.save(user);
+    }
+    public User findUserByResetPasswordToken(String token) {
+        return userRepository.findByToken(token);
+    }
+    public User updateResetPasswordToken(User user, String password) {
+        user.setPasswordHash(new BCryptPasswordEncoder().encode(password));
+        user.setResetPasswordToken("");
+        user.setResetPasswordTokenExpired(null);
+        return userRepository.save(user);
+    }
+
+
+    public  void SendMail(String DesMail, String URL,String username){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("todream@gmail.com");
+        message.setTo(DesMail);
+        message.setSubject("Reset Your Password");
+        String emailContent =
+                "Hello, "+ username +"\n"+
+                        "You have requested to reset your password.\n" +
+                        "Click the link below to change your password:" +URL +"\n"+
+                        "Ignore this email if you remember your password or you have not made this request.\n"+
+                        "Thanh you!";
+        message.setText(emailContent);
+        emailSender.send(message);
     }
 }
 

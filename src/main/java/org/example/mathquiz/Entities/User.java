@@ -38,6 +38,9 @@ public class User implements UserDetails {
     private Date createDate;
     private String fullName;
 
+    private String resetPasswordToken;
+    private Date resetPasswordTokenExpired;
+
     @ManyToOne
     @JoinColumn(name = "grade_id")
     private Grade grade;
