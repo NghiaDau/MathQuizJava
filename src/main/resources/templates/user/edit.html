@@ -21,18 +21,18 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="white-box">
-                        <h3 class="box-title m-b-0">Creat new account</h3>
+                        <h3 class="box-title m-b-0">Cập nhật thông tin tài khoản</h3>
                         <form class="form" action="/user/save_change" method="post" enctype="multipart/form-data" th:object="${user}">
                             <input class="form-control hidden"  type="text"  th:field="*{id}" >
 
                             <div class="form-group row">
-                                <label for="email" class="col-2 col-form-label">Email:</label>
+                                <label for="email" class="col-2 col-form-label">Email</label>
                                 <div class="col-10">
                                     <input class="form-control" type="email" value=""  th:field="*{email}" id="email" name="email">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="firstname" class="col-2 col-form-label">Full Name:</label>
+                                <label for="firstname" class="col-2 col-form-label">Họ Tên</label>
                                 <div class="col-10">
                                     <input class="form-control" type="text" value="" th:field="*{fullName}" id="firstName" name="firstName">
 
@@ -40,19 +40,19 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="lastname" class="col-2 col-form-label">Phone Number</label>
+                                <label for="lastname" class="col-2 col-form-label">Số Điện Thoại</label>
                                 <div class="col-10">
                                     <input class="form-control" type="text" value="" th:field="*{phoneNumber}" id="lastName" name="lastName">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="photos" class="col-2 col-form-label">Photo:</label>
+                                <label for="photos" class="col-2 col-form-label">Ảnh </label>
                                 <div class="col-10">
                                     <input class="form-control" type="file"  value="" id="photos" accept="image/*" name="photo">
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Update</button>
+                            <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Cập nhật</button>
                         </form>
                     </div>
                 </div>

@@ -21,18 +21,18 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="white-box">
-                        <h3 class="box-title m-b-0">List Account</h3>
+                        <h3 class="box-title m-b-0">Danh Sách Tài Khoản</h3>
                         <table id="demo-foo-addrow" class="table table-bordered table-hover toggle-circle" data-page-size="5">
                             <thead>
                             <tr>
                                 <th data-sort-initial="true" data-toggle="true">STT</th>
-                                <th data-sort-initial="true" data-toggle="true">User Name</th>
-                                <th data-sort-initial="true" data-toggle="true">Full Name</th>
+                                <th data-sort-initial="true" data-toggle="true">Tên Tài Khoản</th>
+                                <th data-sort-initial="true" data-toggle="true"> Họ Tên</th>
                                 <th data-sort-initial="true" data-toggle="true">Email</th>
-                                <th data-sort-initial="true" data-toggle="true">Phone</th>
+                                <th data-sort-initial="true" data-toggle="true">Số Điện Thoại </th>
 <!--                                <th data-sort-initial="true" data-toggle="true">Active</th>-->
-                                <th data-sort-initial="true" data-toggle="true">Avatar</th>
-                                <th data-sort-ignore="true" class="min-width">Action</th>
+                                <th data-sort-initial="true" data-toggle="true">Ảnh</th>
+                                <th data-sort-ignore="true" class="min-width">Thao Tác</th>
                             </tr>
                             </thead>
                             <div class="form-inline padding-bottom-15">
@@ -45,7 +45,7 @@
                                     </div>-->
                                     <div class="col-sm-6 text-right m-b-20">
                                         <div class="form-group">
-                                            <input id="demo-input-search2" type="text" placeholder="Search" class="form-control" autocomplete="off">
+                                            <input id="demo-input-search2" type="text" placeholder="Tìm kiếm" class="form-control" autocomplete="on">
                                         </div>
                                     </div>
                                 </div>
@@ -53,7 +53,7 @@
                             <tbody>
                             <!--render thong tin user-->
                             <tr th:each="user : ${list_user}">
-                                <td th:text="${userStat.index}"></td>
+                                <td th:text="${userStat.index+1}"></td>
                                 <td th:text="${user.username}"></td>
                                 <td th:text="${user.fullName}"></td>
                                 <td th:text="${user.email}"></td>
@@ -66,8 +66,8 @@
 
 
                                 <td>
-                                    <a th:href="@{'/user/delete/'+${user.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn" data-toggle="tooltip" style="color:red" data-original-title="Delete">Delete</a>
-                                    <a th:href="@{'/user/edit/'+${user.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline update-row-btn" >Update</a>
+                                    <a th:href="@{'/user/delete/'+${user.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn" data-toggle="tooltip" style="color:red" data-original-title="Delete">Khóa</a>
+                                    <a th:href="@{'/user/edit/'+${user.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline update-row-btn" >Cập nhật</a>
                                 </td>
                             </tr>
                             </tbody>

@@ -44,14 +44,17 @@ public class UserController {
     @PostMapping("/user/add_new")
     public String addNewUser(@ModelAttribute("user") RequesUser requesUser,
                              Model model,
-                             @RequestParam("photo") MultipartFile multipartFile){
+                             @RequestParam("photo") MultipartFile multipartFile,
+                             RedirectAttributes redirectAttributes){
         User use= userService.addNewUser(requesUser,multipartFile);
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm tài khoản thành công");
         return "redirect:/user";
     }
 
     @GetMapping("/user/edit/{id}")
-    public String edit(@PathVariable String id, Model model) {
+    public String edit(@PathVariable String id, Model model,RedirectAttributes redirectAttributes) {
         model.addAttribute("user", userService.findById(id));
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
         return "user/edit";
     }
     @PostMapping("/user/save_change")
@@ -82,12 +85,14 @@ public class UserController {
         return "/user/profile";
     }
     @PostMapping("/user/save_profile")
-    public String saveProfile(RequesUpdateUser requesUpdateUser,@RequestParam("photo") MultipartFile multipartFile) {
+    public String saveProfile(RequesUpdateUser requesUpdateUser,
+                              @RequestParam("photo") MultipartFile multipartFile,
+                              RedirectAttributes redirectAttributes) {
         User user1 = userService.UpdateUser(requesUpdateUser,multipartFile);
         UserDetails userDetails = userService.loadUserByUsername(user1.getUsername());
         userService.updatePrincipal(user1);
-
-        return "redirect:/user";
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
+        return "redirect:/user/profile/"+user1.getId();
     }
 
     @GetMapping("/user/change_password")
@@ -106,6 +111,7 @@ public class UserController {
         try {
             if(userService.checkPass(user, requestChangePassUser.getOldPassword())){
                 userService.ChangePassword(user,requestChangePassUser.getNewPassword());
+                redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
                 return "redirect:/user";
             }
             else{
@@ -138,13 +144,14 @@ public class UserController {
     }
 
     @GetMapping("/reset_password")
-    public String ResetPassword(@Param("token") String token, Model model) {
+    public String ResetPassword(@Param("token") String token, Model model,RedirectAttributes redirectAttributes) {
         User user = userService.findUserByResetPasswordToken(token);
         if (user == null) {
             return "redirect:/forgotpassword";
         } else {
             if (user.getResetPasswordTokenExpired().getTime() > System.currentTimeMillis()) {
                 model.addAttribute("token", token);
+                redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
                 return "/user/reset_password";
             } else {
                 return "/user/fail_token";
