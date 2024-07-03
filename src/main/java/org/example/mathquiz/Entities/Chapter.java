@@ -1,6 +1,7 @@
 package org.example.mathquiz.Entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +32,6 @@ public class Chapter {
 
     @Column(nullable = false)
     private String name;
-
     @OneToMany(mappedBy = "chapter")
     private List<QuizMatrix> quizMatrices;
 

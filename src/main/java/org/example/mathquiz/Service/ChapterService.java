@@ -24,9 +24,14 @@ public class ChapterService {
     public Optional<Chapter> getChapterById(String id) {
         return chapterRepository.findById(id);
     }
-    public Chapter addChapter(RequestModel requestModel) {
+    public Chapter getChapterByIdNon(String id) {
+        return chapterRepository.findChapterById(id);
+    }
+    public List<Chapter> getChapterbyGrade(String id){
+        return chapterRepository.findChapterbyGrade(id);
+    }
+    public Chapter addChapter(Chapter chapter) {
         try {
-            Chapter chapter = Chapter.fromRequestModel(requestModel);
             return chapterRepository.save(chapter);
         }
         catch (Exception e) {
