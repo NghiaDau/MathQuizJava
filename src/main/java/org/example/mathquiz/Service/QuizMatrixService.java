@@ -32,6 +32,9 @@ public class QuizMatrixService {
             throw new RuntimeException(e.getMessage());
         }
     }
+    public List<QuizMatrix> getQuizMatricesbyChapter(String id){
+        return quizMatrixRepository.findQuizMatricesByChapter(id);
+    }
     public QuizMatrix updateQuizMatrix(QuizMatrix quizMatrix) {
         return quizMatrixRepository.save(quizMatrix);
     }

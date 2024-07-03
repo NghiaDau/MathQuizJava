@@ -43,8 +43,8 @@ public class QuizMatrix {
 
     public static QuizMatrix fromRequestModel(RequestModel requestModel, List<Quiz> quizs) {
         QuizMatrix importQuestionVM = new QuizMatrix();
-
         importQuestionVM.setChapter(requestModel.getChapter());
+        importQuestionVM.setName(requestModel.getName_quizMatrix());
         importQuestionVM.setQuizs(quizs);
         importQuestionVM.setCreateDate(new Date());
         importQuestionVM.setNumOfQuiz(quizs.size());

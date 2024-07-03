@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('Thêm chương học')">
+    <style>
+        .quiz-container {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .option {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <h3 class="box-title m-b-20">Thêm chương</h3>
+                        <form th:action="@{/quizMatrices/add}" th:object="${chapterModel}" method="post" id="chapterForm">
+                            <div class="mb-4">
+                                <label class="form-label" for="nameQuizMatrix">Tên đề thi:</label><span
+                                    class="text-danger">*</span>
+                                <input class="form-control" type="text" placeholder="Nhập tên đề thi"
+                                       th:field="*{name_quizMatrix}" id="nameQuizMatrix" required autofocus>
+                                <span class="text-danger" th:if="${#fields.hasErrors('name_quizMatrix')}"
+                                      th:errors="*{name_quizMatrix}"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="time">Thời gian thi:</label><span
+                                    class="text-danger">*</span>
+                                <input class="form-control" type="text" placeholder="Nhập thời gian thi"
+                                       th:field="*{defaultDuration}" id="time" required autofocus>
+                                <span class="text-danger" th:if="${#fields.hasErrors('defaultDuration')}"
+                                      th:errors="*{defaultDuration}"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6 ol-md-6 col-xs-12">
+                                    <div class="white-box">
+                                        <h3 class="box-title">File Upload3</h3>
+                                        <label for="fileInput">You can set the height</label>
+                                        <input type="file" id="fileInput" name="fileInput" class="dropify"
+                                               data-height="500" accept=".tex"/></div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <input type="submit" class="btn btn-primary" value="Lưu"/>
+                                <a th:href="@{/quizMatrices}" class="btn btn-secondary">Trở lại danh sách</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="container" id="previewDataWrapper">
+                <div id="previewData" class="border p-3">
+
+                </div>
+            </div>
+        </div>
+        <div id="spinner" class="spinner d-none"></div>
+    </div>
+    <footer th:replace="/libary/lib.html::footer"></footer>
+</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('fileInput').addEventListener('change', function () {
+            var fileInput = this;
+            const fileContentDiv = document.getElementById('previewData');
+            fileContentDiv.innerHTML = "";
+            if (fileInput.files && fileInput.files[0]) {
+                var formData = new FormData();
+                formData.append("files", fileInput.files[0]);
+                var spinner = document.getElementById('spinner');
+                spinner.classList.add('show');
+                spinner.classList.remove('d-none');
+                fetch('/quizs/IReadFileLatex', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        var count = 1;
+                        data.forEach(function (quiz) {
+
+                            var quizContainer = document.createElement('div');
+                            var imageSolutionUrl = quiz.imageSolution;
+                            var imageUrl = quiz.image;
+                            quizContainer.classList.add('quiz-container');
+                            var quizHTML = '';
+
+                            quizHTML += '<label></label>';
+                            quizHTML += '<p><strong>Câu  ' + count + ': </strong> ' + quiz.statement + ':</p>';
+
+                            count += 1;
+
+                            if (imageUrl != null) {
+                                quizHTML += '<img src="' + imageUrl + '">';
+                            }
+                            quizHTML += '<div class="options">';
+                            quizHTML += '<label></label>';
+                            var letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+
+                            quiz.quizOptions.forEach(function (option, index) {
+                                quizHTML += '<div class="option">';
+                                var letter = letters[index];
+
+                                quizHTML += '<label for="option' + quiz.id + '-' + letter + '">' + letter + '. ' + option.option + '</label>';
+                                if (option.isCorrect) {
+                                    quizHTML += '<label> (Đúng) </label>';
+                                } else {
+                                    quizHTML += '<label> (Sai) </label>';
+                                }
+                                quizHTML += '</div>';
+                            });
+
+                            quizHTML += '</div>';
+                            quizHTML += '<label></label>';
+
+                            quizHTML += '<p><strong>Lời Giải:</strong> ' + quiz.solution + '</p>';
+                            if (imageSolutionUrl) {
+                                quizHTML += '<img src="' + imageSolutionUrl + '">';
+                            }
+                            quizContainer.innerHTML = quizHTML;
+
+                            fileContentDiv.appendChild(quizContainer);
+                        });
+                        renderMathInElement(document.body, {
+                            delimiters: [
+                                {left: '$$', right: '$$', display: true},
+                                {left: '$', right: '$', display: false},
+                                {left: "\\(", right: "\\)", display: false},
+                                {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+                                {left: "\\begin{align}", right: "\\end{align}", display: true},
+                                {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+                                {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+                                {left: "\\begin{CD}", right: "\\end{CD}", display: true},
+                                {left: "\\begin{tikzpicture}", right: "\\end{tikzpicture}", display: true},
+                                {left: "\\[", right: "\\]", display: true}
+                            ],
+                            ignoredClasses: ["disable-katex-render"],
+                            throwOnError: false
+                        });
+
+                    })
+                    .catch(error => {
+                        console.error('There has been a problem with your fetch operation:', error);
+                    })
+                    .finally(() => {
+                        spinner.classList.remove('show');
+                        spinner.classList.add('d-none');
+                    });
+                fetch('/quizMatrices/uploadEndpoint', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("HIHIHI");
+                    })
+            }
+        });
+    });
+
+
+</script>
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+</body>
+
+</html>
