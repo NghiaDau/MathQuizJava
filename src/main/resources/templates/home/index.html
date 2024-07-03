@@ -1,8 +1,31 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="/libary/lib.html::head('List Account')" > </head>
+<head th:replace="/libary/lib.html::head('List Account')">
+</head>
+<style>
+    .quiz-matrix-list {
+        list-style-type: none;
+        padding: 0;
+    }
 
+    .quiz-matrix-list li {
+        margin-bottom: 5px;
+    }
+
+    .quiz-matrix-list li a {
+        display: block;
+        padding: 10px;
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .quiz-matrix-list li a:hover {
+        background-color: #e0e0e0;
+    }
+</style>
 <body class="fix-sidebar">
 <!-- Preloader -->
 <div class="preloader">
@@ -17,10 +40,51 @@
     <!-- Left navbar-header end -->
     <!-- Page Content -->
     <div id="page-wrapper">
-            <!-- .row -->
         <div class="container-fluid">
+            <h1>Chọn đề thi</h1>
 
-            Content
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="level">Cấp học:</label>
+                        <div id="levelButtons" class="btn-group">
+                            <!-- Level buttons will be appended here -->
+                            <th:block th:each="level : ${levels}">
+                                <button type="button" class="btn btn-outline-primary level-button" th:data-level-id="${level.id}" th:text="${level.name}"></button>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="grade">Lớp:</label>
+                        <div id="gradeButtons" class="btn-group">
+                            <!-- Grade buttons will be appended here -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mathType">Loại toán:</label>
+                        <div id="mathTypeButtons" class="btn-group" style="display: none;">
+                            <!-- MathType buttons will be appended here -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="chapter">Chương:</label>
+                        <div id="chapterButtons" class="btn-group" style="display: none;">
+                            <!-- Chapter buttons will be appended here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="quizMatrixList">Chọn đề thi:</label>
+                        <ul id="quizMatrixList" class="quiz-matrix-list">
+                            <!-- Quiz matrices will be populated here -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <script src="/js/fetchHomeDropdown.js"></script>
             <!-- /.right-sidebar -->
         </div>
         <!-- /.container-fluid -->
@@ -30,4 +94,5 @@
 </div>
 <th:block th:replace="/libary/lib.html :: foot"></th:block>
 </body>
+
 </html>
