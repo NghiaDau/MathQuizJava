@@ -18,6 +18,7 @@ public class RequestModel {
     private MathType mathType;
     private String name;
     private String name_quizMatrix;
+    private String chapter_id;
     private Integer defaultDuration;
     private Chapter chapter;
 }

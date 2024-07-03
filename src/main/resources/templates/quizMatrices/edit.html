@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('Chỉnh sửa cấp học')"></head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <h3 class="box-title m-b-20">Chỉnh sửa cấp</h3>
+                        <form th:action="@{/levels/edit}" th:object="${level}" method="post" id="levelForm">
+                            <div class="mb-4">
+                                <label class="form-label" for="name">Tên cấp:</label><span class="text-danger">*</span>
+                                <input class="form-control" type="text" placeholder="Nhập tên cấp" th:field="*{name}" id="name" required autofocus>
+                                <span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <input type="submit" class="btn btn-primary" value="Cập nhật"/>
+                                <a th:href="@{/levels}" class="btn btn-secondary">Trở lại danh sách</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="/libary/lib.html::footer"></footer>
+    </div>
+</div>
+
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+</body>
+
+</html>
