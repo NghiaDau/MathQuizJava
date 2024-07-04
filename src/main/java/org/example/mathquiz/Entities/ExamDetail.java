@@ -25,7 +25,9 @@ public class ExamDetail {
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
-    private Integer selectedOption;
+    @OneToOne
+    @JoinColumn(name = "quizOption_id", nullable = true)
+    private QuizOption selectedOption;
 
 }
 

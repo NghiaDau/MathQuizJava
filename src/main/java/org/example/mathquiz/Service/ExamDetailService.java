@@ -33,17 +33,16 @@ public class ExamDetailService {
         return examDetailRepository.save(examDetail);
     }
 
-    public void addExamDetailList(RequestPushExamDetailList requestPushExamDetailList) {
+    public List<ExamDetail> addExamDetailList(RequestPushExamDetailList requestPushExamDetailList) {
         List<ExamDetail> examDetailList = new ArrayList<>();
         for (int i = 0; i < requestPushExamDetailList.getQuizList().size(); i++) {
             ExamDetail examDetail = new ExamDetail();
             examDetail.setExam(requestPushExamDetailList.getExam());
             examDetail.setQuiz(requestPushExamDetailList.getQuizList().get(i));
-            examDetail.setSelectedOption(-1);
+            examDetail.setSelectedOption(null);
             examDetailList.add(examDetail);
-            examDetailRepository.save(examDetail);
         }
-
+        return examDetailRepository.saveAll(examDetailList);
     }
     public ExamDetail updateExamDetail(ExamDetail examDetail) {
         return examDetailRepository.save(examDetail);
