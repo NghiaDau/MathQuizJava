@@ -12,4 +12,6 @@ public interface IChapterRepository extends JpaRepository<Chapter, String> {
     @Query("select r from Chapter r where r.id =?1")
     Chapter findChapterById(String id);
 
+    List<Chapter> findByGradeId(String gradeId);
+    List<Chapter> findByGradeIdAndMathTypeId(String gradeId, String mathTypeId);
 }

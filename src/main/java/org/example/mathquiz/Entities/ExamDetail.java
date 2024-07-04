@@ -19,7 +19,7 @@ public class ExamDetail {
 
     @ManyToOne
     @JoinColumn(name = "exam_id", nullable = false)
-    private Exams exam;
+    private Exam exam;
 
     @ManyToOne
     @JoinColumn(name = "quiz_id", nullable = false)

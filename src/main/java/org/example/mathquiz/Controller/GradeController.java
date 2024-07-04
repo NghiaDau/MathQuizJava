@@ -21,8 +21,10 @@ public class GradeController {
     @GetMapping("")
     public String showAllGrades(@NotNull Model model) {
         model.addAttribute("grades", gradeService.getAllGrades());
+
         model.addAttribute("levels",
                 levelService.getAllLevels());
+
         return "grade/index";
     }
 

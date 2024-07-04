@@ -14,4 +14,5 @@ import java.util.List;
 public interface IQuizMatrixRepository extends JpaRepository<QuizMatrix, String> {
     @Query("SELECT r from QuizMatrix r where r.chapter.id = ?1")
     List<QuizMatrix> findQuizMatricesByChapter (String id);
+    List<QuizMatrix> findByChapterId(String chapterId);
 }

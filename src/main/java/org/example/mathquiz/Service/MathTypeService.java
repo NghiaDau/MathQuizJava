@@ -32,4 +32,5 @@ public class MathTypeService {
     public void deleteMathTypeById(String id) {
         mathTypeRepository.deleteById(id);
     }
+
 }
