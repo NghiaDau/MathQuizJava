@@ -10,6 +10,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collector;
+
 @Controller
 @RequestMapping("/examDetails")
 public class ExamDetailController {
@@ -34,6 +40,13 @@ public class ExamDetailController {
                           Model model) {
         examDetailService.addExamDetail(examDetail);
         return "redirect:/examDetails";
+    }
+
+    @PostMapping("/addExamDetailList")
+    public void addExamDetailList(@ModelAttribute("examDetailList") List<ExamDetail> examDetailList) {
+        Collections.shuffle(examDetailList, new Random());
+        examDetailList.forEach(examDetail -> examDetailService.addExamDetail(examDetail));
+        System.out.println("completed");
     }
 
     @GetMapping("/delete/{id}")

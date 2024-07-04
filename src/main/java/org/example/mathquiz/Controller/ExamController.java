@@ -2,20 +2,41 @@ package org.example.mathquiz.Controller;
 
 import jakarta.validation.constraints.NotNull;
 import org.example.mathquiz.Entities.Exam;
+import org.example.mathquiz.Entities.Quiz;
+import org.example.mathquiz.Entities.QuizMatrix;
+import org.example.mathquiz.Entities.User;
+import org.example.mathquiz.RequesEntities.RequestPushExam;
+import org.example.mathquiz.RequesEntities.RequestPushExamDetailList;
+import org.example.mathquiz.Service.ExamDetailService;
 import org.example.mathquiz.Service.ExamService;
+import org.example.mathquiz.Service.QuizMatrixService;
+import org.example.mathquiz.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/exams")
 public class ExamController {
     @Autowired
     private ExamService examService;
-
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ExamDetailService examDetailService;
+    @Autowired
+    private QuizMatrixService quizMatrixService;
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     @GetMapping("")
     public String showAllExams(@NotNull Model model) {
         model.addAttribute("exams", examService.getAllExams());
@@ -34,6 +55,28 @@ public class ExamController {
                               Model model) {
         examService.addExam(exam);
         return "redirect:/exams";
+    }
+    @PostMapping("/addExamFromQuizMatrix")
+    public Exam addExamFromQuizMatrix(@ModelAttribute("quizMatrix") QuizMatrix quizMatrix,
+                              BindingResult bindingResult,
+                              Model model) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        User user = userService.findByUserName(username);
+        RequestPushExam requestPushExam = new RequestPushExam();
+        requestPushExam.setQuizMatrix(quizMatrix);
+        requestPushExam.setDuration(quizMatrix.getDefaultDuration());
+        requestPushExam.setName(quizMatrix.getName());
+        requestPushExam.setNumOfQuiz(quizMatrix.getNumOfQuiz());
+        requestPushExam.setUser(user);
+        return examService.addExamFromQuizMatrix(requestPushExam);
     }
 
     @GetMapping("/delete/{id}")
@@ -75,5 +118,33 @@ public class ExamController {
 
         examService.updateExam(exam);
         return "redirect:/exams";
+    }
+    @GetMapping("/pushNewExam")
+    public String pushNewExam(@ModelAttribute("quizMatrixId") String quizMatrixId) {
+        QuizMatrix quizMatrix = quizMatrixService.getQuizMatrixById(quizMatrixId);
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String username;
+//
+//        if (principal instanceof UserDetails) {
+//            username = ((UserDetails) principal).getUsername();
+//        } else {
+//            username = principal.toString();
+//        }
+        User user = userService.findByUserName("user");
+        RequestPushExam requestPushExam = new RequestPushExam();
+        requestPushExam.setQuizMatrix(quizMatrix);
+        requestPushExam.setDuration(quizMatrix.getDefaultDuration());
+        requestPushExam.setName(quizMatrix.getName());
+        requestPushExam.setNumOfQuiz(quizMatrix.getNumOfQuiz());
+        requestPushExam.setUser(user);
+        Exam newExam = examService.addExamFromQuizMatrix(requestPushExam);
+
+        List<Quiz> quizList = quizMatrix.getQuizs();
+        Collections.shuffle(quizList, new Random());
+        RequestPushExamDetailList requestPushExamDetailList = new RequestPushExamDetailList();
+        requestPushExamDetailList.setExam(newExam);
+        requestPushExamDetailList.setQuizList(quizList);
+        examDetailService.addExamDetailList(requestPushExamDetailList);
+        return "exam/doExam";
     }
 }
