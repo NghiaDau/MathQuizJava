@@ -1,15 +1,10 @@
 $(document).ready(function() {
-    // Load grades when a level button is clicked
-    $(document).on('click', '.level-button', function() {
-        var levelId = $(this).data('level-id');
+    // Function to load grades for the selected level
+    function loadGrades(levelId) {
         $('#gradeButtons').empty().prop('disabled', false);
         $('#mathTypeButtons').empty().prop('disabled', true).hide();
         $('#chapterButtons').empty().prop('disabled', true).hide();
         $('#quizMatrixList').empty();
-
-        // Highlight selected level button
-        $('.level-button').removeClass('btn-primary').addClass('btn-outline-primary');
-        $(this).removeClass('btn-outline-primary').addClass('btn-primary');
 
         if (levelId) {
             $.get("/getGradesByLevel", { levelId: levelId }, function(data) {
@@ -18,6 +13,17 @@ $(document).ready(function() {
                 });
             });
         }
+    }
+
+    // Load grades when a level button is clicked
+    $(document).on('click', '.level-button', function() {
+        var levelId = $(this).data('level-id');
+
+        // Highlight selected level button
+        $('.level-button').removeClass('btn-primary').addClass('btn-outline-primary');
+        $(this).removeClass('btn-outline-primary').addClass('btn-primary');
+
+        loadGrades(levelId);
     });
 
     // Load math types when a grade button is clicked
@@ -74,7 +80,7 @@ $(document).ready(function() {
                 data.forEach(function(quizMatrix) {
                     var listItem = $('<li>');
                     var link = $('<a>')
-                        .attr('href', '#')
+                        .attr('href', '/quizMatrices/quizMatrixPreview?quizMatrixId=' + quizMatrix.id)
                         .text(quizMatrix.name)
                         .appendTo(listItem);
 
@@ -83,4 +89,10 @@ $(document).ready(function() {
             });
         }
     });
+
+    // Select the first level button and trigger click event to load grades initially
+    var firstLevelButton = $('.level-button').first();
+    if (firstLevelButton.length) {
+        firstLevelButton.trigger('click');
+    }
 });

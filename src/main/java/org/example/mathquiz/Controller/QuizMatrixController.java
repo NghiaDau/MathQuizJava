@@ -85,4 +85,11 @@ public class QuizMatrixController {
         Quizs = questionVMs;
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/quizMatrixPreview")
+    public String showQuizMatrixPreview(@ModelAttribute("quizMatrixId") String quizMatrixId, @NotNull Model model) {
+        QuizMatrix quizMatrix = quizMatrixService.getQuizMatrixById(quizMatrixId);
+        model.addAttribute("quizMatrix", quizMatrix);
+        return "quizMatrices/quizMatrixPreview";
+    }
 }

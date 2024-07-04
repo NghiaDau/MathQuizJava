@@ -41,4 +41,7 @@ public class QuizMatrixService {
     public List<QuizMatrix> getQuizMatricesByChapterId(String chapterId) {
         return quizMatrixRepository.findByChapterId(chapterId);
     }
+    public QuizMatrix getQuizMatrixById(String id) {
+        return quizMatrixRepository.findById(id).orElse(null);
+    }
 }

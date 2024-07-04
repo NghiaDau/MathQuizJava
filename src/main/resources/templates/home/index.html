@@ -41,49 +41,48 @@
     <!-- Page Content -->
     <div id="page-wrapper">
         <div class="container-fluid">
-            <h1>Chọn đề thi</h1>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="level">Cấp học:</label>
-                        <div id="levelButtons" class="btn-group">
-                            <!-- Level buttons will be appended here -->
-                            <th:block th:each="level : ${levels}">
-                                <button type="button" class="btn btn-outline-primary level-button" th:data-level-id="${level.id}" th:text="${level.name}"></button>
-                            </th:block>
+            <div class="white-box">
+                <h3 class="box-title m-b-20">Chọn đề thi</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="level">Cấp học</label>
+                        <div class="form-group">
+                            <div id="levelButtons" class="btn-group">
+                                <!-- Level buttons will be appended here -->
+                                <th:block th:each="level : ${levels}">
+                                    <button type="button" class="btn btn-outline-primary level-button" th:data-level-id="${level.id}" th:text="${level.name}"></button>
+                                </th:block>
+                            </div>
+                        </div>
+                        <label for="grade">Lớp</label>
+                        <div class="form-group">
+                            <div id="gradeButtons" class="btn-group">
+                                <!-- Grade buttons will be appended here -->
+                            </div>
+                        </div>
+                        <label for="mathType">Loại toán</label>
+                        <div class="form-group">
+                            <div id="mathTypeButtons" class="btn-group" style="display: none;">
+                                <!-- MathType buttons will be appended here -->
+                            </div>
+                        </div>
+                        <label for="chapter">Chương</label>
+                        <div class="form-group">
+                            <div id="chapterButtons" class="btn-group" style="display: none;">
+                                <!-- Chapter buttons will be appended here -->
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="grade">Lớp:</label>
-                        <div id="gradeButtons" class="btn-group">
-                            <!-- Grade buttons will be appended here -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="quizMatrixList">Chọn đề thi:</label>
+                            <ul id="quizMatrixList" class="quiz-matrix-list">
+                                <!-- Quiz matrices will be populated here -->
+                            </ul>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="mathType">Loại toán:</label>
-                        <div id="mathTypeButtons" class="btn-group" style="display: none;">
-                            <!-- MathType buttons will be appended here -->
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="chapter">Chương:</label>
-                        <div id="chapterButtons" class="btn-group" style="display: none;">
-                            <!-- Chapter buttons will be appended here -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="quizMatrixList">Chọn đề thi:</label>
-                        <ul id="quizMatrixList" class="quiz-matrix-list">
-                            <!-- Quiz matrices will be populated here -->
-                        </ul>
                     </div>
                 </div>
             </div>
-
-
             <script src="/js/fetchHomeDropdown.js"></script>
             <!-- /.right-sidebar -->
         </div>

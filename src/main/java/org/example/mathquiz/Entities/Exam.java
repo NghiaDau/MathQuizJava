@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Exams {
+public class Exam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
