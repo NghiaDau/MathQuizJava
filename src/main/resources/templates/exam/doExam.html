@@ -1,10 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-HI
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('Đề thi')"></head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <div id="quiz-container">
+                            <div th:each="examDetail, iterStat : ${examDetailList}" th:attr="data-index=${iterStat.index}" class="question" th:classappend="${iterStat.index == currentIndex} ? 'active' : 'inactive'">
+                                <p>Câu [[${iterStat.index + 1}]]: <span th:text="${examDetail.getQuiz().statement}"></span></p>
+                                <ul>
+                                    <li th:each="quizOption, optStat : ${examDetail.getQuiz().quizOptions}">
+                                        <span th:text="${'ABCD'[optStat.index]} + '. '"></span>
+                                        <span th:text="${quizOption.option}"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button id="prevBtn" onclick="changeQuestion(-1)">Previous</button>
+                        <button id="nextBtn" onclick="changeQuestion(1)">Next</button>
+                        <button id="submitBtn" style="display:none" onclick="submitExam()">Nộp bài</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentIndex = /*[[${currentIndex}]]*/ 0;
+
+    function showQuestion(index) {
+        const questions = document.querySelectorAll('.question');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        questions.forEach((question, idx) => {
+            question.style.display = idx === index ? 'block' : 'none';
+        });
+
+        prevBtn.style.display = index === 0 ? 'none' : 'inline-block';
+        nextBtn.style.display = index === questions.length - 1 ? 'none' : 'inline-block';
+        submitBtn.style.display = index === questions.length - 1 ? 'inline-block' : 'none';
+    }
+
+    function changeQuestion(direction) {
+        const questions = document.querySelectorAll('.question');
+        currentIndex += direction;
+        if (currentIndex < 0) currentIndex = 0;
+        if (currentIndex >= questions.length) currentIndex = questions.length - 1;
+        showQuestion(currentIndex);
+    }
+
+    function submitExam() {
+        // Implement submit logic here
+        alert('Exam submitted!');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        showQuestion(currentIndex);
+    });
+</script>
+
 </body>
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+<footer th:replace="/libary/lib.html::footer"></footer>
+
 </html>
