@@ -26,7 +26,7 @@
                             <h4 th:text="'Số câu: '+ ${quizMatrix.getNumOfQuiz()}"></h4>
                             <h4 th:text="'Thời gian: '+ ${quizMatrix.getDefaultDuration() + ' phút'}"></h4>
                         </div>
-                        <a class="btn btn-primary">Thi ngay</a>
+                        <a th:href="@{'/exams/pushNewExam?quizMatrixId=' + ${quizMatrix.id}}" class="btn btn-primary">Thi ngay</a>
                         <a class="btn btn-outline">Tuỳ chỉnh</a>
                     </div>
                 </div>

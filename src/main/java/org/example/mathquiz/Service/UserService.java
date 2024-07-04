@@ -46,9 +46,11 @@ public class UserService {
     }
 
     public User findById(String id){
-        return  userRepository.findFirstById(id);
+        return userRepository.findFirstById(id);
     }
-
+    public User findByUserName(String userName){
+        return userRepository.findByUserName(userName);
+    }
     public User UpdateUser( RequesUpdateUser requesUpdateUser,MultipartFile multipartFile) {
         try {
             User user = userRepository.findFirstById(requesUpdateUser.getId());
