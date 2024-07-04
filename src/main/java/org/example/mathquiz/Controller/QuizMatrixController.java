@@ -48,6 +48,7 @@ public class QuizMatrixController {
         model.addAttribute("grades", gradeService.getAllGrades());
         return "quizMatrices/index";
     }
+
     @GetMapping("/add")
     public String addChapterForm(@NotNull Model model,@RequestParam("chapterId") String chapterId) {
         ChapterId = chapterId;

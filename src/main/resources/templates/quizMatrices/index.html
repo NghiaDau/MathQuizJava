@@ -26,35 +26,38 @@
                             <div class="row">
                                 <div class="col-sm-6 text-right m-b-20">
                                     <div class="form-group">
-                                        <input id="demo-input-search2" type="text" placeholder="Tìm kiếm" class="form-control" autocomplete="off">
+                                        <input id="demo-input-search2" type="text" placeholder="Tìm kiếm"
+                                               class="form-control" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <table id="demo-foo-addrow" class="table table-bordered table-hover toggle-circle" data-page-size="5">
-                            <thead id="table-head" >
+                        <table id="demo-foo-addrow" class="table table-bordered table-hover toggle-circle">
+                            <thead id="table-head">
                             <!-- Các tiêu đề sẽ được thêm vào đây -->
                             </thead>
-                            <tbody id ="table-first">
-<!--                                <tr th:each="grade : ${grades}">-->
-<!--                                    <td>-->
-<!--                                        <div class="clickable-div" th:text="${grade.name}" th:data-parameter1="${grade.id}" th:onclick="navigateTo(this.getAttribute('data-parameter1'))">-->
-<!--                                            <a th:text="'Add Chapter'" style="text-decoration: none; color: inherit;"></a>-->
-<!--                                        </div>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                            <tbody id="table-first">
+                            <!--                                <tr th:each="grade : ${grades}">-->
+                            <!--                                    <td>-->
+                            <!--                                        <div class="clickable-div" th:text="${grade.name}" th:data-parameter1="${grade.id}" th:onclick="navigateTo(this.getAttribute('data-parameter1'))">-->
+                            <!--                                            <a th:text="'Add Chapter'" style="text-decoration: none; color: inherit;"></a>-->
+                            <!--                                        </div>-->
+                            <!--                                    </td>-->
+                            <!--                                </tr>-->
                             </tbody>
 
-                            <tfoot>
-                                <tr>
-                                    <td colspan="2">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="text-right">
-                                                <ul class="pagination"></ul>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tfoot id="table-tfoot">
+                            <!--                            <tr>-->
+                            <!--                                <td colspan="2">-->
+                            <!--                                    <div class="d-flex justify-content-between align-items-center">-->
+                            <!--                                        <div class="text-right">-->
+                            <!--                                            <ul class="pagination">-->
+
+                            <!--                                            </ul>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </td>-->
+                            <!--                            </tr>-->
                             </tfoot>
                         </table>
                     </div>
@@ -66,8 +69,11 @@
 </div>
 <th:block th:replace="/libary/lib.html::foot"></th:block>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('/api/grades',{
+    let cachedData = [];
+    let currentPage = 1;
+    let cureentTotal = 0;
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/grades', {
             method: 'POST',
         })
             .then(response => {
@@ -77,24 +83,151 @@
                 return response.json();
             })
             .then(data => {
-               createTable(data);
+                cachedData = data;
+                cureentTotal = data.length;
+                createTable(data, 2, 1);
             });
     });
 
-    function createTable(grades) {
+    function createTable(grades, size, currentPage) {
         let tbody = document.querySelector('#demo-foo-addrow tbody');
         tbody.innerHTML = '';
-        grades.forEach(grade => {
-            let trHTML = `<tr id="grade-${grade.id}">
-                                <td>
-                                    <div class="clickable-div" data-parameter1="${grade.id}" onclick="navigateTo(this.getAttribute('data-parameter1'))">
-                                        <a href="#" style="text-decoration: none; color: inherit;">${grade.name}</a>
+        console.log(grades);
+        // grades.forEach(grade => {
+        //     let trHTML = `<tr id="grade-${grade.id}">
+        //                         <td>
+        //                             <div class="clickable-div" data-parameter1="${grade.id}" onclick="mathTypeTo(this.getAttribute('data-parameter1'))">
+        //                                 <a href="#" style="text-decoration: none; color: inherit;">${grade.name}</a>
+        //                             </div>
+        //                         </td>
+        //                       </tr>`;
+        //     tbody.innerHTML += trHTML;
+        // });
+        let x = (currentPage-1)*size;
+        for (let i = x; i < size * currentPage && i < grades.length; i++) {
+            const grade = grades[i];
+            let tr = tbody.insertRow();
+            tr.id = `grade-${grade.id}`;
+
+            let td = tr.insertCell();
+            let div = document.createElement('div');
+            div.className = 'clickable-div';
+            div.setAttribute('data-parameter1', grade.id);
+
+            let a = document.createElement('a');
+            a.href = '#';
+            a.style.textDecoration = 'none';
+            a.style.color = 'inherit';
+            a.textContent = grade.name;
+
+            div.appendChild(a);
+            div.addEventListener('click', () => mathTypeTo(grade.id));
+            td.appendChild(div);
+        }
+
+        // grades.forEach(grade => {
+        //     let tr = tbody.insertRow();
+        //     tr.id = `grade-${grade.id}`;
+        //
+        //     let td = tr.insertCell();
+        //     let div = document.createElement('div');
+        //     div.className = 'clickable-div';
+        //     div.setAttribute('data-parameter1', grade.id);
+        //
+        //     let a = document.createElement('a');
+        //     a.href = '#';
+        //     a.style.textDecoration = 'none';
+        //     a.style.color = 'inherit';
+        //     a.textContent = grade.name;
+        //
+        //     div.appendChild(a);
+        //     div.addEventListener('click', () => mathTypeTo(grade.id));
+        //     td.appendChild(div);
+        // });
+        let tfoot = document.querySelector('#table-tfoot');
+        tfoot.innerHTML = '';
+        let additionalRow = `<tr>
+                                <td colspan="2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="text-right">
+                                            <ul class="pagination">
+                                                <li class="footable-page-arrow "><a id="first"
+                                                                                               onclick="check(this)" >«</a></li>
+                                                <li class="footable-page-arrow "><a id="prev"
+                                                                                               onclick="check(this)">‹</a></li>
+                                                <li class="footable-page-arrow "><a id="next"
+                                                                                                onclick="check(this)">›</a></li>
+                                                <li class="footable-page-arrow "><a id="last"
+                                                                                                onclick="check(this)">»</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </td>
-                              </tr>`;
-            tbody.innerHTML += trHTML;
-        });
+                             </tr>`;
+        tfoot.innerHTML += additionalRow;
         createTableHeader('Tên cấp');
+    }
+    function check(element){
+        const id = element.id;
+        console.log(currentPage);
+        switch (id) {
+            case 'first':
+                currentPage = 1;
+                createTable(cachedData, 2, 1);
+                break;
+            case 'prev':
+                if (currentPage > 1 )
+                    currentPage -= 1;
+                createTable(cachedData, 2, currentPage);
+                break;
+            case 'next':
+                currentPage += 1;
+                createTable(cachedData, 2, currentPage);
+                break;
+            case 'last':
+                currentPage = Math.round(cureentTotal/2);
+                createTable(cachedData, 2, currentPage);
+                break;
+            default:
+                break;
+        }
+    }
+    function createTableMathType(data) {
+        console.log(cachedData);
+        let tbody = document.querySelector('#demo-foo-addrow tbody');
+        // let tbody = document.querySelector('#table-first');
+        tbody.innerHTML = '';
+        // data.forEach(item => {
+        //     let trHTML = `<tr id="grade-${item.id}">
+        //                         <td>
+        //                             <div class="clickable-div" data-parameter1="${item.id}" onclick="navigateTo(this.getAttribute('data-parameter1'))">
+        //                                 <a href="#" style="text-decoration: none; color: inherit;">${item.name}</a>
+        //                             </div>
+        //                         </td>
+        //                       </tr>`;
+        //     tbody.innerHTML += trHTML;
+        // });
+        data.forEach(item => {
+            let tr = tbody.insertRow();
+            tr.id = `grade-${item.id}`;
+
+            let td = tr.insertCell();
+            let div = document.createElement('div');
+            div.className = 'clickable-div';
+            div.setAttribute('data-parameter1', item.id);
+
+            let a = document.createElement('a');
+            a.href = '#';
+            a.style.textDecoration = 'none';
+            a.style.color = 'inherit';
+            a.textContent = item.name;
+
+            div.appendChild(a);
+            div.addEventListener('click', () => navigateTo(item.id));
+            td.appendChild(div);
+        });
+        createPagin();
+        createTableHeader('Loại Đề');
     }
 
     function populateTable(data) {
@@ -114,7 +247,8 @@
         createTableHeader('Tên Chương');
     }
 
-    function createTableQuizMatrices(quizMatrices,chapterId){
+
+    function createTableQuizMatrices(quizMatrices, chapterId) {
         let tbody = document.querySelector('#demo-foo-addrow tbody');
         tbody.innerHTML = '';
         quizMatrices.forEach(item => {
@@ -127,19 +261,54 @@
                               </tr>`;
             tbody.innerHTML += trHTML;
         });
-        // let additionalRow = `<tr>
-        //                         <td colspan="2">
-        //                             <div class="d-flex justify-content-between align-items-center">
-        //                                 <a href="/quizMatrices/add?chapterId=${chapterId}" class="btn btn-primary">Thêm câu hỏi</a>
-        //                                 <div class="text-right">
-        //                                     <ul class="pagination"></ul>
-        //                                 </div>
-        //                             </div>
-        //                         </td>
-        //                      </tr>`;
-        // tbody.innerHTML += additionalRow;
+        let tfoot = document.querySelector('#demo-foo-addrow tfoot');
+        let additionalRow = `<tr>
+                                <td colspan="2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a href="/quizMatrices/add?chapterId=${chapterId}" class="btn btn-primary">Thêm câu hỏi</a>
+                                        <div class="text-right">
+                                            <ul class="pagination">
+                                            <li class="footable-page-arrow "><a data-page="first"
+                                                                                            href="#first">«</a></li>
+                                                <li class="footable-page-arrow "><a data-page="prev"
+                                                                                            href="#prev">‹</a></li>
+                                                <li class="footable-page-arrow "><a data-page="next"
+                                                                                            href="#next">›</a></li>
+                                                <li class="footable-page-arrow "><a data-page="last"
+                                                                                            href="#last">»</a></li>
+</ul>
+                                        </div>
+                                    </div>
+                                </td>
+                             </tr>`;
+        tfoot.innerHTML += additionalRow;
         createTableHeader('Tên Đề');
     }
+
+    function createPagin() {
+        let tfoot = document.querySelector('#table-tfoot');
+        tfoot.innerHTML = '';
+        let additionalRow = `<tr>
+                                <td colspan="2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="text-right">
+                                            <ul class="pagination">
+                                            <li class="footable-page-arrow "><a data-page="first"
+                                                                                            href="#first">«</a></li>
+                                                <li class="footable-page-arrow "><a data-page="prev"
+                                                                                            href="#prev">‹</a></li>
+                                                <li class="footable-page-arrow "><a data-page="next"
+                                                                                            href="#next">›</a></li>
+                                                <li class="footable-page-arrow "><a data-page="last"
+                                                                                            href="#last">»</a></li>
+</ul>
+                                        </div>
+                                    </div>
+                                </td>
+                             </tr>`;
+        tfoot.innerHTML += additionalRow;
+    }
+
     function createTableHeader(columnName) {
         let thead = document.querySelector('#table-head');
         let headerHTML = `<tr>
@@ -148,7 +317,7 @@
         thead.innerHTML = headerHTML;
     }
 
-    function quizMatricesTo(chapterId){
+    function quizMatricesTo(chapterId) {
         console.log(chapterId);
         var formData = new FormData();
         formData.append("chapterId", chapterId);
@@ -164,16 +333,38 @@
             })
             .then(data => {
                 console.log(data);
-                createTableQuizMatrices(data,chapterId);
-            }).
-        catch(error => {
+                createTableQuizMatrices(data, chapterId);
+            }).catch(error => {
             console.error('Fetch error:', error);
         });
     }
-    function navigateTo(gradeId) {
+
+    function mathTypeTo(gradeId) {
         console.log(gradeId);
         var formData = new FormData();
         formData.append("gradeId", gradeId);
+        fetch('/api/findMathType', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                createTableMathType(data)
+            }).catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+
+    function navigateTo(mathTypeId) {
+        console.log(mathTypeId);
+        var formData = new FormData();
+        formData.append("mathTypeId", mathTypeId);
         fetch('/api/findChapter', {
             method: 'POST',
             body: formData
@@ -187,10 +378,9 @@
             .then(data => {
                 console.log(data);
                 populateTable(data)
-            }).
-            catch(error => {
-                console.error('Fetch error:', error);
-            });
+            }).catch(error => {
+            console.error('Fetch error:', error);
+        });
     }
 </script>
 
