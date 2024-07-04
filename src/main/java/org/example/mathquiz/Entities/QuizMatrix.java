@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.mathquiz.RequesEntities.RequestModel;
-import org.example.mathquiz.Service.QuizMatrixService;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -39,7 +38,7 @@ public class QuizMatrix {
     private List<Quiz> quizs;
 
     @OneToMany(mappedBy = "quizMatrix")
-    private List<Exams> exams;
+    private List<Exam> exams;
 
     public static QuizMatrix fromRequestModel(RequestModel requestModel, List<Quiz> quizs) {
         QuizMatrix importQuestionVM = new QuizMatrix();

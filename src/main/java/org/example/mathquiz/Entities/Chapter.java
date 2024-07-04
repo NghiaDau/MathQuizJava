@@ -23,6 +23,7 @@ public class Chapter {
     private String id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "grade_id", nullable = false)
     private Grade grade;
 
@@ -32,6 +33,8 @@ public class Chapter {
 
     @Column(nullable = false)
     private String name;
+
+    @JsonBackReference
     @OneToMany(mappedBy = "chapter")
     private List<QuizMatrix> quizMatrices;
 

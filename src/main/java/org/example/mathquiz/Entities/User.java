@@ -6,9 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
@@ -41,7 +38,7 @@ public class User {
     private Grade grade;
 
     @OneToMany(mappedBy = "user")
-    private List<Exams> exams;
+    private List<Exam> exams;
 
     @OneToMany(mappedBy = "user")
     private List<Result> results;

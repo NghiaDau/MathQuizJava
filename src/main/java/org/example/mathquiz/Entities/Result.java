@@ -25,7 +25,7 @@ public class Result {
 
     @ManyToOne
     @JoinColumn(name = "exam_id", nullable = false)
-    private Exams exam;
+    private Exam exam;
 
     private Integer correctAnswers;
     private Date endTime;

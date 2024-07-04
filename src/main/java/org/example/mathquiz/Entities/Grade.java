@@ -1,5 +1,6 @@
 package org.example.mathquiz.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -25,6 +26,7 @@ public class Grade {
 
     @ManyToOne
     @JoinColumn(name = "level_id", nullable = false)
+    @JsonBackReference
     private Level level;
 
     private Boolean isHasMultiMathType;

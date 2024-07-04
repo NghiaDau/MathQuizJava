@@ -1,14 +1,15 @@
 package org.example.mathquiz.Controller;
 
 import jakarta.validation.constraints.NotNull;
-import org.example.mathquiz.Entities.Chapter;
-import org.example.mathquiz.Entities.Quiz;
-import org.example.mathquiz.Entities.QuizOption;
-import org.example.mathquiz.Entities.QuizMatrix;
+import org.example.mathquiz.Entities.*;
 import org.example.mathquiz.RequesEntities.RequestModel;
+import org.example.mathquiz.RequesEntities.RequestPushExam;
+import org.example.mathquiz.RequesEntities.RequestPushExamDetailList;
 import org.example.mathquiz.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/quizMatrices")
@@ -31,8 +34,15 @@ public class QuizMatrixController {
     private QuizOptionService quizOptionService;
     @Autowired
     private ChapterService chapterService;
+    @Autowired
+    private ExamService examService;
+    @Autowired
+    private UserService userService;
     private static String ChapterId;
     private static List<Quiz> Quizs;
+    @Autowired
+    private ExamDetailService examDetailService;
+
     @GetMapping()
     public String showAllGrade (@NotNull Model model) {
         model.addAttribute("grades", gradeService.getAllGrades());
@@ -85,4 +95,13 @@ public class QuizMatrixController {
         Quizs = questionVMs;
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/quizMatrixPreview")
+    public String showQuizMatrixPreview(@ModelAttribute("quizMatrixId") String quizMatrixId, @NotNull Model model) {
+        QuizMatrix quizMatrix = quizMatrixService.getQuizMatrixById(quizMatrixId);
+        model.addAttribute("quizMatrix", quizMatrix);
+        return "quizMatrices/quizMatrixPreview";
+    }
+
+
 }

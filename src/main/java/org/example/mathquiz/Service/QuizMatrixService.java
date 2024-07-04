@@ -38,5 +38,10 @@ public class QuizMatrixService {
     public QuizMatrix updateQuizMatrix(QuizMatrix quizMatrix) {
         return quizMatrixRepository.save(quizMatrix);
     }
-
+    public List<QuizMatrix> getQuizMatricesByChapterId(String chapterId) {
+        return quizMatrixRepository.findByChapterId(chapterId);
+    }
+    public QuizMatrix getQuizMatrixById(String id) {
+        return quizMatrixRepository.findById(id).orElse(null);
+    }
 }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('Đề thi')"></head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <h2 th:text="'Đề thi: ' + ${quizMatrix.name}"></h2>
+                        <div class="">
+                            <h4 th:text="'Số câu: '+ ${quizMatrix.getNumOfQuiz()}"></h4>
+                            <h4 th:text="'Thời gian: '+ ${quizMatrix.getDefaultDuration() + ' phút'}"></h4>
+                        </div>
+                        <a th:href="@{'/exams/pushNewExam?quizMatrixId=' + ${quizMatrix.id}}" class="btn btn-primary">Thi ngay</a>
+                        <a class="btn btn-outline">Tuỳ chỉnh</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="/libary/lib.html::footer"></footer>
+    </div>
+</div>
+
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+</body>
+
+</html>
