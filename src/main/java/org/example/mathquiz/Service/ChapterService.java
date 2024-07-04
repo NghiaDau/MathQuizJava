@@ -28,8 +28,8 @@ public class ChapterService {
     public Chapter getChapterByIdNon(String id) {
         return chapterRepository.findChapterById(id);
     }
-    public List<Chapter> getChapterbyGrade(String id){
-        return chapterRepository.findChapterbyGrade(id);
+    public List<Chapter> getChapterbyGrade(String id, String mathType){
+        return chapterRepository.findChapterbyGrade(id,mathType);
     }
     public Chapter addChapter(Chapter chapter) {
         try {

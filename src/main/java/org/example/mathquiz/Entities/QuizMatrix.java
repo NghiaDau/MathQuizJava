@@ -30,6 +30,7 @@ public class QuizMatrix {
     private Date createDate;
     private Integer defaultDuration;
     private String name;
+    private boolean Status;
     private Integer numOfQuiz;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updateDate;

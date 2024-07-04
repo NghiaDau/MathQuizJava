@@ -2,12 +2,11 @@ package org.example.mathquiz.Controller;
 
 import org.example.mathquiz.Entities.Chapter;
 import org.example.mathquiz.Entities.Grade;
+import org.example.mathquiz.Entities.MathType;
 import org.example.mathquiz.Entities.QuizMatrix;
 import org.example.mathquiz.RequesEntities.RequestChapterJson;
 import org.example.mathquiz.RequesEntities.RequestJson;
-import org.example.mathquiz.Service.ChapterService;
-import org.example.mathquiz.Service.GradeService;
-import org.example.mathquiz.Service.QuizMatrixService;
+import org.example.mathquiz.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,10 @@ public class ApiChapterController {
     private GradeService gradeService;
     @Autowired
     private QuizMatrixService quizMatrixService;
+    @Autowired
+    private MathTypeService mathTypeService;
 
+    private static String save_gradeId;
     @GetMapping("/chapters")
     public ResponseEntity<?> getAllChapter(){
         return ResponseEntity.ok(chapterService.getAllChapters());
@@ -43,12 +45,33 @@ public class ApiChapterController {
         return ResponseEntity.ok(newGrades);
     }
 
-    @PostMapping("/findChapter")
-    public ResponseEntity<?> getAllChapter (@RequestParam("gradeId") String gradeId) {
+    @PostMapping("/findMathType")
+    public ResponseEntity<?> getAllMathType(@RequestParam("gradeId") String gradeId){
         if (gradeId.isEmpty()) {
             return ResponseEntity.badRequest().body("Grade ID cannot be empty.");
         }
-        List<Chapter> chapters = chapterService.getChapterbyGrade(gradeId);
+        List<MathType> mathTypes = mathTypeService.getAllMathTypes();
+        save_gradeId = gradeId;
+        List<RequestJson> listmathTypes = new ArrayList<>();
+        for (MathType mathType : mathTypes) {
+            try {
+                RequestJson math = new RequestJson();
+                math.setId(mathType.getId());
+                math.setName(mathType.getName());
+                listmathTypes.add(math);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+        return ResponseEntity.ok(listmathTypes);
+    }
+
+    @PostMapping("/findChapter")
+    public ResponseEntity<?> getAllChapter (@RequestParam("mathTypeId") String mathTypeId) {
+        if (mathTypeId.isEmpty()) {
+            return ResponseEntity.badRequest().body("Grade ID cannot be empty.");
+        }
+        List<Chapter> chapters = chapterService.getChapterbyGrade(save_gradeId,mathTypeId);
         List<RequestChapterJson> chapterDtos = new ArrayList<>();
         for (Chapter chapter : chapters) {
             try {
@@ -61,7 +84,6 @@ public class ApiChapterController {
                 System.out.println(e.getMessage());
             }
         }
-        System.out.println(gradeId);
         return ResponseEntity.ok(chapterDtos);
     }
     @PostMapping("/quizMatrices")
