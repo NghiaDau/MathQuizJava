@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +19,9 @@ import java.util.Optional;
 public class GradeService {
     private final IGradeRepository gradeRepository;
     public List<Grade> getAllGrades() {
-        return gradeRepository.findAll();
+        return gradeRepository.findAll().stream()
+                .sorted((grade1, grade2) -> grade1.getName().compareToIgnoreCase(grade2.getName()))
+                .collect(Collectors.toList());
     }
     public Optional<Grade> getGradeById(String id) {
         return gradeRepository.findById(id);
@@ -31,5 +34,10 @@ public class GradeService {
     }
     public void deleteGradeById(String id) {
         gradeRepository.deleteById(id);
+    }
+    public List<Grade> findByLevelId(String levelId) {
+        return gradeRepository.findByLevelId(levelId).stream()
+                .sorted((grade1, grade2) -> grade1.getName().compareToIgnoreCase(grade2.getName()))
+                .collect(Collectors.toList());
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +19,9 @@ import java.util.Optional;
 public class LevelService {
     private final ILevelRepository levelRepository;
     public List<Level> getAllLevels() {
-        return levelRepository.findAll();
+        return levelRepository.findAll().stream()
+                .sorted((level1, level2) -> level1.getName().compareToIgnoreCase(level2.getName()))
+                .collect(Collectors.toList());
     }
     public Optional<Level> getLevelById(String id) {
         return levelRepository.findById(id);

@@ -2,9 +2,7 @@ package org.example.mathquiz.Controller;
 
 import jakarta.validation.constraints.NotNull;
 import org.example.mathquiz.Entities.Chapter;
-import org.example.mathquiz.Service.ChapterService;
-import org.example.mathquiz.Service.GradeService;
-import org.example.mathquiz.Service.MathTypeService;
+import org.example.mathquiz.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
@@ -44,7 +42,7 @@ public class ChapterController {
     public String addChapter(@ModelAttribute("chapter") Chapter chapter,
                            BindingResult bindingResult,
                            Model model) {
-        chapterService.addChapter(chapter);
+        Chapter savedChapter = chapterService.addChapter(chapter);
         return "redirect:/chapters";
     }
 
@@ -93,4 +91,5 @@ public class ChapterController {
         chapterService.updateChapter(chapter);
         return "redirect:/chapters";
     }
+
 }

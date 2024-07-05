@@ -1,5 +1,6 @@
 package org.example.mathquiz.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class Role implements GrantedAuthority  {
     @Column(unique = true)
     private String roleName;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
 

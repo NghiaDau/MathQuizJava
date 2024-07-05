@@ -12,11 +12,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 public class MathType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(nullable = false)
     private String name;
-
 }

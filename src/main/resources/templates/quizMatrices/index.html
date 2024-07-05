@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('Danh sách cấp học')"></head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <h3 class="box-title m-b-0">Danh sách cấp</h3>
+                        <div class="form-inline padding-bottom-15">
+                            <div class="row">
+                                <div class="col-sm-6 text-right m-b-20">
+                                    <div class="form-group">
+                                        <input id="demo-input-search2" type="text" placeholder="Tìm kiếm"
+                                               class="form-control" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table id="demo-foo-addrow" class="table table-bordered table-hover toggle-circle">
+                            <thead id="table-head">
+                            <!-- Các tiêu đề sẽ được thêm vào đây -->
+                            </thead>
+                            <tbody id="table-first">
+                            <!--                                <tr th:each="grade : ${grades}">-->
+                            <!--                                    <td>-->
+                            <!--                                        <div class="clickable-div" th:text="${grade.name}" th:data-parameter1="${grade.id}" th:onclick="navigateTo(this.getAttribute('data-parameter1'))">-->
+                            <!--                                            <a th:text="'Add Chapter'" style="text-decoration: none; color: inherit;"></a>-->
+                            <!--                                        </div>-->
+                            <!--                                    </td>-->
+                            <!--                                </tr>-->
+                            </tbody>
+
+                            <tfoot id="table-tfoot">
+                            <!--                            <tr>-->
+                            <!--                                <td colspan="2">-->
+                            <!--                                    <div class="d-flex justify-content-between align-items-center">-->
+                            <!--                                        <div class="text-right">-->
+                            <!--                                            <ul class="pagination">-->
+
+                            <!--                                            </ul>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </td>-->
+                            <!--                            </tr>-->
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="/libary/lib.html::footer"></footer>
+    </div>
+</div>
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+<script>
+    let cachedData = [];
+    let currentPage = 1;
+    let cureentTotal = 0;
+    let size = 5;
+    let isMatrixQuiz = false;
+    let tmpChapterId;
+    window.addEventListener('popstate', function(event) {
+        if (event.state) {
+            let variable = event.state.name;
+            console.log(variable);
+            switch (variable){
+                case "grade":{
+                    isMatrixQuiz = false;
+                    size = 12;
+                    cachedData = event.state.data;
+                    cureentTotal = Math.round(event.state.data.length/size);
+                    createTableHeader('Tên cấp');
+                    createTable(event.state.data, size, 1, mathTypeTo);
+                    createPagin(createTable);
+                    change_active('page'+currentPage);
+                    break;
+                }
+                case "mathType":{
+                    isMatrixQuiz = false;
+                    size = 3;
+                    cachedData = event.state.data;
+                    cureentTotal = Math.round(event.state.data.length/size);
+                    currentPage = 1;
+                    createTableHeader('Loại Đề');
+                    createTableMathType(event.state.data, size, 1, navigateTo);
+                    createPagin(createTableMathType);
+                    change_active('page'+currentPage);
+                    break;
+                }case "chapter":{
+                    isMatrixQuiz = false;
+                    size = 10;
+                    cachedData = event.state.data;
+                    cureentTotal = Math.round(event.state.data.length/size);
+                    currentPage = 1;
+                    createTableHeader('Các Chương');
+                    createTableChapter(event.state.data, size, 1, quizMatricesTo);
+                    createPagin(createTableChapter);
+                    change_active('page'+currentPage);
+                    break;
+                }case "quizMatrix":{
+                    isMatrixQuiz = true;
+                    size = 10;
+                    cachedData = event.state.data;
+                    cureentTotal = Math.round(event.state.data.length/size);
+                    currentPage = 1;
+                    createTableHeader('Các Đề');
+                    createTableChapter(event.state.data, size, 1);
+                    createPagin(createTableQuizMatrices,tmpChapterId);
+                    change_active('page'+currentPage);
+                    break;
+                }
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/api/grades', {
+            method: 'POST',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                history.replaceState({ name : "grade" , data } , 'Grade', '#grades');
+                size = 12;
+                cachedData = data;
+                cureentTotal = Math.round(data.length/size);
+                createTableHeader('Tên cấp');
+                createTable(data, size, 1, mathTypeTo);
+                createPagin(createTable);
+                change_active('page'+currentPage);
+            });
+    });
+
+    function mathTypeTo(gradeId) {
+        var formData = new FormData();
+        formData.append("gradeId", gradeId);
+        fetch('/api/findMathType', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                history.replaceState({ name: 'mathType', data }, 'MathType', '#mathType');
+                size = 3;
+                cachedData = data;
+                cureentTotal = Math.round(data.length/size);
+                currentPage = 1;
+                createTableHeader('Loại Đề');
+                createTableMathType(data, size, 1, navigateTo);
+                createPagin(createTableMathType);
+                change_active('page'+currentPage);
+            }).catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+
+    function navigateTo(mathTypeId) {
+        var formData = new FormData();
+        formData.append("mathTypeId", mathTypeId);
+        fetch('/api/findChapter', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                history.replaceState({ name : "chapter" , data } , 'Chapter', '#chapter');
+                size = 10;
+                cachedData = data;
+                cureentTotal = Math.round(data.length/size);
+                currentPage = 1;
+                createTableHeader('Các Chương');
+                createTableChapter(data, size, 1, quizMatricesTo);
+                createPagin(createTableChapter);
+                change_active('page'+currentPage);
+            }).catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+
+    function quizMatricesTo(chapterId) {
+        var formData = new FormData();
+        formData.append("chapterId", chapterId);
+        fetch('/api/quizMatrices', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                tmpChapterId = chapterId;
+                history.replaceState({ name : "quizMatrix" , data } , 'QuizMatrix', '#quizMatrix');
+                isMatrixQuiz = true;
+                size = 10;
+                cachedData = data;
+                cureentTotal = Math.round(data.length/size);
+                currentPage = 1;
+                createTableHeader('Các Đề');
+                createTableChapter(data, size, 1);
+                createPagin(createTableQuizMatrices,chapterId);
+                change_active('page'+currentPage);
+            }).catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+
+    function createTable(grades, size, currentPage,functionName) {
+        createTableBody(grades, size, currentPage, functionName);
+    }
+    function createTableMathType(mathTypes, size, currentPage,functionName) {
+        createTableBody(mathTypes, size, currentPage, functionName);
+    }
+
+    function createTableChapter(chapters, size, currentPage, functionName) {
+        createTableBody(chapters, size, currentPage, functionName);
+    }
+
+    function createTableQuizMatrices(quizMatrices, size, currentPage,functionName) {
+        createTableBody(quizMatrices, size, currentPage, functionName);
+    }
+
+    function createPagin(createTable ,chapterId){
+        let tfoot = document.querySelector('#table-tfoot');
+        tfoot.innerHTML = '';
+
+        let additionalRow = `<tr>
+                                <td colspan="4">
+                                    <div class="d-flex justify-content-between align-items-center">`;
+                                    if (isMatrixQuiz) {
+                                        additionalRow +=
+                                            `<a href="/quizMatrices/add?chapterId=${chapterId}" class="btn btn-primary">Thêm câu hỏi</a>`
+                                    }
+                                    else{
+                                        additionalRow +=`<a></a>`;
+                                    }
+            additionalRow += `   <div class="text-right">
+                                        <ul class="pagination" >
+                                            <li class="footable-page-arrow"><a id="first" onclick="check(this, createTable);">«</a></li>
+                                            <li class="footable-page-arrow"><a id="prev" onclick="check(this, createTable)">‹</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`;
+        tfoot.innerHTML += additionalRow;
+        let paginationUl = tfoot.querySelector('.pagination');
+        if(cureentTotal < size){
+            let trHTML = `<li class="footable-page" id="page1" onclick="change(this)"><a>1</a></li>`;
+            paginationUl.innerHTML += trHTML;
+        } else{
+            for(let i = 1 ; i <= cureentTotal; i++){
+                let trHTML = `<li class="footable-page" id="page${i}" onclick="change(this)"><a>${i}</a></li>`;
+                paginationUl.innerHTML += trHTML;
+            }
+        }
+
+        let nextArrow = `<li class="footable-page-arrow"><a id="next" onclick="check(this, createTable)">›</a></li>
+                     <li class="footable-page-arrow"><a id="last" onclick="check(this, createTable)">»</a></li>`;
+        paginationUl.innerHTML += nextArrow;
+
+    }
+    function change(element){
+        const activeElement = document.querySelector('.footable-page.active');
+        if (activeElement) {
+            activeElement.classList.remove('active');
+        }
+        const id = element.id.substring(4);
+        currentPage = parseInt(id);
+        element.classList.add('active');
+        createTable(cachedData,size,id);
+    }
+
+    function change_active(element){
+        let x = document.getElementById(element);
+        x.classList.add('active');
+    }
+
+    function check(element, tableCreationFunction) {
+        const id = element.id;
+        const activeElement = document.querySelector('.footable-page.active');
+        if (activeElement) {
+            activeElement.classList.remove('active');
+        }
+        switch (id) {
+            case 'first':
+                currentPage = 1;
+                change_active('page'+currentPage);
+                tableCreationFunction(cachedData, size, 1);
+                break;
+            case 'prev':
+                if (currentPage > 1)
+                    currentPage -= 1;
+                    change_active('page'+currentPage);
+                tableCreationFunction(cachedData, size, currentPage);
+                break;
+            case 'next':
+                console.log(currentPage);
+                if (currentPage < cureentTotal)
+                    currentPage += 1;
+                    change_active('page'+currentPage);
+                tableCreationFunction(cachedData, size, currentPage);
+                break;
+            case 'last':
+                currentPage = cureentTotal;
+                change_active('page'+currentPage);
+                tableCreationFunction(cachedData, size, currentPage);
+                break;
+            default:
+                break;
+        }
+    }
+
+    function createTableBody(dataS, size, currentPage, functionName){
+        let tbody = document.querySelector('#demo-foo-addrow tbody');
+        // let tbody = document.querySelector('#table-first');
+        tbody.innerHTML = '';
+        let x = (currentPage - 1) * size;
+        for (let i = x; i < size * currentPage && i < dataS.length; i++) {
+            const data = dataS[i];
+            let tr = tbody.insertRow();
+            tr.id = `grade-${data.id}`;
+
+            let td = tr.insertCell();
+            let div = document.createElement('div');
+            div.className = 'clickable-div';
+            div.setAttribute('data-parameter1', data.id);
+
+            let a = document.createElement('a');
+            a.href = '#';
+            a.style.textDecoration = 'none';
+            a.style.color = 'inherit';
+            a.textContent = data.name;
+            div.appendChild(a);
+            div.addEventListener('click', () => functionName(data.id));
+            td.appendChild(div);
+            if (isMatrixQuiz){
+                let tr2 = tbody.insertRow();
+                tr2.id = `grade-${data.id}`;
+
+                let td2 = tr.insertCell();
+                let div2 = document.createElement('div');
+                div2.className = 'clickable-div';
+                div2.setAttribute('data-parameter1', data.id);
+
+                let a2 = document.createElement('a');
+                a2.href = '#';
+                a2.style.textDecoration = 'none';
+                a2.style.color = 'inherit';
+                a2.textContent = data.status;
+                div2.appendChild(a2);
+                td2.appendChild(div2);
+
+                let td3 = tr.insertCell();
+
+                let updateLink = document.createElement('a');
+                updateLink.href = `/quizMatrices/edit/${data.id}`;
+                updateLink.type = 'button';
+                updateLink.className = 'btn btn-sm btn-icon btn-pure btn-outline update-row-btn';
+                updateLink.style.color = 'darkgreen';
+                updateLink.dataset.toggle = 'tooltip';
+                updateLink.dataset.originalTitle = 'Cập nhật';
+                updateLink.textContent = 'Cập nhật';
+                td3.appendChild(updateLink);
+
+                let deleteLink = document.createElement('a');
+                deleteLink.href = `/quizMatrices/delete/${data.id}`;
+                deleteLink.type = 'button';
+                deleteLink.className = 'btn btn-sm btn-icon btn-pure btn-outline update-row-btn';
+                deleteLink.style.color = 'red';
+                deleteLink.dataset.toggle = 'tooltip';
+                deleteLink.dataset.originalTitle = 'Xoá';
+                deleteLink.textContent = 'Xoá';
+                td3.appendChild(deleteLink);
+
+            }
+        }
+    }
+    function createTableHeader(columnName) {
+        let thead = document.querySelector('#table-head');
+        let headerHTML = `<tr>
+                             <th data-sort-initial="true" data-toggle="true">${columnName}</th>`;
+                             if(isMatrixQuiz){
+                                 headerHTML +=     `<th data-sort-ignore="true" class="min-width">Trạng Thái</th>
+                                 <th data-sort-ignore="true" class="min-width">Thao tác</th>`;
+                             }else{
+                                 headerHTML += '';
+                             }
+
+        headerHTML += `</tr>`;
+        thead.innerHTML = headerHTML;
+    }
+
+</script>
+
+</body>
+
+</html>

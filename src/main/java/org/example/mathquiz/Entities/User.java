@@ -1,5 +1,7 @@
 package org.example.mathquiz.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.context.annotation.Bean;
@@ -42,22 +44,22 @@ public class User implements UserDetails {
     private Date resetPasswordTokenExpired;
 
     @ManyToOne
+    @JsonBackReference(value = "grade-user")
     @JoinColumn(name = "grade_id")
     private Grade grade;
 
+    @JsonManagedReference(value = "user-exam")
     @OneToMany(mappedBy = "user")
-    private List<Exams> exams;
+    private List<Exam> exams;
 
+    @JsonManagedReference(value = "user-result")
     @OneToMany(mappedBy = "user")
     private List<Result> results;
-
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

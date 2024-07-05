@@ -1,7 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="/libary/lib.html::head('Thêm chương học')"></head>
+<head th:replace="/libary/lib.html::head('Thêm chương học')">
+    <style>
+        .quiz-container {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .option {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
 
 <body class="fix-sidebar">
 <!-- Preloader -->
@@ -24,10 +37,21 @@
                         <h3 class="box-title m-b-20">Thêm chương</h3>
                         <form th:action="@{/chapters/add}" th:object="${chapter}" method="post" id="chapterForm">
                             <div class="mb-4">
-                                <label class="form-label" for="name">Tên chương:</label><span class="text-danger">*</span>
-                                <input class="form-control" type="text" placeholder="Nhập tên chương" th:field="*{name}" id="name" required autofocus>
-                                <span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                                <label class="form-label" for="name">Tên chương:</label><span
+                                    class="text-danger">*</span>
+                                <input class="form-control" type="text" placeholder="Nhập tên chương" th:field="*{name}"
+                                       id="name" required autofocus>
+                                <span class="text-danger" th:if="${#fields.hasErrors('name')}"
+                                      th:errors="*{name}"></span>
                             </div>
+<!--                            <div class="mb-4">-->
+<!--                                <label class="form-label" for="nameQuizMatrix">Tên đề thi:</label><span-->
+<!--                                    class="text-danger">*</span>-->
+<!--                                <input class="form-control" type="text" placeholder="Nhập tên đề thi"-->
+<!--                                       th:field="*{name_quizMatrix}" id="nameQuizMatrix" required autofocus>-->
+<!--                                <span class="text-danger" th:if="${#fields.hasErrors('name_quizMatrix')}"-->
+<!--                                      th:errors="*{name_quizMatrix}"></span>-->
+<!--                            </div>-->
                             <div class="mb-4">
                                 <label class="form-label" for="grade">Lớp:</label><span
                                     class="text-danger">*</span>
@@ -54,6 +78,23 @@
                                       th:if="${#fields.hasErrors('mathType')}"
                                       th:errors="*{mathType}"></span>
                             </div>
+<!--                            <div class="mb-4">-->
+<!--                                <label class="form-label" for="time">Thời gian thi:</label><span-->
+<!--                                    class="text-danger">*</span>-->
+<!--                                <input class="form-control" type="text" placeholder="Nhập thời gian thi"-->
+<!--                                       th:field="*{defaultDuration}" id="time" required autofocus>-->
+<!--                                <span class="text-danger" th:if="${#fields.hasErrors('defaultDuration')}"-->
+<!--                                      th:errors="*{defaultDuration}"></span>-->
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-sm-6 ol-md-6 col-xs-12">-->
+<!--                                    <div class="white-box">-->
+<!--                                        <h3 class="box-title">File Upload3</h3>-->
+<!--                                        <label for="fileInput">You can set the height</label>-->
+<!--                                        <input type="file" id="fileInput" name="fileInput" class="dropify"-->
+<!--                                               data-height="500" accept=".tex"/></div>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <div class="d-flex justify-content-between">
                                 <input type="submit" class="btn btn-primary" value="Lưu"/>
                                 <a th:href="@{/chapters}" class="btn btn-secondary">Trở lại danh sách</a>
@@ -62,11 +103,16 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <footer th:replace="/libary/lib.html::footer"></footer>
-    </div>
-</div>
+            <div class="container" id="previewDataWrapper">
+                <div id="previewData" class="border p-3">
 
+                </div>
+            </div>
+        </div>
+        <div id="spinner" class="spinner d-none"></div>
+    </div>
+    <footer th:replace="/libary/lib.html::footer"></footer>
+</div>
 <th:block th:replace="/libary/lib.html::foot"></th:block>
 </body>
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('Xác nhận xoá câu hỏi')"></head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <h3 class="box-title m-b-20">Xác nhận xoá</h3>
+                        <p>Bạn có chắc chắn câu hỏi này không?</p>
+                        <p><strong>Tên cấp: </strong><span th:text="${quiz.name}"></span></p>
+                        <form th:action="@{/quizs/delete}" th:object="${quiz}" method="post" id="quizForm">
+                            <div class="d-flex justify-content-between">
+                                <input type="hidden" th:field="*{id}">
+                                <input type="submit" class="btn btn-danger" value="Xoá"/>
+                                <a th:href="@{/quizs}" class="btn btn-secondary">Huỷ</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="/libary/lib.html::footer"></footer>
+    </div>
+</div>
+
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+</body>
+
+</html>

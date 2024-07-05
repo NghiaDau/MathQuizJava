@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.mathquiz.Entities.MathType;
 
 import org.example.mathquiz.Repositories.IMathTypeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,5 +33,8 @@ public class MathTypeService {
     }
     public void deleteMathTypeById(String id) {
         mathTypeRepository.deleteById(id);
+    }
+    public Page<MathType> getAllMathTypes(PageRequest pageRequest) {
+        return mathTypeRepository.findAll(pageRequest);
     }
 }

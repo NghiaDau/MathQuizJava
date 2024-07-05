@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('Đề thi')"></head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <div id="quiz-container">
+                            <div th:each="examDetail, iterStat : ${examDetailList}" th:attr="data-index=${iterStat.index}" class="question" th:classappend="${iterStat.index == currentIndex} ? 'active' : 'inactive'">
+                                <p>Câu [[${iterStat.index + 1}]]: <span class="latex-content" th:utext="${examDetail.getQuiz().statement}"></span></p>
+                                <ul>
+                                    <li th:each="quizOption, optStat : ${examDetail.getQuiz().quizOptions}">
+                                        <label>
+                                            <input type="radio" th:name="${'option_' + iterStat.index}" th:checked="${examDetail.selectedOption != null and examDetail.selectedOption.id == quizOption.id}" th:onchange="updateSelectedOption([[${examDetail}]], [[${quizOption}]])">
+                                            <span th:text="${'ABCD'.charAt(optStat.index)} + '. '"></span>
+                                            <span class="latex-content" th:utext="${quizOption.option}"></span>
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button id="prevBtn" onclick="changeQuestion(-1)">Previous</button>
+                        <button id="nextBtn" onclick="changeQuestion(1)">Next</button>
+                        <button id="submitBtn" style="display:none" onclick="submitExam()">Nộp bài</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script  th:inline="javascript">
+    let currentIndex = 0;
+    let examDetails = [[${examDetailList}]];
+
+    if (!Array.isArray(examDetails)) {
+        examDetails = [];
+    }
+
+    function showQuestion(index) {
+        const questions = document.querySelectorAll('.question');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        questions.forEach((question, idx) => {
+            question.style.display = idx === index ? 'block' : 'none';
+        });
+
+        prevBtn.style.display = index === 0 ? 'none' : 'inline-block';
+        nextBtn.style.display = index === questions.length - 1 ? 'none' : 'inline-block';
+        submitBtn.style.display = index === questions.length - 1 ? 'inline-block' : 'none';
+
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+                {left: "\\begin{align}", right: "\\end{align}", display: true},
+                {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+                {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+                {left: "\\begin{CD}", right: "\\end{CD}", display: true},
+                {left: "\\begin{tikzpicture}", right: "\\end{tikzpicture}", display: true},
+                {left: "\\[", right: "\\]", display: true}
+            ],
+            ignoredClasses: ["disable-katex-render"],
+            throwOnError: false
+        });
+    }
+
+    function changeQuestion(direction) {
+        const questions = document.querySelectorAll('.question');
+        currentIndex += direction;
+        if (currentIndex < 0) currentIndex = 0;
+        if (currentIndex >= questions.length) currentIndex = questions.length - 1;
+
+        showQuestion(currentIndex);
+    }
+
+    function updateSelectedOption(examDetail, quizOption) {
+        if (quizOption) {
+            examDetails.forEach(detail => {
+                if (detail.id === examDetail.id) {
+                    detail.selectedOption = quizOption;
+                    console.log(detail); // In ra detail để kiểm tra
+                }
+            });
+        } else {
+            console.error(`QuizOption not found.`);
+        }
+    }
+
+    function submitExam() {
+        fetch('/exams/submitExam', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(examDetails)
+        })
+            .then(response => response.text())
+            .catch(error => {
+                console.error('Error submitting exam:', error);
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        showQuestion(currentIndex);
+    });
+</script>
+
+</body>
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+<footer th:replace="/libary/lib.html::footer"></footer>
+
+</html>

@@ -1,5 +1,7 @@
 package org.example.mathquiz.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,17 +15,19 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Exams {
+public class Exam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @ManyToOne
+    @JsonBackReference(value = "user-exam")
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
+    @JsonBackReference(value = "quizMatrix-exam")
     @JoinColumn(name = "quiz_matrix_id", nullable = false)
     private QuizMatrix quizMatrix;
 
@@ -34,10 +38,11 @@ public class Exams {
     private Integer numberOfQuiz;
 
     @OneToMany(mappedBy = "exam")
+    @JsonManagedReference(value = "exam-examDetail")
     private List<ExamDetail> examDetails;
 
+    @JsonManagedReference(value = "exam-result")
     @OneToMany(mappedBy = "exam")
     private List<Result> results;
 
 }
-
