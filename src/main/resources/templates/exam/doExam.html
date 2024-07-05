@@ -23,11 +23,14 @@
                     <div class="white-box">
                         <div id="quiz-container">
                             <div th:each="examDetail, iterStat : ${examDetailList}" th:attr="data-index=${iterStat.index}" class="question" th:classappend="${iterStat.index == currentIndex} ? 'active' : 'inactive'">
-                                <p>Câu [[${iterStat.index + 1}]]: <span th:text="${examDetail.getQuiz().statement}"></span></p>
+                                <p>Câu [[${iterStat.index + 1}]]: <span class="latex-content" th:utext="${examDetail.getQuiz().statement}"></span></p>
                                 <ul>
                                     <li th:each="quizOption, optStat : ${examDetail.getQuiz().quizOptions}">
-                                        <span th:text="${'ABCD'[optStat.index]} + '. '"></span>
-                                        <span th:text="${quizOption.option}"></span>
+                                        <label>
+                                            <input type="radio" th:name="${'option_' + iterStat.index}" th:checked="${examDetail.selectedOption != null and examDetail.selectedOption.id == quizOption.id}" th:onchange="updateSelectedOption([[${examDetail}]], [[${quizOption}]])">
+                                            <span th:text="${'ABCD'.charAt(optStat.index)} + '. '"></span>
+                                            <span class="latex-content" th:utext="${quizOption.option}"></span>
+                                        </label>
                                     </li>
                                 </ul>
                             </div>
@@ -42,8 +45,13 @@
     </div>
 </div>
 
-<script>
-    let currentIndex = /*[[${currentIndex}]]*/ 0;
+<script  th:inline="javascript">
+    let currentIndex = 0;
+    let examDetails = [[${examDetailList}]];
+
+    if (!Array.isArray(examDetails)) {
+        examDetails = [];
+    }
 
     function showQuestion(index) {
         const questions = document.querySelectorAll('.question');
@@ -58,6 +66,23 @@
         prevBtn.style.display = index === 0 ? 'none' : 'inline-block';
         nextBtn.style.display = index === questions.length - 1 ? 'none' : 'inline-block';
         submitBtn.style.display = index === questions.length - 1 ? 'inline-block' : 'none';
+
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+                {left: "\\begin{align}", right: "\\end{align}", display: true},
+                {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+                {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+                {left: "\\begin{CD}", right: "\\end{CD}", display: true},
+                {left: "\\begin{tikzpicture}", right: "\\end{tikzpicture}", display: true},
+                {left: "\\[", right: "\\]", display: true}
+            ],
+            ignoredClasses: ["disable-katex-render"],
+            throwOnError: false
+        });
     }
 
     function changeQuestion(direction) {
@@ -65,12 +90,35 @@
         currentIndex += direction;
         if (currentIndex < 0) currentIndex = 0;
         if (currentIndex >= questions.length) currentIndex = questions.length - 1;
+
         showQuestion(currentIndex);
     }
 
+    function updateSelectedOption(examDetail, quizOption) {
+        if (quizOption) {
+            examDetails.forEach(detail => {
+                if (detail.id === examDetail.id) {
+                    detail.selectedOption = quizOption;
+                    console.log(detail); // In ra detail để kiểm tra
+                }
+            });
+        } else {
+            console.error(`QuizOption not found.`);
+        }
+    }
+
     function submitExam() {
-        // Implement submit logic here
-        alert('Exam submitted!');
+        fetch('/exams/submitExam', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(examDetails)
+        })
+            .then(response => response.text())
+            .catch(error => {
+                console.error('Error submitting exam:', error);
+            });
     }
 
     document.addEventListener('DOMContentLoaded', function () {

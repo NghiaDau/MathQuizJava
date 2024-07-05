@@ -1,6 +1,6 @@
 package org.example.mathquiz.Entities;
 
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-
 public class Level {
 
     @Id
@@ -23,6 +22,6 @@ public class Level {
     private String name;
 
     @OneToMany(mappedBy = "level")
+    @JsonManagedReference(value = "level-grade")
     private List<Grade> grades;
-
 }

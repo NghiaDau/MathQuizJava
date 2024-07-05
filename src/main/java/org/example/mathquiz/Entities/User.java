@@ -1,5 +1,7 @@
 package org.example.mathquiz.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,12 +36,15 @@ public class User {
     private String fullName;
 
     @ManyToOne
+    @JsonBackReference(value = "grade-user")
     @JoinColumn(name = "grade_id")
     private Grade grade;
 
+    @JsonManagedReference(value = "user-exam")
     @OneToMany(mappedBy = "user")
     private List<Exam> exams;
 
+    @JsonManagedReference(value = "user-result")
     @OneToMany(mappedBy = "user")
     private List<Result> results;
 
@@ -48,6 +53,4 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
-
 }

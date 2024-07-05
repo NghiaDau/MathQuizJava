@@ -1,5 +1,8 @@
 package org.example.mathquiz.Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotNull;
 import org.example.mathquiz.Entities.*;
 import org.example.mathquiz.RequesEntities.RequestPushExam;
@@ -33,7 +36,8 @@ public class ExamController {
     private QuizMatrixService quizMatrixService;
     @Autowired
     private ResultService resultService;
-
+    @Autowired
+    private QuizOptionService quizOptionService;
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
     @GetMapping("")
@@ -136,7 +140,7 @@ public class ExamController {
         requestPushExamDetailList.setExam(newExam);
         requestPushExamDetailList.setQuizList(quizList);
         List<ExamDetail> examDetailList = examDetailService.addExamDetailList(requestPushExamDetailList);
-
+//        List<QuizOption> quizOptionList = quizOptionService.getAllQuizOptions();
         RequestPushResult requestPushResult = new RequestPushResult();
         requestPushResult.setTotalQuiz(newExam.getNumberOfQuiz());
         requestPushResult.setStartTime(new Date());
@@ -144,8 +148,22 @@ public class ExamController {
         requestPushResult.setExam(newExam);
         resultService.addResult(requestPushResult);
 
+//        model.addAttribute("quizOptionList", quizOptionList);
         model.addAttribute("examDetailList", examDetailList);
         model.addAttribute("currentIndex", 0); // Thêm chỉ số câu hỏi hiện tại
         return "exam/doExam";
+    }
+
+    @PostMapping("/submitExam")
+    public ResponseEntity<String> submitExam(@RequestBody List<ExamDetail> examDetailList, Model model) {
+        if (examDetailList != null && !examDetailList.isEmpty()) {
+            for (ExamDetail detail : examDetailList) {
+                System.out.println("ID: " + detail.getId() + ", Selected Option: " + detail.getSelectedOption());
+            }
+        } else {
+            System.out.println("Received an empty or null list.");
+        }
+        model.addAttribute("message", "Exam submitted successfully!");
+        return ResponseEntity.ok("Exam submitted successfully!"); // Returning a response
     }
 }
