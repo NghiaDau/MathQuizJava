@@ -1,12 +1,29 @@
 package org.example.mathquiz.Service;
 
+import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.example.mathquiz.Entities.User;
+import org.example.mathquiz.Repositories.IRoleRepository;
 import org.example.mathquiz.Repositories.UserRepository;
 import org.example.mathquiz.RequesEntities.RequesUpdateUser;
 import org.example.mathquiz.RequesEntities.RequesUser;
 import org.example.mathquiz.Utilities.FileUtils;
+import org.example.mathquiz.Utilities.RandomUtils;
+import org.example.mathquiz.constants.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,13 +35,24 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserService {
+@Slf4j
+public class UserService implements UserDetailsService {
     @Autowired
     private  UserRepository userRepository;
+
+    @Autowired
+    private IRoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender emailSender;
     public List<User> getAllUser(){
         List<User> users = userRepository.findAll();
         return users;
     }
+
 
     public User addNewUser(RequesUser requesUser,MultipartFile multipartFile){
         try{
@@ -65,4 +93,87 @@ public class UserService {
         }
     }
 
+
+    @Transactional(isolation = Isolation.SERIALIZABLE,
+            rollbackFor = {Exception.class, Throwable.class})
+    public void save(@NotNull RequesUser requesUser) {
+        User user = new User();
+        user.setUserName(requesUser.getUserName());
+        user.setEmail(requesUser.getEmail());
+        user.setPasswordHash(new BCryptPasswordEncoder()
+                .encode(requesUser.getPasswordHash()));
+        userRepository.save(user);
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE,
+            rollbackFor = {Exception.class, Throwable.class})
+    public void setDefaultRole(String username){
+        userRepository.findUserByUserName(username)
+                .getRoles()
+                .add(roleRepository
+                        .findFirstById(Role.USER.value));
+    }
+    @Override
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        User user = userRepository.findUserByUserName(userName);
+        return user;
+//        return org.springframework.security.core.userdetails.User
+//                .withUsername(user.getUsername())
+//                .password(user.getPassword())
+//                .authorities(user.getAuthorities())
+//                .accountExpired(false)
+//                .accountLocked(false)
+//                .credentialsExpired(false)
+//                .disabled(false)
+//                .build();
+    }
+
+    public void updatePrincipal(User user) {
+        UserDetails userDetails = user;
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+    public User ChangePassword(User user, String password){
+        user.setPasswordHash(new BCryptPasswordEncoder().encode(password));
+        return userRepository.save(user);
+    }
+    public boolean checkPass(User user,String oldPassword){
+        return passwordEncoder.matches(oldPassword,user.getPasswordHash());
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+    public User createTokenResetPassword(User user) {
+        String token =  RandomUtils.generateRandomString(45);
+        user.setResetPasswordToken(token);
+        user.setResetPasswordTokenExpired(new Date(System.currentTimeMillis()+10*60*1000));
+        return userRepository.save(user);
+    }
+    public User findUserByResetPasswordToken(String token) {
+        return userRepository.findByToken(token);
+    }
+    public User updateResetPasswordToken(User user, String password) {
+        user.setPasswordHash(new BCryptPasswordEncoder().encode(password));
+        user.setResetPasswordToken("");
+        user.setResetPasswordTokenExpired(null);
+        return userRepository.save(user);
+    }
+
+
+    public  void SendMail(String DesMail, String URL,String username){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("todream@gmail.com");
+        message.setTo(DesMail);
+        message.setSubject("Reset Your Password");
+        String emailContent =
+                "Hello, "+ username +"\n"+
+                        "You have requested to reset your password.\n" +
+                        "Click the link below to change your password:" +URL +"\n"+
+                        "Ignore this email if you remember your password or you have not made this request.\n"+
+                        "Thanh you!";
+        message.setText(emailContent);
+        emailSender.send(message);
+    }
 }
+
