@@ -92,5 +92,4 @@ public class ChapterController {
         return "redirect:/chapters";
     }
 
-
 }

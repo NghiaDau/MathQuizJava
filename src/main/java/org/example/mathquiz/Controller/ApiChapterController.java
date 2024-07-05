@@ -98,6 +98,7 @@ public class ApiChapterController {
                 RequestJson newGrade = new RequestJson();
                 newGrade.setId(grade.getId());
                 newGrade.setName(grade.getName());
+                newGrade.setStatus((grade.isStatus() == true) ? "Đang Sử Dụng": "Không Sử Dụng" );
                 newGrades.add(newGrade);
             } catch (Exception e){
                 System.out.println(e.getMessage());

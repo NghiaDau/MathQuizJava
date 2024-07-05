@@ -34,7 +34,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="white-box">
-                        <h3 class="box-title m-b-20">Thêm chương</h3>
+                        <h3 class="box-title m-b-20">Thêm Câu </h3>
                         <form th:action="@{/quizMatrices/add}" th:object="${chapterModel}" method="post" id="chapterForm">
                             <div class="mb-4">
                                 <label class="form-label" for="nameQuizMatrix">Tên đề thi:</label><span
@@ -52,6 +52,7 @@
                                 <span class="text-danger" th:if="${#fields.hasErrors('defaultDuration')}"
                                       th:errors="*{defaultDuration}"></span>
                             </div>
+
                             <div class="row">
                                 <div class="col-sm-6 ol-md-6 col-xs-12">
                                     <div class="white-box">
