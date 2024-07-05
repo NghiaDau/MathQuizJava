@@ -74,6 +74,61 @@
     let cureentTotal = 0;
     let size = 5;
     let isMatrixQuiz = false;
+    let tmpChapterId;
+    window.addEventListener('popstate', function(event) {
+        if (event.state) {
+            let variable = event.state.name;
+            console.log(variable);
+            switch (variable){
+                case "grade":{
+                    isMatrixQuiz = false;
+                    size = 12;
+                    cachedData = event.state.data;
+                    cureentTotal = Math.round(event.state.data.length/size);
+                    createTableHeader('Tên cấp');
+                    createTable(event.state.data, size, 1, mathTypeTo);
+                    createPagin(createTable);
+                    change_active('page'+currentPage);
+                    break;
+                }
+                case "mathType":{
+                    isMatrixQuiz = false;
+                    size = 3;
+                    cachedData = event.state.data;
+                    cureentTotal = Math.round(event.state.data.length/size);
+                    currentPage = 1;
+                    createTableHeader('Loại Đề');
+                    createTableMathType(event.state.data, size, 1, navigateTo);
+                    createPagin(createTableMathType);
+                    change_active('page'+currentPage);
+                    break;
+                }case "chapter":{
+                    isMatrixQuiz = false;
+                    size = 10;
+                    cachedData = event.state.data;
+                    cureentTotal = Math.round(event.state.data.length/size);
+                    currentPage = 1;
+                    createTableHeader('Các Chương');
+                    createTableChapter(event.state.data, size, 1, quizMatricesTo);
+                    createPagin(createTableChapter);
+                    change_active('page'+currentPage);
+                    break;
+                }case "quizMatrix":{
+                    isMatrixQuiz = true;
+                    size = 10;
+                    cachedData = event.state.data;
+                    cureentTotal = Math.round(event.state.data.length/size);
+                    currentPage = 1;
+                    createTableHeader('Các Đề');
+                    createTableChapter(event.state.data, size, 1);
+                    createPagin(createTableQuizMatrices,tmpChapterId);
+                    change_active('page'+currentPage);
+                    break;
+                }
+            }
+        }
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         fetch('/api/grades', {
             method: 'POST',
@@ -85,6 +140,7 @@
                 return response.json();
             })
             .then(data => {
+                history.replaceState({ name : "grade" , data } , 'Grade', '#grades');
                 size = 12;
                 cachedData = data;
                 cureentTotal = Math.round(data.length/size);
@@ -96,7 +152,6 @@
     });
 
     function mathTypeTo(gradeId) {
-        console.log(gradeId);
         var formData = new FormData();
         formData.append("gradeId", gradeId);
         fetch('/api/findMathType', {
@@ -110,6 +165,7 @@
                 return response.json();
             })
             .then(data => {
+                history.replaceState({ name: 'mathType', data }, 'MathType', '#mathType');
                 size = 3;
                 cachedData = data;
                 cureentTotal = Math.round(data.length/size);
@@ -124,7 +180,6 @@
     }
 
     function navigateTo(mathTypeId) {
-        console.log(mathTypeId);
         var formData = new FormData();
         formData.append("mathTypeId", mathTypeId);
         fetch('/api/findChapter', {
@@ -138,6 +193,7 @@
                 return response.json();
             })
             .then(data => {
+                history.replaceState({ name : "chapter" , data } , 'Chapter', '#chapter');
                 size = 10;
                 cachedData = data;
                 cureentTotal = Math.round(data.length/size);
@@ -152,7 +208,6 @@
     }
 
     function quizMatricesTo(chapterId) {
-        console.log(chapterId);
         var formData = new FormData();
         formData.append("chapterId", chapterId);
         fetch('/api/quizMatrices', {
@@ -166,6 +221,8 @@
                 return response.json();
             })
             .then(data => {
+                tmpChapterId = chapterId;
+                history.replaceState({ name : "quizMatrix" , data } , 'QuizMatrix', '#quizMatrix');
                 isMatrixQuiz = true;
                 size = 10;
                 cachedData = data;

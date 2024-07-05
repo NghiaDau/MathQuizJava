@@ -1,3 +1,16 @@
+function getCachedData(key) {
+    const cachedData = localStorage.getItem(key);
+    return cachedData ? JSON.parse(cachedData) : null;
+}
+
+function setCachedData(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+function clearMenuCache(key) {
+    localStorage.removeItem(key);
+}
+
 function dataMenus() {
     return fetch("http://localhost:8080/api/menu")
         .then(function (response) {
@@ -12,46 +25,19 @@ function dataMenus() {
         });
 }
 
-function getCachedMenus() {
-    const cachedMenus = localStorage.getItem('cachedMenus');
-    return cachedMenus ? JSON.parse(cachedMenus) : null;
-}
-
-let cachedMenus = getCachedMenus();
+//clearMenuCache('cachedMenus');
+let cachedMenus = getCachedData('cachedMenus');
 const menuContainer = document.getElementById("menu");
 if (cachedMenus) {
     console.log('Using cached menus:', cachedMenus);
-    displayMenuIds(cachedMenus, menuContainer)
+    displayMenuIds(cachedMenus, menuContainer);
 } else {
     dataMenus().then(function (menus) {
         console.log('Fetched menus from API:', menus);
-        displayMenuIds(cachedMenus, menuContainer)
+        displayMenuIds(menus, menuContainer);
     });
 }
 
-// function displayMenuIds(data, parentElement) {
-//     data.forEach(item => {
-//         const li = document.createElement('li');
-//         li.textContent = item.name;
-//         li.id = item.id_menu;
-//         if (item.children && item.children.length > 0) {
-//             const ul = document.createElement('ul');
-//             ul.classList.add('hidden');
-//             displayMenuIds(item.children, ul);
-//             li.appendChild(ul);
-//
-//             li.addEventListener('mouseover', () => {
-//                 ul.classList.remove('hidden');
-//             });
-//
-//             li.addEventListener('mouseout', () => {
-//                 ul.classList.add('hidden');
-//             });
-//         }
-//
-//         parentElement.appendChild(li);
-//     });
-// }
 function displayMenuIds(data, parentElement) {
     data.forEach(item => {
         if (item.level >= 3) {
