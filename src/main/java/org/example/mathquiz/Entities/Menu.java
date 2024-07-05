@@ -20,6 +20,7 @@ public class Menu {
     private String id_menu;
     private String name;
     private String url;
+    private int level;
     private boolean enabled;
     @ManyToOne
     @JsonBackReference

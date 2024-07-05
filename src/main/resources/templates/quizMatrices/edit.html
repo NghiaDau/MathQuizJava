@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="/libary/lib.html::head('Chỉnh sửa cấp học')"></head>
+<head th:replace="/libary/lib.html::head('Chỉnh sửa đề ')"></head>
 
 <body class="fix-sidebar">
 <!-- Preloader -->
@@ -22,15 +22,39 @@
                 <div class="col-lg-12">
                     <div class="white-box">
                         <h3 class="box-title m-b-20">Chỉnh sửa cấp</h3>
-                        <form th:action="@{/levels/edit}" th:object="${level}" method="post" id="levelForm">
+                        <form th:action="@{/quizMatrices/edit}" th:object="${quizMatrix}" method="post" id="levelForm">
                             <div class="mb-4">
-                                <label class="form-label" for="name">Tên cấp:</label><span class="text-danger">*</span>
-                                <input class="form-control" type="text" placeholder="Nhập tên cấp" th:field="*{name}" id="name" required autofocus>
-                                <span class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                                <label class="form-label" for="nameQuizMatrix">Tên đề thi:</label><span
+                                    class="text-danger">*</span>
+                                <input class="form-control" type="text" placeholder="Nhập tên đề thi"
+                                       th:field="*{name}" id="nameQuizMatrix" required autofocus>
+                                <span class="text-danger" th:if="${#fields.hasErrors('name')}"
+                                      th:errors="*{name}"></span>
                             </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="time">Thời gian thi:</label><span
+                                    class="text-danger">*</span>
+                                <input class="form-control" type="text" placeholder="Nhập thời gian thi"
+                                       th:field="*{defaultDuration}" id="time" required autofocus>
+                                <span class="text-danger" th:if="${#fields.hasErrors('defaultDuration')}"
+                                      th:errors="*{defaultDuration}"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="status">Trạng Thái:</label><span
+                                    class="text-danger">*</span>
+                                <select class="form-control" id="status" name="status">
+                                    <option value="">-- Chọn Trạng Thái --</option>
+                                    <option value="1">Đang Sử Dụng</option>
+                                    <option value="0">Không Sử Dụng</option>
+                                </select>
+                                <span class="text-danger"
+                                      th:if="${#fields.hasErrors('status')}"
+                                      th:errors="*{status}"></span>
+                            </div>
+
                             <div class="d-flex justify-content-between">
                                 <input type="submit" class="btn btn-primary" value="Cập nhật"/>
-                                <a th:href="@{/levels}" class="btn btn-secondary">Trở lại danh sách</a>
+                                <a th:href="@{/quizMatrices}" class="btn btn-secondary">Trở lại danh sách</a>
                             </div>
                         </form>
                     </div>
