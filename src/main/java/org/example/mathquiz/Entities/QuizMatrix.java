@@ -1,4 +1,7 @@
 package org.example.mathquiz.Entities;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +12,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
-
 
 @Entity
 @Setter
@@ -22,22 +24,26 @@ public class QuizMatrix {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @ManyToOne()
+    @ManyToOne
+    @JsonBackReference(value = "chapter-quizMatrix")
     @JoinColumn(name = "chapter_id")
-
     private Chapter chapter;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createDate;
     private Integer defaultDuration;
     private String name;
     private boolean Status;
     private Integer numOfQuiz;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updateDate;
 
+    @JsonManagedReference(value = "quizMatrix-quiz")
     @OneToMany(mappedBy = "quizMatrix")
     private List<Quiz> quizs;
 
+    @JsonManagedReference(value = "quizMatrix-exam")
     @OneToMany(mappedBy = "quizMatrix")
     private List<Exam> exams;
 
@@ -52,4 +58,3 @@ public class QuizMatrix {
         return importQuestionVM;
     }
 }
-
