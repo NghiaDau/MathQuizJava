@@ -158,7 +158,16 @@ public class ExamController {
     public ResponseEntity<String> submitExam(@RequestBody List<ExamDetail> examDetailList, Model model) {
         if (examDetailList != null && !examDetailList.isEmpty()) {
             for (ExamDetail detail : examDetailList) {
-                System.out.println("ID: " + detail.getId() + ", Selected Option: " + detail.getSelectedOption());
+                ExamDetail currentExamDetail = examDetailService.getExamDetailById(detail.getId()).orElseThrow();
+                System.out.println("Current ExamDetail: " + currentExamDetail.getSelectedOption()   );
+                currentExamDetail.setSelectedOption(detail.getSelectedOption());
+                System.out.println("Updated ExamDetail: " + currentExamDetail.getSelectedOption());
+                try {
+                    ExamDetail newDetail = examDetailService.updateExamDetail(currentExamDetail);
+                    System.out.println("Saved ExamDetail: " + newDetail.getSelectedOption());
+                } catch (Exception e) {
+                    System.out.println("Error updating ExamDetail with ID: " + detail.getId() + " - " + e.getMessage());
+                }
             }
         } else {
             System.out.println("Received an empty or null list.");
@@ -166,4 +175,5 @@ public class ExamController {
         model.addAttribute("message", "Exam submitted successfully!");
         return ResponseEntity.ok("Exam submitted successfully!"); // Returning a response
     }
+
 }

@@ -1,5 +1,5 @@
-let currentIndex = /*[[${currentIndex}]]*/ 0;
-let examDetails = [[${examDetailList}]] [];
+let currentIndex = 0;
+let examDetails = [[${examDetailList}]];
 
 if (!Array.isArray(examDetails)) {
     examDetails = [];

@@ -1,7 +1,6 @@
 package org.example.mathquiz.Entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,9 +28,8 @@ public class ExamDetail {
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
-    @OneToOne
-    @JsonManagedReference(value = "examDetail-selectedOption")
+    @ManyToOne
+    @JsonBackReference(value = "quizOption-examDetail")
     @JoinColumn(name = "quizOption_id", nullable = true)
     private QuizOption selectedOption;
-
 }

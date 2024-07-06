@@ -3,7 +3,9 @@ package org.example.mathquiz.Service;
 import lombok.RequiredArgsConstructor;
 import org.example.mathquiz.Entities.ExamDetail;
 
+import org.example.mathquiz.Entities.QuizOption;
 import org.example.mathquiz.Repositories.IExamDetailRepository;
+import org.example.mathquiz.Repositories.IQuizOptionRepository;
 import org.example.mathquiz.RequesEntities.RequestPushExamDetailList;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -20,6 +22,7 @@ import java.util.Optional;
         rollbackFor = {Exception.class, Throwable.class})
 public class ExamDetailService {
     private final IExamDetailRepository examDetailRepository;
+    private final IQuizOptionRepository quizOptionRepository;
     public List<ExamDetail> getAllExamDetails() {
         return examDetailRepository.findAll();
     }
@@ -45,6 +48,10 @@ public class ExamDetailService {
         return examDetailRepository.saveAll(examDetailList);
     }
     public ExamDetail updateExamDetail(ExamDetail examDetail) {
+        if (examDetail.getSelectedOption() != null) {
+            QuizOption quizOption = quizOptionRepository.getById(examDetail.getSelectedOption().getId());
+            examDetail.setSelectedOption(quizOption);
+        }
         return examDetailRepository.save(examDetail);
     }
     public void deleteExamDetailById(String id) {
