@@ -17,7 +17,7 @@ function dataMenus() {
             return response.json();
         })
         .then(function (menus) {
-            localStorage.setItem('cachedMenus', JSON.stringify(menus));
+            setCachedData('cachedMenus', JSON.stringify(menus));
             return menus;
         })
         .catch(function (error) {
@@ -78,3 +78,45 @@ function displayMenuIds(data, parentElement) {
         parentElement.appendChild(li);
     });
 }
+
+//Session
+// function getSessionData(key) {
+//     const sessionData = sessionStorage.getItem(key);
+//     return sessionData ? JSON.parse(sessionData) : null;
+// }
+//
+// function setSessionData(key, data) {
+//     sessionStorage.setItem(key, JSON.stringify(data));
+// }
+//
+// function clearSessionData(key) {
+//     sessionStorage.removeItem(key);
+// }
+//
+// function dataMenus() {
+//     return fetch("http://localhost:8080/api/menu")
+//         .then(function (response) {
+//             return response.json();
+//         })
+//         .then(function (menus) {
+//             setSessionData('cachedMenus', menus); // Lưu vào sessionStorage thay vì localStorage
+//             return menus;
+//         })
+//         .catch(function (error) {
+//             console.error('Error fetching menus:', error);
+//         });
+// }
+//
+// //clearSessionData('cachedMenus');
+// let cachedMenus = getSessionData('cachedMenus'); // Sử dụng getSessionData thay vì getCachedData
+// const menuContainer = document.getElementById("menu");
+// if (cachedMenus) {
+//     console.log('Using cached menus from sessionStorage:', cachedMenus);
+//     displayMenuIds(cachedMenus, menuContainer);
+// } else {
+//     dataMenus().then(function (menus) {
+//         console.log('Fetched menus from API and stored in sessionStorage:', menus);
+//         displayMenuIds(menus, menuContainer);
+//     });
+// }
+

@@ -52,14 +52,19 @@
         <div class="white-box">
             <form class="form-horizontal form-material" id="loginform" action="index.html" th:action="@{/login}" method="post">
                 <h3 class="box-title m-b-20">Đăng Nhập</h3>
+<!--                <span class="text-danger" id="newPasswordError" th:if="${param.error}"-->
+<!--                      th:errors="${session.errorMessage}"></span>-->
+                <div th:if="${param.error}">
+                    <span class="text-danger" id="userError" th:text="${session.errorMessage}"></span>
+                </div>
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        <input class="form-control" type="text" required="" id="userName" name="userName" placeholder="Tài Khoản ">
+                        <input class="form-control" oninput="clearErrorAndParam(this)" type="text" required="" id="userName" name="userName" placeholder="Tài Khoản ">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-xs-12">
-                        <input class="form-control" type="password" required="" id="passwordHash" name="passwordHash" placeholder="Mật Khẩu">
+                        <input class="form-control"  oninput="clearErrorAndParam(this)" type="password" required="" id="passwordHash" name="passwordHash" placeholder="Mật Khẩu">
                     </div>
                 </div>
                 <div class="form-group">
@@ -86,7 +91,7 @@
                 </div>
                 <div class="form-group m-b-0">
                     <div class="col-sm-12 text-center">
-                        <p>Don't have an account? <a href="/register" class="text-primary m-l-5"><b>Đăng Ký</b></a></p>
+                        <p>Bạn chưa có tài khoản? <a href="/register" class="text-primary m-l-5"><b>Đăng Ký</b></a></p>
                     </div>
                 </div>
             </form>
@@ -111,6 +116,16 @@
         </div>
     </div>
 </section>
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            urlParams.delete('error');
+            var newUrl = window.location.pathname + urlParams.toString();
+            history.replaceState({}, document.title, newUrl);
+        }
+    });
+</script>
 <!-- jQuery -->
 <script src="/plugins/bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap Core JavaScript -->

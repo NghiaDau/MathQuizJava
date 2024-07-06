@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="/libary/lib.html::head('List Account')" > </head>
+<head th:replace="/libary/lib.html::head('List Account')"></head>
 
 <body class="fix-sidebar">
 <!-- Preloader -->
@@ -19,7 +19,7 @@
             <!-- .row -->
             <div class="row bg-title">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                    <h4 class="page-title">Thông Tin Tài Khoản</h4> </div>
+                    <h4 class="page-title">Thông Tin Tài Khoản</h4></div>
 
             </div>
             <!-- /.row -->
@@ -35,44 +35,62 @@
                 </div>
                 <div class="col-md-9 col-xs-12">
                     <div class="white-box">
-<!--                        <ul class="nav customtab nav-tabs" role="tablist">-->
-<!--                            <li role="presentation" class="nav-item"><a href="#settings" class="nav-link" aria-controls="messages" role="tab" data-toggle="tab" aria-expanded="false"><span class="visible-xs"><i class="fa fa-cog"></i></span> <span class="hidden-xs">Setting</span></a></li>-->
-<!--                        </ul>-->
+                        <!--                        <ul class="nav customtab nav-tabs" role="tablist">-->
+                        <!--                            <li role="presentation" class="nav-item"><a href="#settings" class="nav-link" aria-controls="messages" role="tab" data-toggle="tab" aria-expanded="false"><span class="visible-xs"><i class="fa fa-cog"></i></span> <span class="hidden-xs">Setting</span></a></li>-->
+                        <!--                        </ul>-->
                         <div class="tab-content">
                             <div class="tab-pane active" id="settings">
-                                <form class="form-horizontal form-material" action="/user/save_profile" method="post" enctype="multipart/form-data" th:object="${user}" >
-                                    <input class="form-control hidden"  type="text"  th:field="*{id}" >
+                                <form class="form-horizontal form-material" action="/user/save_profile" method="post"
+                                      enctype="multipart/form-data" th:object="${user}">
+                                    <div th:if="${errors}" class="alert alertdanger justify-content-center" role="alert">
+                                        <ul>
+                                            <li th:each="error : ${errors}"
+                                                th:text="${error}" class="text-danger text-start">
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <input class="form-control hidden" type="text" th:field="*{id}">
                                     <div class="form-group">
                                         <label class="col-md-12">Họ Tên</label>
                                         <div class="col-md-12">
-                                            <input type="text" placeholder="" class="form-control form-control-line" th:field="*{fullName}"> </div>
+                                            <input type="text" placeholder="" class="form-control form-control-line"
+                                                   th:field="*{fullName}"></div>
                                     </div>
                                     <div class="form-group">
                                         <label for="example-email" class="col-md-12">Email</label>
                                         <div class="col-md-12">
-                                            <input type="email" placeholder="johnathan@admin.com" readonly class="form-control form-control-line"
-                                                   name="example-email" id="example-email" th:field="*{email}"> </div>
+                                            <input type="email" placeholder="johnathan@admin.com" readonly
+                                                   class="form-control form-control-line"
+                                                   name="example-email" id="example-email" th:field="*{email}">
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12">Tên Tài Khoản</label>
                                         <div class="col-md-12">
-                                            <input type="text" placeholder="Johnathan Doe" readonly class="form-control form-control-line" th:field="*{username}"> </div>
+                                            <input type="text" placeholder="Johnathan Doe" readonly id="userName"
+                                                   class="form-control form-control-line" th:field="*{username}">
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12">Số Điện Thoại</label>
                                         <div class="col-md-12">
-                                            <input type="text" placeholder="" class="form-control form-control-line" th:field="*{phoneNumber}"> </div>
+                                            <input type="text" placeholder="" id="phone" class="form-control form-control-line"
+                                                   th:field="*{phoneNumber}">
+                                        </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="photos" class="col-md-12">Ảnh</label>
                                         <div class="col-md-12">
-                                            <input class="form-control form-control-line" type="file"  value="" id="photos" accept="image/*" name="photo">
+                                            <input class="form-control form-control-line" type="file" value=""
+                                                   id="photos" accept="image/*" name="photo">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-12">
                                             <button
-                                                    type="submit" class="btn btn-success " id="update-profile">Cập nhật thông tin</button>
+                                                    type="submit" class="btn btn-success " id="update-profile">Cập nhật
+                                                thông tin
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
