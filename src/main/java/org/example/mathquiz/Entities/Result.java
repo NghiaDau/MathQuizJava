@@ -2,10 +2,8 @@ package org.example.mathquiz.Entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.Date;
 
 @Setter
@@ -20,6 +18,7 @@ public class Result {
     private String id;
 
     @ManyToOne
+    @ToString.Exclude
     @JsonBackReference(value = "user-result")
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

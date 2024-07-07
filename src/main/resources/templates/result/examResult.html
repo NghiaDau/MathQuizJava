@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/libary/lib.html::head('Kết quả')"></head>
+<body class="fix-sidebar">
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <h2>Kết quả bài thi</h2>
+                        <p>Điểm: <span id="score"></span></p>
+                        <p>Số câu đúng: <span th:text="${correctAnswers}"></span></p>
+                        <p>Thời gian làm bài: <span id="duration"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+<footer th:replace="/libary/lib.html::footer"></footer>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const duration = [[${duration}]]; // duration in seconds
+        const score = [[${score}]]; // score
+
+        function formatDuration(seconds) {
+            const hh = Math.floor(seconds / 3600);
+            const mm = Math.floor((seconds % 3600) / 60);
+            const ss = seconds % 60;
+
+            if (hh > 0) {
+                return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+            } else if (mm > 0) {
+                return `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+            } else {
+                return `${String(ss).padStart(2, '0')} giây`;
+            }
+        }
+
+        function formatScore(score) {
+            const roundedScore = Math.round(score * 100) / 100;
+            return roundedScore % 1 === 0 ? roundedScore.toFixed(0) : roundedScore.toFixed(2);
+        }
+
+        document.getElementById('duration').textContent = formatDuration(duration);
+        document.getElementById('score').textContent = formatScore(score);
+
+        // Clean up URL
+        const url = new URL(window.location);
+        url.searchParams.delete('score');
+        url.searchParams.delete('correctAnswers');
+        url.searchParams.delete('startTime');
+        url.searchParams.delete('endTime');
+        window.history.replaceState({}, document.title, url.pathname);
+    });
+</script>
+</body>
+</html>

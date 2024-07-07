@@ -15,7 +15,6 @@ import java.util.*;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -34,7 +33,6 @@ public class User implements UserDetails {
     private Boolean emailConfirmed;
     private String phoneNumber;
     private Date activeDate;
-    @Getter
     private String avatarUrl;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createDate;
@@ -49,13 +47,16 @@ public class User implements UserDetails {
     private Grade grade;
 
     @JsonManagedReference(value = "user-exam")
+    @ToString.Exclude
     @OneToMany(mappedBy = "user")
     private List<Exam> exams;
 
     @JsonManagedReference(value = "user-result")
+    @ToString.Exclude
     @OneToMany(mappedBy = "user")
     private List<Result> results;
-    @ManyToMany(fetch=FetchType.EAGER)
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -68,6 +69,7 @@ public class User implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .toList();
     }
+
     @Override
     public String getPassword() {
         return passwordHash;
@@ -78,10 +80,10 @@ public class User implements UserDetails {
         return userName;
     }
 
-
-    public String disPlayAvatar(){
+    public String disPlayAvatar() {
         return avatarUrl;
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

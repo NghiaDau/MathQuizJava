@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="/libary/lib.html::head('Đề thi')"></head>
-
 <body class="fix-sidebar">
 <!-- Preloader -->
 <div class="preloader">
@@ -19,25 +17,48 @@
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-10">
                     <div class="white-box">
-                        <div id="quiz-container">
-                            <div th:each="examDetail, iterStat : ${examDetailList}" th:attr="data-index=${iterStat.index}" class="question" th:classappend="${iterStat.index == currentIndex} ? 'active' : 'inactive'">
-                                <p>Câu [[${iterStat.index + 1}]]: <span class="latex-content" th:utext="${examDetail.getQuiz().statement}"></span></p>
-                                <ul>
-                                    <li th:each="quizOption, optStat : ${examDetail.getQuiz().quizOptions}">
-                                        <label>
-                                            <input type="radio" th:name="${'option_' + iterStat.index}" th:checked="${examDetail.selectedOption != null and examDetail.selectedOption.id == quizOption.id}" th:onchange="updateSelectedOption([[${examDetail}]], [[${quizOption}]])">
-                                            <span th:text="${'ABCD'.charAt(optStat.index)} + '. '"></span>
-                                            <span class="latex-content" th:utext="${quizOption.option}"></span>
-                                        </label>
-                                    </li>
-                                </ul>
+                        <div class="card-body">
+                            <h3></h3>
+                            <div id="timer" class="mb-3" style="font-size: 20px; color: red;"></div> <!-- Timer Display -->
+
+                            <div id="quiz-container">
+                                <div th:each="examDetail, iterStat : ${examDetailList}" th:attr="data-index=${iterStat.index}" class="question" th:classappend="${iterStat.index == currentIndex} ? 'active' : 'inactive'">
+                                    <p class="font-weight-bold">Câu [[${iterStat.index + 1}]]: <span class="latex-content" th:utext="${examDetail.getQuiz().statement}"></span></p>
+                                    <ul class="list-group">
+                                        <li th:each="quizOption, optStat : ${examDetail.getQuiz().quizOptions}" class="list-group-item">
+                                            <label class="d-flex align-items-center">
+                                                <input type="radio" th:name="${'option_' + iterStat.index}" th:checked="${examDetail.selectedOption != null and examDetail.selectedOption.id == quizOption.id}" th:onchange="updateSelectedOption([[${examDetail}]], [[${quizOption}]])" class="mr-2">
+                                                <span th:text="${'ABCD'.charAt(optStat.index)} + '. '"></span>
+                                                <span class="latex-content ml-2" th:utext="${quizOption.option}"></span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                    <!--                                <button type="button" class="btn btn-warning mt-3" onclick="toggleReviewQuestion([[${iterStat.index}]])">Đánh dấu xem lại</button>-->
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <button id="prevBtn" class="btn btn-secondary" onclick="changeQuestion(-1)">Câu trước</button>
+                                <button id="nextBtn" class="btn btn-primary" onclick="changeQuestion(1)">Câu tiếp theo</button>
+                                <button id="submitBtn" class="btn btn-danger" style="display:none" onclick="checkSubmitExam()">Nộp bài</button>
                             </div>
                         </div>
-                        <button id="prevBtn" onclick="changeQuestion(-1)">Previous</button>
-                        <button id="nextBtn" onclick="changeQuestion(1)">Next</button>
-                        <button id="submitBtn" style="display:none" onclick="submitExam()">Nộp bài</button>
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <div class="white-box">
+                        <div class="question-navigation">
+                            <ul>
+                                <li th:each="examDetail, iterStat : ${examDetailList}" th:attr="data-index=${iterStat.index}" th:classappend="${examDetail.selectedOption != null} ? 'answered' : '' + (examDetail.review ? ' review' : '')">
+                                    <a href="javascript:void(0)" th:onclick="navigateToQuestion([[${iterStat.index}]])">
+                                        <span th:text="${iterStat.index + 1}"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -45,7 +66,7 @@
     </div>
 </div>
 
-<script  th:inline="javascript">
+<script th:inline="javascript">
     let currentIndex = 0;
     let examDetails = [[${examDetailList}]];
 
@@ -67,6 +88,7 @@
         nextBtn.style.display = index === questions.length - 1 ? 'none' : 'inline-block';
         submitBtn.style.display = index === questions.length - 1 ? 'inline-block' : 'none';
 
+        updateNavigation();
         renderMathInElement(document.body, {
             delimiters: [
                 {left: '$$', right: '$$', display: true},
@@ -94,20 +116,56 @@
         showQuestion(currentIndex);
     }
 
+    function navigateToQuestion(index) {
+        currentIndex = index;
+        showQuestion(currentIndex);
+    }
+
     function updateSelectedOption(examDetail, quizOption) {
         if (quizOption) {
             examDetails.forEach(detail => {
                 if (detail.id === examDetail.id) {
                     detail.selectedOption = quizOption;
-                    console.log(detail); // In ra detail để kiểm tra
                 }
             });
         } else {
             console.error(`QuizOption not found.`);
         }
+
+        updateNavigation();
+    }
+
+    function toggleReviewQuestion(index) {
+        examDetails[index].review = !examDetails[index].review;
+        updateNavigation();
+    }
+
+    function updateNavigation() {
+        const navItems = document.querySelectorAll('.question-navigation li');
+        navItems.forEach((navItem, index) => {
+            const detail = examDetails[index];
+            navItem.classList.remove('answered', 'review'); // Remove both classes initially
+            if (detail.selectedOption) {
+                navItem.classList.add('answered');
+            }
+            if (detail.review) {
+                navItem.classList.add('review');
+            }
+        });
+    }
+
+    function checkSubmitExam() {
+        const unanswered = examDetails.some(detail => !detail.selectedOption);
+        if (unanswered) {
+            if (!confirm('Bạn chưa trả lời hết tất cả câu hỏi. Bạn có chắc chắn muốn nộp bài không?')) {
+                return;
+            }
+        }
+        submitExam();
     }
 
     function submitExam() {
+        console.log('Submitting exam:', examDetails); // Debug
         fetch('/exams/submitExam', {
             method: 'POST',
             headers: {
@@ -115,19 +173,143 @@
             },
             body: JSON.stringify(examDetails)
         })
-            .then(response => response.text())
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.text().then(text => { throw new Error(text) });
+                }
+            })
+            .then(result => {
+                console.log('Exam submitted successfully, result:', result); // Debug
+
+                // Format startTime and endTime correctly
+                const formatter = new Intl.DateTimeFormat('sv-SE', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                });
+
+                const formatDateTime = (dateTime) => {
+                    const date = new Date(dateTime);
+                    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}.000`;
+                };
+
+                const formattedStartTime = formatDateTime(result.startTime);
+                const formattedEndTime = formatDateTime(result.endTime);
+
+                // Redirect with properly formatted times
+                window.location.href = `/exams/examResult?score=${result.score}&correctAnswers=${result.correctAnswers}&startTime=${formattedStartTime}&endTime=${formattedEndTime}`;
+            })
             .catch(error => {
                 console.error('Error submitting exam:', error);
             });
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        const duration = [[${newExam.duration}]] * 60; // duration in minutes, convert to seconds
+        let remainingTime = duration;
+
+        function formatTime(seconds) {
+            const hh = Math.floor(seconds / 3600);
+            const mm = Math.floor((seconds % 3600) / 60);
+            const ss = seconds % 60;
+            if (hh > 0) {
+                return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+            } else {
+                return `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+            }
+        }
+
+        function updateTimer() {
+            if (remainingTime <= 0) {
+                submitExam();
+            } else {
+                document.getElementById('timer').textContent = formatTime(remainingTime);
+                remainingTime--;
+                setTimeout(updateTimer, 1000);
+            }
+        }
+
         showQuestion(currentIndex);
+        updateTimer();
     });
 </script>
+
 
 </body>
 <th:block th:replace="/libary/lib.html::foot"></th:block>
 <footer th:replace="/libary/lib.html::footer"></footer>
 
+<style>
+    .question-navigation {
+        height: 100%;
+    }
+
+    .question-navigation ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+        gap: 10px;
+        list-style: none;
+        padding: 0;
+    }
+
+    .question-navigation li {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .question-navigation li a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border: 1px solid #1c80c3;
+        border-radius: 50%;
+        text-decoration: none;
+        color: #1c80c3;
+        font-size: 14px;
+    }
+
+    .question-navigation li.answered a {
+        background-color: #1c80c3;
+        color: white;
+    }
+
+    .question-navigation li.review a {
+        background-color: #f0ad4e;
+        color: white;
+    }
+
+    .question-navigation li a:hover {
+        background-color: #f0f0f0;
+    }
+
+    .white-box {
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+
+    #quiz-container {
+        margin-bottom: 20px;
+    }
+
+    .question {
+        display: none;
+    }
+
+    .question.active {
+        display: block;
+    }
+
+    .question.inactive {
+        display: none;
+    }
+</style>
 </html>

@@ -44,6 +44,7 @@ public class HomeController {
     public List<Grade> getGradesByLevel(@RequestParam String levelId) {
         return gradeService.findByLevelId(levelId);
     }
+
     @GetMapping("/getQuizMatricesByChapter")
     @ResponseBody
     public List<RequestQuizMatrix> getQuizMatricesByChapter(@RequestParam String chapterId) {
