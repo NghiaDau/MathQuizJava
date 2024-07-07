@@ -19,6 +19,7 @@ public class ChapterController {
     private GradeService gradeService;
     @Autowired
     private MathTypeService mathTypeService;
+
     @GetMapping("")
     public String showAllChapters(@NotNull Model model) {
         model.addAttribute("chapters", chapterService.getAllChapters());
