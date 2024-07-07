@@ -73,6 +73,36 @@
     <!--        }-->
     <!--    </style>-->
     <style>
+        .navbar-default {
+            background-color: #1c80c3;
+        }
+        .examnavbar-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .examnavbar-brand {
+            color: white !important;
+            font-size: 20px;
+
+        }
+
+        .examcontainer-fluid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav.examnavbar-nav {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav.examnavbar-nav li {
+            list-style: none;
+        }
         .mega {
             width: 100px;
             /* Độ rộng của thẻ cha */
@@ -221,6 +251,8 @@
             <!-- /.navbar-top-links -->
             <!-- /.navbar-static-side -->
         </nav>
+
+
         <!-- Left navbar-header -->
         <div th:fragment="left_side" class="sidebar" role="navigation" sec:authorize="isAuthenticated()">
             <div class="wp-sidebar-nav">

@@ -1,31 +1,46 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/libary/lib.html::head('Đề thi')"></head>
-<body class="fix-sidebar">
+<body >
 <!-- Preloader -->
 <div class="preloader">
     <div class="cssload-speeding-wheel"></div>
 </div>
-<div id="wrapper">
+<div >
     <!-- Top Navigation -->
-    <nav th:replace="/libary/lib.html::nav"></nav>
+    <nav  class="navbar navbar-default  ">
+        <div class="examcontainer-fluid">
+            <div class="examnavbar-header">
+                <a  class="examnavbar-brand"  th:text="'Học sinh: ' + ${session.fullName}"></a>
+            </div>
+            <ul class="nav examnavbar-nav examnavbar-right">
+                <li>
+                    <button class="btn btn-danger" id="exitExamBtn" onclick="confirmExitExam()">Thoát khỏi bài thi</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <!-- End Top Navigation -->
     <!-- Left navbar-header -->
-    <div th:replace="/libary/lib.html::left_side"></div>
+
     <!-- Left navbar-header end -->
     <!-- Page Content -->
-    <div id="page-wrapper">
-        <div class="container-fluid">
+    <div >
+        <div class="container-fluid" style="padding: 20px 200px">
             <div class="row">
-                <div class="col-lg-10">
+                <div class="col-lg-9">
                     <div class="white-box">
                         <div class="card-body">
-                            <h3></h3>
-                            <div id="timer" class="mb-3" style="font-size: 20px; color: red;"></div> <!-- Timer Display -->
-
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2>Đề thi: [[${newExam.getName()}]]</h2>
+                                <div id="timer" class="timer-circle"></div> <!-- Timer Display -->
+                            </div>
                             <div id="quiz-container">
                                 <div th:each="examDetail, iterStat : ${examDetailList}" th:attr="data-index=${iterStat.index}" class="question" th:classappend="${iterStat.index == currentIndex} ? 'active' : 'inactive'">
                                     <p class="font-weight-bold">Câu [[${iterStat.index + 1}]]: <span class="latex-content" th:utext="${examDetail.getQuiz().statement}"></span></p>
+                                    <p th:if="${examDetail.getQuiz().getImage()} != null">
+                                        <img th:src="${examDetail.getQuiz().getImage()}" alt="">
+                                    </p>
                                     <ul class="list-group">
                                         <li th:each="quizOption, optStat : ${examDetail.getQuiz().quizOptions}" class="list-group-item">
                                             <label class="d-flex align-items-center">
@@ -40,17 +55,21 @@
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <button id="prevBtn" class="btn btn-secondary" onclick="changeQuestion(-1)">Câu trước</button>
-                                <button id="nextBtn" class="btn btn-primary" onclick="changeQuestion(1)">Câu tiếp theo</button>
-                                <button id="submitBtn" class="btn btn-danger" style="display:none" onclick="checkSubmitExam()">Nộp bài</button>
+
+
+                                <img id="prevBtn" src="/icons/previous_icon.png" alt="Câu trước" style="width: 40px" onclick="changeQuestion(-1)" />
+
+                                <img id="nextBtn" src="/icons/next_icon.png" alt="Câu trước" style="width: 40px" onclick="changeQuestion(1)">
+                                <button id="submitBtn" class="btn btn-success" style="display:none" onclick="checkSubmitExam()">Nộp bài</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-2">
+                <div class="col-lg-3">
                     <div class="white-box">
                         <div class="question-navigation">
+                            <h2>Danh sách câu hỏi</h2>
                             <ul>
                                 <li th:each="examDetail, iterStat : ${examDetailList}" th:attr="data-index=${iterStat.index}" th:classappend="${examDetail.selectedOption != null} ? 'answered' : '' + (examDetail.review ? ' review' : '')">
                                     <a href="javascript:void(0)" th:onclick="navigateToQuestion([[${iterStat.index}]])">
@@ -126,6 +145,7 @@
             examDetails.forEach(detail => {
                 if (detail.id === examDetail.id) {
                     detail.selectedOption = quizOption;
+                    console.log(detail);
                 }
             });
         } else {
@@ -157,11 +177,21 @@
     function checkSubmitExam() {
         const unanswered = examDetails.some(detail => !detail.selectedOption);
         if (unanswered) {
-            if (!confirm('Bạn chưa trả lời hết tất cả câu hỏi. Bạn có chắc chắn muốn nộp bài không?')) {
+            if (!confirm('Bạn chưa trả lời hết tất cả câu hỏi. Bạn có chắc chắn muốn thoát khỏi bài thi không?')) {
                 return;
             }
         }
         submitExam();
+    }
+    function confirmExitExam() {
+        const unanswered = examDetails.some(detail => !detail.selectedOption);
+        if (unanswered) {
+            if (!confirm('Bạn chưa trả lời hết tất cả câu hỏi. Bạn có chắc chắn muốn nộp bài không?')) {
+                return;
+            }
+        }
+        window.location.href = `/`;
+
     }
 
     function submitExam() {
@@ -232,6 +262,9 @@
 
         showQuestion(currentIndex);
         updateTimer();
+        const url = new URL(window.location);
+        url.searchParams.delete('quizMatrixId');
+        window.history.replaceState({}, document.title, url.pathname);
     });
 </script>
 
@@ -241,6 +274,18 @@
 <footer th:replace="/libary/lib.html::footer"></footer>
 
 <style>
+    .timer-circle {
+        width: 60px;
+        height: 60px;
+        border: 2px solid #1c80c3;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        color: black;
+    }
+
     .question-navigation {
         height: 100%;
     }
@@ -265,13 +310,13 @@
         align-items: center;
         width: 40px;
         height: 40px;
-        line-height: 40px;
         text-align: center;
-        border: 1px solid #1c80c3;
+        border: 2px solid #1c80c3;
         border-radius: 50%;
         text-decoration: none;
         color: #1c80c3;
         font-size: 14px;
+        box-sizing: border-box;
     }
 
     .question-navigation li.answered a {
@@ -312,4 +357,5 @@
         display: none;
     }
 </style>
+
 </html>

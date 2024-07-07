@@ -3,6 +3,7 @@ package org.example.mathquiz.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import org.example.mathquiz.Entities.*;
 import org.example.mathquiz.RequesEntities.RequestPushExam;
@@ -126,36 +127,51 @@ public class ExamController {
         return "redirect:/exams";
     }
     @GetMapping("/pushNewExam")
-    public String pushNewExam(@ModelAttribute("quizMatrixId") String quizMatrixId, @NotNull Model model) {
+    public String pushNewExam(@ModelAttribute("quizMatrixId") String quizMatrixId, @NotNull Model model, HttpServletRequest request) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
         QuizMatrix quizMatrix = quizMatrixService.getQuizMatrixById(quizMatrixId);
-        User user = userService.findByUserName("user");
-        RequestPushExam requestPushExam = new RequestPushExam();
-        requestPushExam.setQuizMatrix(quizMatrix);
-        requestPushExam.setDuration(quizMatrix.getDefaultDuration());
-        requestPushExam.setName(quizMatrix.getName());
-        requestPushExam.setNumOfQuiz(quizMatrix.getNumOfQuiz());
-        requestPushExam.setUser(user);
-        Exam newExam = examService.addExamFromQuizMatrix(requestPushExam);
+        User user = userService.findByUserName(username);
+        if (user != null) {
+            RequestPushExam requestPushExam = new RequestPushExam();
+            requestPushExam.setQuizMatrix(quizMatrix);
+            requestPushExam.setDuration(quizMatrix.getDefaultDuration());
+            requestPushExam.setName(quizMatrix.getName());
+            requestPushExam.setNumOfQuiz(quizMatrix.getNumOfQuiz());
+            requestPushExam.setUser(user);
+            Exam newExam = examService.addExamFromQuizMatrix(requestPushExam);
 
-        List<Quiz> quizList = quizMatrix.getQuizs();
-        Collections.shuffle(quizList, new Random());
-        RequestPushExamDetailList requestPushExamDetailList = new RequestPushExamDetailList();
-        requestPushExamDetailList.setExam(newExam);
-        requestPushExamDetailList.setQuizList(quizList);
-        List<ExamDetail> examDetailList = examDetailService.addExamDetailList(requestPushExamDetailList);
-//        List<QuizOption> quizOptionList = quizOptionService.getAllQuizOptions();
-        RequestPushResult requestPushResult = new RequestPushResult();
-        requestPushResult.setTotalQuiz(newExam.getNumberOfQuiz());
-        requestPushResult.setStartTime(new Date());
-        requestPushResult.setUser(user);
-        requestPushResult.setExam(newExam);
-        resultService.addResult(requestPushResult);
+            List<Quiz> quizList = quizMatrix.getQuizs();
+            Collections.shuffle(quizList, new Random());
+            for (Quiz quiz : quizList) {
+                Collections.shuffle(quiz.getQuizOptions(), new Random());
+            }
+            RequestPushExamDetailList requestPushExamDetailList = new RequestPushExamDetailList();
+            requestPushExamDetailList.setExam(newExam);
+            requestPushExamDetailList.setQuizList(quizList);
+            List<ExamDetail> examDetailList = examDetailService.addExamDetailList(requestPushExamDetailList);
 
-//        model.addAttribute("quizOptionList", quizOptionList);
-        model.addAttribute("examDetailList", examDetailList);
-        model.addAttribute("newExam", newExam);
-        model.addAttribute("currentIndex", 0); // Thêm chỉ số câu hỏi hiện tại
-        return "exam/doExam";
+            RequestPushResult requestPushResult = new RequestPushResult();
+            requestPushResult.setTotalQuiz(newExam.getNumberOfQuiz());
+            requestPushResult.setStartTime(new Date());
+            requestPushResult.setUser(user);
+            requestPushResult.setExam(newExam);
+            resultService.addResult(requestPushResult);
+
+            model.addAttribute("examDetailList", examDetailList);
+            model.addAttribute("newExam", newExam);
+            model.addAttribute("currentIndex", 0); // Thêm chỉ số câu hỏi hiện tại
+            request.getSession().setAttribute("fullName", user.getFullName());
+            return "exam/doExam";
+        }
+        return "user/login";
     }
 
     @PostMapping("/submitExam")
