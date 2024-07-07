@@ -27,4 +27,5 @@ public class Menu {
     private Menu parent;
     @OneToMany(mappedBy = "parent")
     private List<Menu> children;
+
 }

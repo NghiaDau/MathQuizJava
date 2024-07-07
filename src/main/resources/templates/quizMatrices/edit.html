@@ -43,9 +43,9 @@
                                 <label class="form-label" for="status">Trạng Thái:</label><span
                                     class="text-danger">*</span>
                                 <select class="form-control" id="status" name="status">
-                                    <option value="">-- Chọn Trạng Thái --</option>
-                                    <option value="1">Đang Sử Dụng</option>
-                                    <option value="0">Không Sử Dụng</option>
+                                    <option value="" disabled>-- Chọn Trạng Thái --</option>
+                                    <option value="1" th:selected="${quizMatrix.status == true}">Đang Sử Dụng</option>
+                                    <option value="0" th:selected="${quizMatrix.status == false}">Không Sử Dụng</option>
                                 </select>
                                 <span class="text-danger"
                                       th:if="${#fields.hasErrors('status')}"

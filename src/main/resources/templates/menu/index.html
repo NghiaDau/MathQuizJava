@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('Danh sách chương học')"></head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <h3 class="box-title m-b-0">Danh sách Menu</h3>
+                        <div class="form-inline padding-bottom-15">
+                            <div class="row">
+                                <div class="col-sm-6 text-right m-b-20">
+                                    <div class="form-group">
+                                        <input id="demo-input-search2" type="text" placeholder="Tìm kiếm"
+                                               class="form-control" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table id="demo-foo-addrow" class="table table-bordered table-hover toggle-circle"
+                               data-page-size="5">
+                            <thead>
+                            <tr>
+                                <th data-sort-initial="false" data-toggle="true">Ten</th>
+                                <th data-sort-initial="false"  data-toggle="true" class="min-width">Trang Thai</th>
+                                <th data-sort-initial="true"   data-toggle="true" class="min-width">Bat</th>
+                                <th data-sort-initial="false" data-toggle="true" >Cha
+                                <th data-sort-initial="false" data-toggle="true" class="min-width">Hoat Dong</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="menu : ${menus}">
+                                <td th:text="${menu.name}"></td>
+                                <td th:text="${menu.enabled ? 'Đang hoạt động' : 'Không hoạt động'}"></td>
+                                <td th:text="${menu.level}"></td>
+                                <td th:text="${menu.parent?.name}"></td>
+                                <td>
+                                    <a th:href="@{'/menus/edit/'+${menu.id_menu}}" type="button"
+                                       class="btn btn-sm btn-icon btn-pure btn-outline update-row-btn"
+                                       data-toggle="tooltip" style="color:darkgreen" data-original-title="Cập nhật">Cập
+                                        nhật</a>
+                                    <a th:href="@{'/menus/delete/'+${menu.id_menu}}" type="button"
+                                       class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn"
+                                       data-toggle="tooltip" style="color:red" data-original-title="Xoá">Xoá</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="5">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a th:href="@{/menus/add}" class="btn btn-primary">Thêm Menu</a>
+                                        <div class="text-right">
+                                            <ul class="pagination"></ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="/libary/lib.html::footer"></footer>
+    </div>
+</div>
+
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+</body>
+
+</html>

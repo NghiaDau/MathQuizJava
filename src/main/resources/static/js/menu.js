@@ -17,7 +17,7 @@ function dataMenus() {
             return response.json();
         })
         .then(function (menus) {
-            setCachedData('cachedMenus', JSON.stringify(menus));
+            setCachedData('cachedMenus', menus);
             return menus;
         })
         .catch(function (error) {
@@ -25,15 +25,27 @@ function dataMenus() {
         });
 }
 
-//clearMenuCache('cachedMenus');
+function refresh(){
+    const menuContainer = document.getElementById("menu");
+    menuContainer.innerHTML = '';
+    clearMenuCache('cachedMenus');
+    dataMenus().then(function (menus) {
+        console.log('Fetched menus from API',menus);
+        displayMenuIds(menus, menuContainer);
+    });
+
+}
+// clearMenuCache('cachedMenus');
 let cachedMenus = getCachedData('cachedMenus');
 const menuContainer = document.getElementById("menu");
 if (cachedMenus) {
-    console.log('Using cached menus:', cachedMenus);
+    const menuContainer = document.getElementById("menu");
+    menuContainer.innerHTML = '';
+    console.log('Using cached menus', cachedMenus );
     displayMenuIds(cachedMenus, menuContainer);
 } else {
     dataMenus().then(function (menus) {
-        console.log('Fetched menus from API:', menus);
+        console.log('Fetched menus from API', menus);
         displayMenuIds(menus, menuContainer);
     });
 }
@@ -42,40 +54,43 @@ function displayMenuIds(data, parentElement) {
     data.forEach(item => {
         if (item.level >= 3) {
             parentElement.style.top = '0%';
-            parentElement.style.left = '100px';
+            parentElement.style.left = '160px';
             parentElement.style.position = 'absolute';
         }
+
         const li = document.createElement('li');
         li.className = 'mega';
 
         const a = document.createElement('a');
         a.className = 'waves-effect waves-light';
         a.href = item.url;
+        if (item.level > 1) {
+            li.style.width = '160px';
+            li.style.height = '42px';
+        }
 
         const span = document.createElement('span');
         span.className = 'hidden-xs';
         span.textContent = item.name;
-
         a.appendChild(span);
         li.appendChild(a);
         li.id = item.id_menu;
+        parentElement.appendChild(li);
 
         if (item.children && item.children.length > 0) {
             const ul = document.createElement('ul');
-
             ul.classList.add('hidden');
             displayMenuIds(item.children, ul);
             li.appendChild(ul);
+
             li.addEventListener('mouseover', () => {
                 ul.classList.remove('hidden');
             });
 
-            ul.addEventListener('mouseover', () => {
+            ul.addEventListener('mouseout', () => {
                 ul.classList.add('hidden');
             });
-
         }
-        parentElement.appendChild(li);
     });
 }
 

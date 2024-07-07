@@ -1,4 +1,4 @@
-package org.example.mathquiz.Controller;
+package org.example.mathquiz.Controller.API;
 
 import org.example.mathquiz.Entities.Chapter;
 import org.example.mathquiz.Entities.Grade;

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('Chỉnh sửa chương học')"></head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <h3 class="box-title m-b-20">Chỉnh sửa chương</h3>
+                        <form th:action="@{/menus/edit}" th:object="${menu}" method="post" id="chapterForm"><div class="mb-4">
+                                <input type="hidden" th:field="*{id_menu}">
+                                <label class="form-label" for="name">Tên Menu:</label><span
+                                    class="text-danger">*</span>
+                                <input class="form-control" type="text" placeholder="Nhập tên Menu" th:field="*{name}"
+                                       id="name" required autofocus>
+                                <span class="text-danger" th:if="${#fields.hasErrors('name')}"
+                                      th:errors="*{name}"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="name">Tên chương:</label><span
+                                    class="text-danger">*</span>
+                                <input class="form-control" type="text" placeholder="Nhập URL" th:field="*{url}"
+                                       id="url" required autofocus>
+                                <span class="text-danger" th:if="${#fields.hasErrors('url')}"
+                                      th:errors="*{url}"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="menuEnableParent">Trang Thai:</label><span
+                                    class="text-danger">*</span>
+                                <select class="form-control" id="menuEnableParent" name="enabled" >
+                                    <option th:value="true" th:text="'Đang hoạt động'" th:selected="${menu.enabled == true}"></option>
+                                    <option th:value="false" th:text="'Không hoạt động'" th:selected="${menu.enabled == false}"></option>
+                                </select>
+                                <span class="text-danger"
+                                      th:if="${#fields.hasErrors('enabled')}"
+                                      th:errors="*{enabled}"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="menuParent">Loại :</label>
+                                <select class="form-control" id="menuParent" name="menuParent" th:field="*{parent}">
+                                    <option value="" >-- Chọn loại --</option>
+                                    <option th:each="menutmp : ${menus}"
+                                            th:text="${menutmp.name}"
+                                            th:value="${menutmp.id_menu}"
+                                            th:selected="${menu.parent != null and menu.parent.getId_menu() != null and menutmp.getId_menu() == menu.parent.getId_menu()}"
+                                    ></option>
+                                </select>
+                                <span class="text-danger"
+                                      th:if="${#fields.hasErrors('parent')}"
+                                      th:errors="*{parent}"></span>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <input type="submit" class="btn btn-primary" value="Lưu"/>
+                                <a th:href="@{/menus}" class="btn btn-secondary">Trở lại danh sách</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="/libary/lib.html::footer"></footer>
+    </div>
+</div>
+
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+</body>
+
+</html>
