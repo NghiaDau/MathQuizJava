@@ -47,7 +47,7 @@
                             <div class="mb-4">
                                 <label class="form-label" for="time">Thời gian thi:</label><span
                                     class="text-danger">*</span>
-                                <input class="form-control" type="text" placeholder="Nhập thời gian thi"
+                                <input class="form-control" type="number" placeholder="Nhập thời gian thi"
                                        th:field="*{defaultDuration}" id="time" required autofocus>
                                 <span class="text-danger" th:if="${#fields.hasErrors('defaultDuration')}"
                                       th:errors="*{defaultDuration}"></span>

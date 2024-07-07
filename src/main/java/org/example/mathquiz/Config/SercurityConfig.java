@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -57,7 +58,8 @@ public class SercurityConfig {
                                 .passwordParameter("passwordHash")
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/")
-                                .failureUrl("/login?error")
+                                .failureUrl("/login?error=true")
+                                .failureHandler(authenticationFailureHandler())
                                 .permitAll()
                 )
                 .rememberMe(rememberMe ->
@@ -74,5 +76,9 @@ public class SercurityConfig {
                 )
                 .httpBasic(httpBasic -> httpBasic.realmName("hutech"))
                 .build();
+    }
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
     }
 }

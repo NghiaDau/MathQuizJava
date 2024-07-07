@@ -3,6 +3,7 @@ package org.example.mathquiz.Entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class QuizMatrix {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createDate;
+
     private Integer defaultDuration;
     private String name;
     private boolean Status;

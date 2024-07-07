@@ -1,5 +1,6 @@
 package org.example.mathquiz.Controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.example.mathquiz.Entities.*;
 import org.example.mathquiz.RequesEntities.RequestModel;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +27,7 @@ import java.util.Random;
 
 @Controller
 @RequestMapping("/quizMatrices")
+
 public class QuizMatrixController {
     @Autowired
     private QuizMatrixService quizMatrixService;
@@ -60,9 +63,20 @@ public class QuizMatrixController {
     }
 
     @PostMapping("/add")
-    public String addChapter(@ModelAttribute("chapterModel") RequestModel chapterModel,
+    public String addChapter(@Valid @ModelAttribute("chapterModel") RequestModel chapterModel,
                              BindingResult bindingResult,
                              Model model) {
+        if (bindingResult.hasErrors()) {
+            var errors = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toArray(String[]::new);
+            model.addAttribute("errors", errors);
+            for(var error : errors) {
+                System.out.println(error);
+            }
+            return "quizMatrices/add";
+        }
         List<Quiz> questionVMs = Quizs;
         List<QuizOption> quizOptionList = new ArrayList<>();
         System.out.println(chapterModel.getChapter_id());
