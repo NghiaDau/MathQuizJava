@@ -1,6 +1,7 @@
 package org.example.mathquiz.Entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class Chapter {
 
     @ManyToOne
     @JsonBackReference(value = "grade-chapter")
+
     @JoinColumn(name = "grade_id", nullable = false)
     private Grade grade;
 
@@ -37,6 +39,7 @@ public class Chapter {
 
     @JsonManagedReference(value = "chapter-quizMatrix")
     @OneToMany(mappedBy = "chapter")
+    @JsonIgnore
     private List<QuizMatrix> quizMatrices;
 
     public static Chapter fromRequestModel(RequestModel requestModel) {

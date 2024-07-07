@@ -37,12 +37,15 @@ public class ResultService {
         result.setStartTime(requestPushResult.getStartTime());
         return resultRepository.save(result);
     }
-    public Result updateResult(RequestUpdateResult requestUpdateResult) {
-        Result result = getResultById(requestUpdateResult.getId()).orElseThrow(()-> new IllegalArgumentException("Result not found!"));
-        result.setScore(requestUpdateResult.getScore());
-        result.setEndTime(requestUpdateResult.getEndTime());
-        result.setCorrectAnswers(requestUpdateResult.getCorrectAnswers());
-        result.setId(requestUpdateResult.getId());
+//    public Result updateResult(RequestUpdateResult requestUpdateResult) {
+//        Result result = getResultById(requestUpdateResult.getId()).orElseThrow(()-> new IllegalArgumentException("Result not found!"));
+//        result.setScore(requestUpdateResult.getScore());
+//        result.setEndTime(requestUpdateResult.getEndTime());
+//        result.setCorrectAnswers(requestUpdateResult.getCorrectAnswers());
+//        result.setId(requestUpdateResult.getId());
+//        return resultRepository.save(result);
+//    }
+    public Result updateResult(Result result) {
         return resultRepository.save(result);
     }
     public void deleteResultById(String id) {

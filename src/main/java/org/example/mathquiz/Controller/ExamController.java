@@ -21,6 +21,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -150,30 +153,74 @@ public class ExamController {
 
 //        model.addAttribute("quizOptionList", quizOptionList);
         model.addAttribute("examDetailList", examDetailList);
+        model.addAttribute("newExam", newExam);
         model.addAttribute("currentIndex", 0); // Thêm chỉ số câu hỏi hiện tại
         return "exam/doExam";
     }
 
     @PostMapping("/submitExam")
-    public ResponseEntity<String> submitExam(@RequestBody List<ExamDetail> examDetailList, Model model) {
+    public ResponseEntity<Result> submitExam(@RequestBody List<ExamDetail> examDetailList) {
+        Date endTime = new Date();
+        int numOfCorrectAnswer = 0;
+        double score = 0;
+
         if (examDetailList != null && !examDetailList.isEmpty()) {
             for (ExamDetail detail : examDetailList) {
-                ExamDetail currentExamDetail = examDetailService.getExamDetailById(detail.getId()).orElseThrow();
-                System.out.println("Current ExamDetail: " + currentExamDetail.getSelectedOption()   );
+                // Fetch the current ExamDetail from the database
+                ExamDetail currentExamDetail = examDetailService.getExamDetailById(detail.getId())
+                        .orElseThrow(() -> new RuntimeException("ExamDetail not found"));
+
+                // Update the selected option
                 currentExamDetail.setSelectedOption(detail.getSelectedOption());
-                System.out.println("Updated ExamDetail: " + currentExamDetail.getSelectedOption());
-                try {
-                    ExamDetail newDetail = examDetailService.updateExamDetail(currentExamDetail);
-                    System.out.println("Saved ExamDetail: " + newDetail.getSelectedOption());
-                } catch (Exception e) {
-                    System.out.println("Error updating ExamDetail with ID: " + detail.getId() + " - " + e.getMessage());
+
+                // Save the updated ExamDetail back to the database
+                ExamDetail newDetail = examDetailService.updateExamDetail(currentExamDetail);
+
+                // Check if the selected option is correct
+                if (newDetail.getSelectedOption() != null && Boolean.TRUE.equals(newDetail.getSelectedOption().getIsCorrect())) {
+                    numOfCorrectAnswer++;
                 }
             }
-        } else {
-            System.out.println("Received an empty or null list.");
+
+            // Calculate the score
+            score = (double) numOfCorrectAnswer / examDetailList.size() * 10;
         }
-        model.addAttribute("message", "Exam submitted successfully!");
-        return ResponseEntity.ok("Exam submitted successfully!"); // Returning a response
+
+        // Fetch the Result associated with the Exam
+        ExamDetail firstExamDetail = examDetailService.getExamDetailById(examDetailList.get(0).getId())
+                .orElseThrow(() -> new RuntimeException("ExamDetail not found"));
+        Result currentResult = resultService.findByExamId(firstExamDetail.getExam().getId());
+
+        // Update the Result with the end time, score, and number of correct answers
+        currentResult.setEndTime(endTime);
+        currentResult.setScore(score);
+        currentResult.setCorrectAnswers(numOfCorrectAnswer);
+
+        // Save the updated Result back to the database
+        Result newResult = resultService.updateResult(currentResult);
+
+        // Return the Result as JSON
+        return ResponseEntity.ok(newResult);
+    }
+
+    @GetMapping("/examResult")
+    public String showResult(@RequestParam("score") double score,
+                             @RequestParam("correctAnswers") int correctAnswers,
+                             @RequestParam("startTime") String startTime,
+                             @RequestParam("endTime") String endTime, Model model) {
+        // Adjust the pattern to match the date-time string format being received
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        LocalDateTime start = LocalDateTime.parse(startTime, formatter);
+        LocalDateTime end = LocalDateTime.parse(endTime, formatter);
+        Duration duration = Duration.between(start, end);
+
+        long seconds = duration.getSeconds();
+        model.addAttribute("score", score);
+        model.addAttribute("correctAnswers", correctAnswers);
+        model.addAttribute("endTime", endTime);
+        model.addAttribute("duration", seconds);
+
+        return "result/examResult";
     }
 
 }
