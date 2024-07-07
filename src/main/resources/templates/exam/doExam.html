@@ -3,7 +3,7 @@
 <head th:replace="/libary/lib.html::head('Đề thi')"></head>
 <body >
 <!-- Preloader -->
-<div class="preloader">
+<div id="loading-spinner" class="preloader">
     <div class="cssload-speeding-wheel"></div>
 </div>
 <div >
@@ -195,6 +195,7 @@
     }
 
     function submitExam() {
+        document.getElementById('loading-spinner').style.display = 'block';
         console.log('Submitting exam:', examDetails); // Debug
         fetch('/exams/submitExam', {
             method: 'POST',
@@ -232,7 +233,10 @@
             })
             .catch(error => {
                 console.error('Error submitting exam:', error);
-            });
+            })
+            .finally(() => {
+                    document.getElementById('loading-spinner').style.display = 'none'; // Hide the loading spinner
+                });
     }
 
     document.addEventListener('DOMContentLoaded', function () {

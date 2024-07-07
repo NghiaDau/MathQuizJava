@@ -1,22 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="/libary/lib.html::head('Kết quả')"></head>
+<head th:replace="/libary/lib.html::head('Kết quả')">
+    <!-- Include Bootstrap CSS -->
+
+</head>
+<style>
+    .circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 48px;
+        font-weight: bold;
+        border: 2px solid #1c80c3;
+        margin: auto;
+        color: #1c80c3;
+    }
+</style>
 <body class="fix-sidebar">
 <div class="preloader">
     <div class="cssload-speeding-wheel"></div>
 </div>
-<div id="wrapper">
+<div id="wrapper" class="d-flex flex-column">
     <nav th:replace="/libary/lib.html::nav"></nav>
     <div th:replace="/libary/lib.html::left_side"></div>
-    <div id="page-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="white-box">
-                        <h2>Kết quả bài thi</h2>
-                        <p>Điểm: <span id="score"></span></p>
-                        <p>Số câu đúng: <span th:text="${correctAnswers}"></span></p>
-                        <p>Thời gian làm bài: <span id="duration"></span></p>
+    <div id="page-wrapper" class="flex-grow-1 d-flex justify-content-center align-items-center">
+        <div class="">
+                <div class="card shadow p-30" style="width: 400px">
+                    <h2 class="card-title text-center mb-4">Kết quả bài thi</h2>
+                    <div class="row d-flex align-items-center justify-content-between" >
+                        <div class="circle">
+                            <span id="score"></span>
+                        </div>
+                        <div class="col text-right">
+
+                            <p class="card-text">Số câu đúng: <span th:text="${correctAnswers}" class="font-weight-bold"></span></p>
+                            <p class="card-text">Thời gian làm bài: <span id="duration" class="font-weight-bold"></span></p>
                     </div>
                 </div>
             </div>
@@ -25,6 +47,8 @@
 </div>
 <th:block th:replace="/libary/lib.html::foot"></th:block>
 <footer th:replace="/libary/lib.html::footer"></footer>
+
+<!-- Include Bootstrap JS and dependencies -->
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
@@ -54,12 +78,12 @@
         document.getElementById('score').textContent = formatScore(score);
 
         // Clean up URL
-        const url = new URL(window.location);
-        url.searchParams.delete('score');
-        url.searchParams.delete('correctAnswers');
-        url.searchParams.delete('startTime');
-        url.searchParams.delete('endTime');
-        window.history.replaceState({}, document.title, url.pathname);
+        // const url = new URL(window.location);
+        // url.searchParams.delete('score');
+        // url.searchParams.delete('correctAnswers');
+        // url.searchParams.delete('startTime');
+        // url.searchParams.delete('endTime');
+        // window.history.replaceState({}, document.title, url.pathname);
     });
 </script>
 </body>

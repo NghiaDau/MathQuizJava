@@ -229,13 +229,11 @@ public class ExamController {
         LocalDateTime start = LocalDateTime.parse(startTime, formatter);
         LocalDateTime end = LocalDateTime.parse(endTime, formatter);
         Duration duration = Duration.between(start, end);
-
         long seconds = duration.getSeconds();
         model.addAttribute("score", score);
         model.addAttribute("correctAnswers", correctAnswers);
         model.addAttribute("endTime", endTime);
         model.addAttribute("duration", seconds);
-
         return "result/examResult";
     }
 
