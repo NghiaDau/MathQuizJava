@@ -35,7 +35,7 @@ public class CustomOAuth2User implements OAuth2User,UserDetails   {
         return user.getId();
     }
     public String disPlayAvatar(){
-        return user.getAvatarUrl();
+        return user==null ? null:user.getAvatarUrl();
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -50,7 +50,7 @@ public class CustomOAuth2User implements OAuth2User,UserDetails   {
 
     @Override
     public String getUsername() {
-        return oauth2User.getAttribute("name");
+        return oauth2User.<String>getAttribute("email");
     }
 
 

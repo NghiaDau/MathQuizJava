@@ -142,15 +142,15 @@ public class UserService implements UserDetailsService {
 //                .build();
     }
 
-    public void saveOauthUser(String email, @NotNull String username) {
+    public void saveOauthUser(String email) {
         if(userRepository.findByEmail(email)!=null)
             return;
         var user = new User();
-        user.setUserName(username);
+        user.setUserName(email);
         user.setEmail(email);
         Date date = new Date(System.currentTimeMillis());
         user.setCreateDate(date);
-        user.setPasswordHash(new BCryptPasswordEncoder().encode(username));
+        user.setPasswordHash(new BCryptPasswordEncoder().encode(email));
         user.setProvider(Provider.GOOGLE.value);
         user.getRoles().add(roleRepository.findFirstById(Role.USER.value));
         userRepository.save(user);

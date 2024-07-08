@@ -87,7 +87,7 @@ public class SercurityConfig {
                                         (request, response,
                                          authentication) -> {
                                             CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-                                            userService.saveOauthUser(oauthUser.getEmail(), oauthUser.getName());
+                                            userService.saveOauthUser(oauthUser.getEmail());
                                             response.sendRedirect("/");
                                         }
                                 )
