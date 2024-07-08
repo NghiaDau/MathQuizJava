@@ -26,6 +26,10 @@ public class SercurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private final UserService userService;
+    @Autowired
+    private SuccessHandle successHandle;
+    @Autowired
+    private FailureHandle failureHandle;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -64,9 +68,11 @@ public class SercurityConfig {
                                 .usernameParameter("userName")
                                 .passwordParameter("passwordHash")
                                 .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/")
+                                .successHandler(successHandle)
+                                .failureHandler(failureHandle)
+//                                .defaultSuccessUrl("/")
                                 .failureUrl("/login?error=true")
-                                .failureHandler(authenticationFailureHandler())
+//                                .failureHandler(authenticationFailureHandler())
                                 .permitAll()
                 )
                 .oauth2Login(

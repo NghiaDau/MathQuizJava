@@ -23,6 +23,7 @@
                     <div class="white-box">
                         <h3 class="box-title m-b-20">Chỉnh sửa cấp</h3>
                         <form th:action="@{/levels/edit}" th:object="${level}" method="post" id="levelForm">
+                            <input type="hidden" th:field="*{id}">
                             <div class="mb-4">
                                 <label class="form-label" for="name">Tên cấp:</label><span class="text-danger">*</span>
                                 <input class="form-control" type="text" placeholder="Nhập tên cấp" th:field="*{name}" id="name" required autofocus>

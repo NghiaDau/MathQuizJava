@@ -23,6 +23,7 @@
                     <div class="white-box">
                         <h3 class="box-title m-b-20">Chỉnh sửa cấp</h3>
                         <form th:action="@{/quizMatrices/edit}" th:object="${quizMatrix}" method="post" id="levelForm">
+                            <input type="hidden" th:field="*{id}">
                             <div class="mb-4">
                                 <label class="form-label" for="nameQuizMatrix">Tên đề thi:</label><span
                                     class="text-danger">*</span>
