@@ -11,6 +11,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.*;
 
@@ -21,6 +25,7 @@ import java.util.*;
 @Builder
 @Entity
 public class User implements UserDetails {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -42,6 +47,9 @@ public class User implements UserDetails {
     private String resetPasswordToken;
     private Date resetPasswordTokenExpired;
 
+    @Column(name = "provider", length = 50)
+    private String provider;
+
     @ManyToOne
     @JsonBackReference(value = "grade-user")
     @JoinColumn(name = "grade_id")
@@ -62,6 +70,8 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -104,4 +114,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

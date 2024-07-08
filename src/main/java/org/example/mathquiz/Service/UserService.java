@@ -9,6 +9,7 @@ import org.example.mathquiz.RequesEntities.RequestUpdateUser;
 import org.example.mathquiz.RequesEntities.RequestUser;
 import org.example.mathquiz.Utilities.FileUtils;
 import org.example.mathquiz.Utilities.RandomUtils;
+import org.example.mathquiz.constants.Provider;
 import org.example.mathquiz.constants.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -39,8 +40,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private IRoleRepository roleRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
     @Autowired
     private JavaMailSender emailSender;
@@ -142,6 +142,19 @@ public class UserService implements UserDetailsService {
 //                .build();
     }
 
+    public void saveOauthUser(String email, @NotNull String username) {
+        if(userRepository.findByEmail(email)!=null)
+            return;
+        var user = new User();
+        user.setUserName(username);
+        user.setEmail(email);
+        Date date = new Date(System.currentTimeMillis());
+        user.setCreateDate(date);
+        user.setPasswordHash(new BCryptPasswordEncoder().encode(username));
+        user.setProvider(Provider.GOOGLE.value);
+        user.getRoles().add(roleRepository.findFirstById(Role.USER.value));
+        userRepository.save(user);
+    }
     public void updatePrincipal(User user) {
         UserDetails userDetails = user;
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
@@ -153,9 +166,9 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public boolean checkPass(User user, String oldPassword) {
-        return passwordEncoder.matches(oldPassword, user.getPasswordHash());
-    }
+//    public boolean checkPass(User user, String oldPassword) {
+//        return passwordEncoder.matches(oldPassword, user.getPasswordHash());
+//    }
 
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
