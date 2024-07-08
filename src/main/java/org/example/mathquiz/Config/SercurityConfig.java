@@ -1,7 +1,10 @@
 package org.example.mathquiz.Config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.mathquiz.Entities.CustomOAuth2User;
+import org.example.mathquiz.Service.CustomOAuth2UserService;
 import org.example.mathquiz.Service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -20,6 +23,14 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SercurityConfig {
+    private final CustomOAuth2UserService customOAuth2UserService;
+
+    private final UserService userService;
+    @Autowired
+    private SuccessHandle successHandle;
+    @Autowired
+    private FailureHandle failureHandle;
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserService();
@@ -57,9 +68,29 @@ public class SercurityConfig {
                                 .usernameParameter("userName")
                                 .passwordParameter("passwordHash")
                                 .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/")
+                                .successHandler(successHandle)
+                                .failureHandler(failureHandle)
+//                                .defaultSuccessUrl("/")
                                 .failureUrl("/login?error=true")
-                                .failureHandler(authenticationFailureHandler())
+//                                .failureHandler(authenticationFailureHandler())
+                                .permitAll()
+                )
+                .oauth2Login(
+                        oauth2Login -> oauth2Login
+                                .loginPage("/login")
+                                .failureUrl("/login?error")
+                                .userInfoEndpoint(userInfoEndpoint ->
+                                        userInfoEndpoint
+                                                .userService(customOAuth2UserService)
+                                )
+                                .successHandler(
+                                        (request, response,
+                                         authentication) -> {
+                                            CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
+                                            userService.saveOauthUser(oauthUser.getEmail());
+                                            response.sendRedirect("/");
+                                        }
+                                )
                                 .permitAll()
                 )
                 .rememberMe(rememberMe ->

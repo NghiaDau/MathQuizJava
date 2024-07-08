@@ -29,10 +29,13 @@ public class Quiz {
     @JsonBackReference(value = "quizMatrix-quiz")
     @JoinColumn(name = "quiz_matrix_id", nullable = false)
     private QuizMatrix quizMatrix;
-
+    @Column(length = 3000)
     private String image;
+    @Column(length = 3000)
     private String imageSolution;
+    @Column(length = 3000)
     private String solution;
+    @Column(length = 3000)
     private String statement;
 
     @JsonManagedReference(value = "quiz-quizOption")

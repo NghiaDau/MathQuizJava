@@ -23,6 +23,7 @@
                     <div class="white-box">
                         <h3 class="box-title m-b-20">Chỉnh sửa lựa chọn</h3>
                         <form th:action="@{/quizOptions/edit}" th:object="${quizOption}" method="post" id="quizOptionForm">
+                            <input type="hidden" th:field="*{id}">
                             <div class="mb-4">
                                 <label class="form-label" for="option">Nội dung:</label><span class="text-danger">*</span>
                                 <input class="form-control" type="text" placeholder="Nhập nội dung" th:field="*{option}" id="option" required autofocus>

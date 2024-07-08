@@ -23,6 +23,7 @@ public class QuizOption {
 
     private Boolean isCorrect;
     private String option;
+    @Column(length = 3000)
     private String quizOptionImage;
 
     @ManyToOne

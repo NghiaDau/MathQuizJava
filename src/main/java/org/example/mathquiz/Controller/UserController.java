@@ -3,6 +3,7 @@ package org.example.mathquiz.Controller;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.mathquiz.Entities.CustomOAuth2User;
 import org.example.mathquiz.Entities.User;
 import org.example.mathquiz.RequesEntities.RequestUpdateUser;
 import org.example.mathquiz.RequesEntities.RequestUser;
@@ -13,6 +14,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +35,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @GetMapping("/user")
     public String displayAllUser(Model model) {
 
@@ -92,17 +96,29 @@ public class UserController {
         return "redirect:/login";
     }
 
-    @GetMapping("/user/profile/{id}")
-    public String profile(Model model, @PathVariable String id, HttpSession session) {
-        User user = userService.findById(id);
+    @GetMapping("/user/profile")
+    public String profile(@AuthenticationPrincipal User user1,
+                          @AuthenticationPrincipal CustomOAuth2User user2,
+                          Model model,
+                          HttpSession session) {
+        User user;
+        if (user1==null)
+            user = userService.findByEmail(user2.getEmail());
+        else
+            user = userService.findById(user1.getId());
         model.addAttribute("user", user);
-        session.setAttribute("user", user);
+//        session.setAttribute("user", user);
         return "/user/profile";
     }
 
     @PostMapping("/user/save_profile")
-    public String saveProfile(@Valid RequestUpdateUser requestUpdateUser, BindingResult bindingResult, @RequestParam("photo") MultipartFile multipartFile, RedirectAttributes redirectAttributes,HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
+    public String saveProfile(@Valid RequestUpdateUser requestUpdateUser,
+                              BindingResult bindingResult,
+                              @RequestParam("photo") MultipartFile multipartFile,
+                              RedirectAttributes redirectAttributes,
+                              HttpSession session,
+                              Model model) {
+        User user = (User) session.getAttribute("userLogin");
         if (bindingResult.hasErrors() ) {
             List<String> customErrors = new ArrayList<>();
             List<String> errors = bindingResult.getAllErrors()
@@ -112,7 +128,7 @@ public class UserController {
 
             if (!user.getPhoneNumber().equals(requestUpdateUser.getPhoneNumber())){
                 User tmpUser = userService.findByPhone(requestUpdateUser.getPhoneNumber());
-                if (!tmpUser.getId().equals(user.getId())){
+                if (tmpUser != null && !tmpUser.getId().equals(user.getId())){
                     customErrors.add("Phone Đã Tồn Tại");
                 }
             }
@@ -126,7 +142,7 @@ public class UserController {
         UserDetails userDetails = userService.loadUserByUsername(user1.getUsername());
         userService.updatePrincipal(user1);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
-        return "redirect:/user/profile/" + user1.getId();
+        return "redirect:/user/profile";
     }
 
     @GetMapping("/user/change_password")
@@ -140,7 +156,8 @@ public class UserController {
     @PostMapping("/user/save_change_password")
     public String ChangePassword_Submit(@AuthenticationPrincipal User user, @ModelAttribute("user") RequestChangePassUser requestChangePassUser, Model model, RedirectAttributes redirectAttributes) {
         try {
-            if (userService.checkPass(user, requestChangePassUser.getOldPassword())) {
+            boolean checkpass = passwordEncoder.matches(requestChangePassUser.getOldPassword(), user.getPasswordHash());
+            if (checkpass) {
                 userService.ChangePassword(user, requestChangePassUser.getNewPassword());
                 redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
                 return "redirect:/user";

@@ -23,6 +23,7 @@
                     <div class="white-box">
                         <h3 class="box-title m-b-20">Chỉnh sửa lớp</h3>
                         <form th:action="@{/grades/edit}" th:object="${grade}" method="post" id="gradeForm">
+                            <input type="hidden" th:field="*{id}">
                             <div class="mb-4">
                                 <label class="form-label" for="name">Tên lớp:</label><span class="text-danger">*</span>
                                 <input class="form-control" type="text" placeholder="Nhập tên lớp" th:field="*{name}" id="name" required autofocus>
