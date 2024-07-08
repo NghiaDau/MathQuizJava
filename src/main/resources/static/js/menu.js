@@ -35,7 +35,7 @@ function refresh(){
     });
 
 }
-// clearMenuCache('cachedMenus');
+clearMenuCache('cachedMenus');
 let cachedMenus = getCachedData('cachedMenus');
 const menuContainer = document.getElementById("menu");
 if (cachedMenus) {
