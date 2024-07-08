@@ -263,8 +263,13 @@
 
                         <div>
                             <img id="avatar"
-                                th:src="@{'/getimage/' + ${#authentication.getPrincipal().disPlayAvatar()}}"
-                                alt="user-img" class="img-circle" style="width: 50px;height: 50px">
+                                 th:src="${#authentication.getPrincipal().disPlayAvatar() != null ? '/getimage/' +
+                                    #authentication.getPrincipal().disPlayAvatar() : '/images/defaultuser.png'}"
+                                 alt="user-img" class="img-circle" style="width: 50px;height: 50px">
+
+                            <!--                            <img id="avatar"-->
+<!--                                th:src="@{'/getimage/' + ${#authentication.getPrincipal().disPlayAvatar()}}"-->
+<!--                                alt="user-img" class="img-circle" style="width: 50px;height: 50px">-->
                             <!--                        <img th:src="@{'getimage/' + ${#authentication.getPrincipal().disPlayAvatar()}}" -->
                             <!--                             alt="user-img" class="img-circle" style="width: 50px;height: 50px">-->
                         </div>
@@ -273,7 +278,7 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu animated flipInY">
-                            <li><a th:href="'/user/profile/'+${#authentication.getPrincipal().getId()}"><i
+                            <li><a th:href="'/user/profile'"><i
                                         class="ti-user"></i>Thông tin tài khoản</a></li>
                             <li><a href="/user/change_password"><i class="ti-wallet"></i>Đổi mật khẩu</a></li>
                             <li role="separator" class="divider"></li>

@@ -29,7 +29,9 @@
                     <div class="white-box">
                         <div class="user-bg">
                             <img width="100%" height="100%" alt="user" id="avatar"
-                                 th:src="@{'/getimage/' + ${#authentication.getPrincipal().disPlayAvatar()}}">
+                                 th:src="${#authentication.getPrincipal().disPlayAvatar() != null ? '/getimage/' +
+                                    #authentication.getPrincipal().disPlayAvatar() : '/images/defaultuser.png'}">
+
                         </div>
                     </div>
                 </div>
