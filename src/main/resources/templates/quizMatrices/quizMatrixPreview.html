@@ -2,7 +2,63 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="/libary/lib.html::head('Đề thi')"></head>
+<style>
+    .button-container {
+        display: flex;
+        justify-content: center;
+    }
+    .recent-update-card-title {
+        color: #1C80C3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
+    }
+    .recent-update-card-subtitle {
+        font-size: 18px;
+        margin: 1px;
+    }
+    .icon-text {
+        font-size: 18px;
+    }
+    .icon {
+        width: 20px;
+        margin-right: 10px;
+    }
+    .exam-info, .exam-introduction {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+    }
+    .actions .btn {
+        min-width: 150px;
+    }
+    .custom-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .left-container {
+        display: flex;
+        align-items: baseline; /* Align the h1 elements properly */
+    }
+    .left-container h1 {
+        margin-right: 10px; /* Space between the two h1 elements */
+    }
+    .instructions-container {
+        margin-top: 20px; /* Add margin for spacing */
+        padding:20px 60px; /* Add padding for better look */
+        border: 1px solid #ddd; /* Optional: Add a border for better separation */
+        border-radius: 5px; /* Optional: Add border-radius for rounded corners */
+        background-color: #f9f9f9; /* Optional: Add background color */
+    }
+    .instructions-header {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px; /* Optional: Add margin for spacing */
+    }
+</style>
 <body class="fix-sidebar">
 <!-- Preloader -->
 <div class="preloader">
@@ -19,18 +75,56 @@
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-8">
                     <div class="white-box">
-                        <h2 th:text="'Đề thi: ' + ${quizMatrix.name}"></h2>
-                        <div class="">
-                            <h4 th:text="'Số câu: '+ ${quizMatrix.getNumOfQuiz()}"></h4>
-                            <h4 th:text="'Thời gian: '+ ${quizMatrix.getDefaultDuration() + ' phút'}"></h4>
+                        <h3 class="box-title m-b-20" th:text="${quizMatrix.getChapter().getGrade().getName()} + ' - ' + ${quizMatrix.getChapter().getName()}"></h3>
+                        <div class="exam-info mb-4">
+                            <div class="custom-container">
+                                <div class="left-container">
+                                    <h1>Đề thi:</h1>
+                                    <h1 class="recent-update-card-title" th:text="${quizMatrix.name}"></h1>
+                                </div>
+                                <div class="right-container">
+                                    <p class="recent-update-card-subtitle" th:text="'Số câu: '+ ${quizMatrix.getNumOfQuiz()}"></p>
+                                    <p class="recent-update-card-subtitle" th:text="'Thời gian: '+ ${quizMatrix.getDefaultDuration() + ' phút'}"></p>
+                                </div>
+                            </div>
+
+                            <div class="instructions-container mt-4">
+                                <div class="instructions-header">
+                                    <h3 class="card-title recent-update-card-title" style="font-size: 26px !important;">Hướng dẫn làm bài trắc nghiệm</h3>
+                                </div>
+                                <ul class="list-unstyled">
+                                    <li class="d-flex align-items-center mb-2">
+                                        <img src="/icons/choose_icon.png" alt="Choose Icon" class="icon" style="width: 20px">
+                                        <span class="icon-text">Chọn câu trả lời đúng</span>
+                                    </li>
+                                    <li class="d-flex align-items-center mb-2">
+                                        <img src="/icons/next_icon.png" alt="Next Icon" class="icon" style="width: 20px">
+                                        <span class="icon-text">Chuyển qua câu kế tiếp</span>
+                                    </li>
+                                    <li class="d-flex align-items-center mb-2">
+                                        <img src="/icons/previous_icon.png" alt="Previous Icon" class="icon" style="width: 20px">
+                                        <span class="icon-text">Quay lại câu trước</span>
+                                    </li>
+                                </ul>
+                                <p><strong>Lưu ý:</strong></p>
+                                <ul>
+                                    <li>Những câu chưa chọn đáp án sẽ được tính là câu trả lời sai.</li>
+                                    <li>Nếu bạn thoát ra trong quá trình làm bài thì kết quả sẽ không được tính.</li>
+                                </ul>
+                            </div>
+
                         </div>
-                        <a th:href="@{'/exams/pushNewExam?quizMatrixId=' + ${quizMatrix.id}}" class="btn btn-primary">Thi ngay</a>
-                        <a class="btn btn-outline">Tuỳ chỉnh</a>
+                        <div class="button-container mt-4">
+                            <a th:href="@{'/exams/pushNewExam?quizMatrixId=' + ${quizMatrix.id}}" class="btn btn-primary mr-2">Thi ngay</a>
+                            <a class="btn btn-outline">Tuỳ chỉnh</a>
+                        </div>
                     </div>
                 </div>
+                <br>
             </div>
+        </div>
         </div>
         <footer th:replace="/libary/lib.html::footer"></footer>
     </div>
