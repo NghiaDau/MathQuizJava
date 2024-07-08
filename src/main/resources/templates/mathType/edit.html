@@ -23,6 +23,7 @@
                     <div class="white-box">
                         <h3 class="box-title m-b-20">Chỉnh sửa loại toán</h3>
                         <form th:action="@{/mathTypes/edit}" th:object="${mathType}" method="post" id="mathTypeForm">
+                            <input type="hidden" th:field="*{id}">
                             <div class="mb-4">
                                 <label class="form-label" for="name">Tên loại toán:</label><span class="text-danger">*</span>
                                 <input class="form-control" type="text" placeholder="Nhập tên loại toán" th:field="*{name}" id="name" required autofocus>

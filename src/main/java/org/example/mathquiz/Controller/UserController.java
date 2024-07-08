@@ -107,7 +107,7 @@ public class UserController {
         else
             user = userService.findById(user1.getId());
         model.addAttribute("user", user);
-        session.setAttribute("user", user);
+//        session.setAttribute("user", user);
         return "/user/profile";
     }
 
@@ -118,7 +118,7 @@ public class UserController {
                               RedirectAttributes redirectAttributes,
                               HttpSession session,
                               Model model) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("userLogin");
         if (bindingResult.hasErrors() ) {
             List<String> customErrors = new ArrayList<>();
             List<String> errors = bindingResult.getAllErrors()
@@ -128,7 +128,7 @@ public class UserController {
 
             if (!user.getPhoneNumber().equals(requestUpdateUser.getPhoneNumber())){
                 User tmpUser = userService.findByPhone(requestUpdateUser.getPhoneNumber());
-                if (!tmpUser.getId().equals(user.getId())){
+                if (tmpUser != null && !tmpUser.getId().equals(user.getId())){
                     customErrors.add("Phone Đã Tồn Tại");
                 }
             }

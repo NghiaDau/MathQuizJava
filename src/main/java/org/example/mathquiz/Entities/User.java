@@ -26,6 +26,8 @@ import java.util.*;
 @Entity
 public class User implements UserDetails {
 
+    private static final long serialVersionUID = 1113799434508676095L;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
