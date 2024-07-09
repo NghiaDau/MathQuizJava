@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" type="image/png" sizes="16x16" href="../plugins/images/favicon.png">
-    <title>Elite Admin Template - The Ultimate Multipurpose admin template</title>
+    <title>[[${title}]] - MathQuiz</title>
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
     <link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -298,6 +298,22 @@
             height: 40px;
             cursor: pointer;
         }
+        /* Ensure both buttons have the same height */
+        .btn-googleplus {
+            display: inline-block;
+            height: 39.5px;
+            line-height: 39.5px;
+            padding: 0 20px;
+            background-color: #db4a39;
+            color: #fff;
+            font-size: 14px;
+            margin-top: 10px;
+            width: 100%; /* Full width */
+        }
+        .btn-googleplus i {
+            /*line-height: 50px;*/
+            font-size: 24px;
+        }
 
     </style>
     <script>
@@ -365,14 +381,43 @@
         <!-- /.navbar-static-side -->
     </nav>
     <!-- Left navbar-header -->
-    <div th:fragment="left_side" class="sidebar" role="navigation" sec:authorize="isAuthenticated()">
+    <div th:fragment="left_side" class="sidebar" role="navigation">
         <div class="wp-sidebar-nav">
+            <div class="wp-side-menu" sec:authorize="!isAuthenticated()">
+                <form style="margin: 10px" id="loginform" action="index.html" th:action="@{/login}" method="post">
+                    <h3 style="color: white" class="box-title m-b-10 col-xs-2">Đăng nhập</h3>
+                    <div th:if="${param.error}">
+                        <span class="text-danger" id="userError" th:text="${session.errorMessage}"></span>
+                    </div>
+                    <div class="form-group ">
+                        <div class="col-xs-12">
+                            <input class="form-control" oninput="clearErrorAndParam(this)" type="text" required="" id="userName" name="userName" placeholder="Tên đăng nhập ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <input class="form-control"  oninput="clearErrorAndParam(this)" type="password" required="" id="passwordHash" name="passwordHash" placeholder="Mật khẩu">
+                        </div>
+                    </div>
+                    <a href="/forgotpassword" id="to-recover" style="color: white" class="d-block text-right col-xs-2"> Quên mật khẩu?</a>
+                    <div class="row align-items-center">
+                        <div class="col-12 text-center m-t-20">
+                            <button  style="font-size: 14px" class="btn btn-info btn-lg btn-block  waves-effect waves-light" type="submit">Đăng nhập</button>
+                        </div>
+                        <div class="col-12 text-center">
+                            <a href="/oauth2/authorization/google" class="btn-googleplus" data-toggle="tooltip" title="Login with Google">
+                                 Đăng nhập với Google
+                            </a>
+                        </div>
+                    </div>
+                </form>
 
+            </div>
             <div class="wp-sidebar-nav">
-                <div class="user-profile">
+                <div class="user-profile" sec:authorize="isAuthenticated()">
                     <div class="dropdown user-pro-body">
 
-                        <div>
+                        <div class="mt-4">
                             <img id="avatar"
                                  th:src="${#authentication.getPrincipal().disPlayAvatar() != null ? '/getimage/' +
                                     #authentication.getPrincipal().disPlayAvatar() : '/images/defaultuser.png'}"
@@ -480,7 +525,7 @@
             <!-- /.row -->
         </div>
         <!-- /.container-fluid -->
-        <footer th:fragment="footer" class="footer text-center"> 2024 &copy; MathQuiz online by TOD team</footer>
+        <footer th:fragment="footer" class="footer text-center"> 2024 &copy; MathQuiz by TOD team</footer>
     </div>
     <!-- /#page-wrapper -->
 </div>
