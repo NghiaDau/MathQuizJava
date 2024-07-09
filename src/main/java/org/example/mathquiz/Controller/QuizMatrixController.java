@@ -4,26 +4,19 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.example.mathquiz.Entities.*;
 import org.example.mathquiz.RequesEntities.RequestModel;
-import org.example.mathquiz.RequesEntities.RequestPushExam;
-import org.example.mathquiz.RequesEntities.RequestPushExamDetailList;
 import org.example.mathquiz.RequesEntities.RequestQuizMatrix;
 import org.example.mathquiz.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 @Controller
 @RequestMapping("/quizMatrices")
@@ -167,4 +160,11 @@ public class QuizMatrixController {
         return "quizMatrices/quizMatrixPreview";
     }
 
+    @GetMapping("/editQuizMatrix/{id}")
+    public String editQuizMatrices (@PathVariable String id,Model model){
+        QuizMatrix quizMatrix = quizMatrixService.getQuizMatrixById(id);
+        List<Quiz> quizList = quizMatrix.getQuizs();
+        model.addAttribute("quizMatrix", quizList);
+        return "quizMatrices/editQuizMatrix";
+    }
 }

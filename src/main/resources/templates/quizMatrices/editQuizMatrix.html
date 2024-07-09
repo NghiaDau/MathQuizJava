@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="/libary/lib.html::head('Thêm chương học')">
+    <style>
+        .quiz-container {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .option {
+            margin-bottom: 10px;
+        }
+
+        .editable-textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            resize: vertical;
+            overflow: auto;
+        }
+
+    </style>
+</head>
+
+<body class="fix-sidebar">
+<!-- Preloader -->
+<!--<div class="preloader" id="spinner">-->
+<!--    <div class="cssload-speeding-wheel"></div>-->
+<!--</div>-->
+<div id="wrapper">
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="white-box">
+                        <form th:action="@{/quizMatrices/editQuizMatrix}" method="post" id="chapterForm"
+                              th:object="${quizMatrix}">
+                            <div th:each=" quiz : ${quizMatrix}">
+                                <p><strong>Câu 1: </strong> <textarea th:value="${quiz.statement}"
+                                                                      th:text="${quiz.statement}"
+                                                                      class="editable-textarea"
+                                                                      style="min-width: 400px; width: 100%; min-height: 100px"></textarea>
+                                </p>
+                            </div>
+                        </form>
+                        <!--                        <div class="container" id="previewDataWrapper">-->
+                        <!--                            <div id="previewData" class="border p-3">-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="/libary/lib.html::footer"></footer>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var quizMatrixId = "[[${id}]]";
+        const fileContentDiv = document.getElementById('previewData');
+        var spinner = document.getElementById('spinner');
+        spinner.classList.add('show');
+        if (quizMatrixId) {
+            fetch('/api/editQuizMatrix/' + quizMatrixId, {
+                method: 'GET',
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('API Response:', data);
+                    var count = 1;
+                    data.forEach(function (quiz) {
+                        var quizContainer = document.createElement('div');
+                        quizContainer.classList.add('quiz');
+
+                        var imageSolutionUrl = quiz.imageSolution;
+                        var imageUrl = quiz.image;
+                        quizContainer.classList.add('quiz-container');
+                        var quizHTML = '';
+
+                        quizHTML += '<label></label>';
+                        quizHTML += '<p><strong>Câu ' + count + ': </strong> <textarea class="editable-textarea" style="min-width: 400px; width: 100% ; min-height: 100px" >' + quiz.statement + '</textarea></p>';
+                        count += 1;
+
+                        if (imageUrl != null) {
+                            quizHTML += '<img src="' + imageUrl + '">';
+                        }
+                        quizHTML += '<div class="options">';
+                        quizHTML += '<label></label>';
+                        var letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+                        quiz.quizOptions.forEach(function (option, index) {
+                            var letter = letters[index];
+                            quizHTML += '<div class="option">';
+                            quizHTML += '<label  style="display: flex; align-items: center;" for="text' + quiz.id + '-' + letter + '">';
+                            quizHTML += '<input  style="transform: scale(1.5); margin-right: 10px; vertical-align: middle;" type="radio" value="' + option.id + '"';
+                            if (option.isCorrect) {
+                                quizHTML += ' checked';
+                            }
+                            quizHTML += '>';
+                            quizHTML += letter + '. <textarea class="editable-textarea" style="margin-left: 5px; vertical-align: middle;">' + option.option + '</textarea>';
+                            quizHTML += '</label>';
+                            quizHTML += '</div>';
+                        });
+
+
+                        quizHTML += '</div>';
+                        quizHTML += '<label></label>';
+                        quizHTML += '<p><strong>Lời Giải:</strong> <textarea class="editable-textarea" style="min-width: 400px; width: 100% ; min-height: 100px" >' + quiz.solution + '</textarea></p>';
+
+                        if (imageSolutionUrl) {
+                            quizHTML += '<img src="' + imageSolutionUrl + '">';
+                        }
+
+                        quizContainer.innerHTML = quizHTML;
+                        fileContentDiv.appendChild(quizContainer);
+                    });
+                    renderMathInElement(document.body, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false},
+                            {left: "\\(", right: "\\)", display: false},
+                            {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+                            {left: "\\begin{align}", right: "\\end{align}", display: true},
+                            {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+                            {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+                            {left: "\\begin{CD}", right: "\\end{CD}", display: true},
+                            {left: "\\begin{tikzpicture}", right: "\\end{tikzpicture}", display: true},
+                            {left: "\\[", right: "\\]", display: true}
+                        ],
+                        ignoredClasses: ["disable-katex-render"],
+                        throwOnError: false
+                    });
+
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                })
+                .finally(() => {
+                    spinner.classList.add('hidden');
+                    spinner.classList.remove('show');
+                });
+        }
+
+    });
+</script>
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+</body>
+
+</html>

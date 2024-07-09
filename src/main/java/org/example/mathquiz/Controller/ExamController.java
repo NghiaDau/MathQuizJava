@@ -149,6 +149,7 @@ public class ExamController {
             Exam newExam = examService.addExamFromQuizMatrix(requestPushExam);
 
             List<Quiz> quizList = quizMatrix.getQuizs();
+
             Collections.shuffle(quizList, new Random());
             for (Quiz quiz : quizList) {
                 Collections.shuffle(quiz.getQuizOptions(), new Random());

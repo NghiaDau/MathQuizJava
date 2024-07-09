@@ -2,7 +2,9 @@ package org.example.mathquiz.Controller;
 
 import jakarta.validation.constraints.NotNull;
 import org.example.mathquiz.Entities.Level;
+import org.example.mathquiz.Entities.Menu;
 import org.example.mathquiz.Service.LevelService;
+import org.example.mathquiz.Service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
@@ -15,7 +17,8 @@ import org.springframework.web.bind.annotation.*;
 public class LevelController {
     @Autowired
     private LevelService levelService;
-
+    @Autowired
+    private MenuService menuService;
     @GetMapping("")
     public String showAllLevels(@NotNull Model model) {
         model.addAttribute("levels", levelService.getAllLevels());
@@ -32,7 +35,13 @@ public class LevelController {
     public String addLevel(@ModelAttribute("level") Level level,
                            BindingResult bindingResult,
                            Model model) {
-        levelService.addLevel(level);
+        Level level1 = levelService.addLevel(level);
+//        Menu menu = new Menu();
+//        menu.setName(level1.getName());
+//        menu.setUrl("/levels/" + level1.getId());
+//        menu.setEnabled(true);
+//        menu.setLevel(menu.getParent() == null ? 1: menu.getParent().getLevel() + 1);
+//        menuService.saveMenu(menu);
         return "redirect:/levels";
     }
 
