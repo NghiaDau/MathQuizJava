@@ -176,15 +176,15 @@ public class UserController {
     }
 
     @PostMapping("/forgot_password")
-    public String ForgotPassword_Submit(@RequestParam("email") String email, RedirectAttributes redirectAttributes) {
+    public String ForgotPassword_Submit(@RequestParam("email") String email, RedirectAttributes redirectAttributes,Model model) {
         User user = userService.findUserByEmail(email);
         if (user != null) {
             user = userService.createTokenResetPassword(user);
             String token = user.getResetPasswordToken();
             String URL = "http://localhost:8080/reset_password?token=" + token;
             userService.SendMail(user.getEmail(), URL, user.getUsername());
-            redirectAttributes.addFlashAttribute("message", "Vui lòng kiểm tra email để thay đổi mật khẩu!");
-            return "redirect:/forgotpassword";
+            model.addAttribute("message", "Vui lòng kiểm tra email để thay đổi mật khẩu!");
+            return "/user/after-sendmail";
         }
         redirectAttributes.addFlashAttribute("message", "Email không tồn tại");
         return "redirect:/forgotpassword";
