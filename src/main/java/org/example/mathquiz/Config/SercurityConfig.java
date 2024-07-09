@@ -14,10 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
@@ -26,10 +25,18 @@ public class SercurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private final UserService userService;
-    @Autowired
-    private SuccessHandle successHandle;
+
     @Autowired
     private FailureHandle failureHandle;
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new SuccessHandle(userService);
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler oauth2SuccessHandler() {
+        return new SuccessHandleOauth(userService);
+    }
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -68,7 +75,7 @@ public class SercurityConfig {
                                 .usernameParameter("userName")
                                 .passwordParameter("passwordHash")
                                 .loginProcessingUrl("/login")
-                                .successHandler(successHandle)
+                                .successHandler(successHandler())
                                 .failureHandler(failureHandle)
 //                                .defaultSuccessUrl("/")
                                 .failureUrl("/login?error=true")
@@ -78,19 +85,22 @@ public class SercurityConfig {
                 .oauth2Login(
                         oauth2Login -> oauth2Login
                                 .loginPage("/login")
-                                .failureUrl("/login?error")
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint
                                                 .userService(customOAuth2UserService)
                                 )
-                                .successHandler(
-                                        (request, response,
-                                         authentication) -> {
-                                            CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-                                            userService.saveOauthUser(oauthUser.getEmail());
-                                            response.sendRedirect("/");
-                                        }
-                                )
+                                .successHandler(oauth2SuccessHandler())
+                                .failureHandler(failureHandle)
+                                .failureUrl("/login?error")
+//                                .successHandler(
+//                                        (request, response,
+//                                         authentication) -> {
+//                                            CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
+//                                            userService.saveOauthUser(oauthUser.getEmail());
+//                                            response.sendRedirect("/");
+//                                        }
+//                                )
+
                                 .permitAll()
                 )
                 .rememberMe(rememberMe ->

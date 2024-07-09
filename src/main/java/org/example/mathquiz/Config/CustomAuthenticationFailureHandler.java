@@ -14,7 +14,6 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
         String errorMessage = "Sai tên tài khoản hoặc mật khẩu";
-        System.out.println("AAA");
         request.getSession().setAttribute("errorMessage", errorMessage);
         response.sendRedirect("/login?error=true");
     }

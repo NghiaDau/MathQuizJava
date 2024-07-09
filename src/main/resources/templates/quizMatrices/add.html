@@ -18,7 +18,7 @@
 
 <body class="fix-sidebar">
 <!-- Preloader -->
-<div class="preloader">
+<div class="preloader" >
     <div class="cssload-speeding-wheel"></div>
 </div>
 <div id="wrapper">
@@ -72,14 +72,12 @@
             </div>
             <div class="container" id="previewDataWrapper">
                 <div id="previewData" class="border p-3">
-
                 </div>
             </div>
         </div>
         <div id="spinner" class="spinner d-none"></div>
     </div>
     <footer th:replace="/libary/lib.html::footer"></footer>
-</div>
 </div>
 
 <script>
@@ -105,10 +103,8 @@
                         return response.json();
                     })
                     .then(data => {
-                        console.log(data);
                         var count = 1;
                         data.forEach(function (quiz) {
-
                             var quizContainer = document.createElement('div');
                             var imageSolutionUrl = quiz.imageSolution;
                             var imageUrl = quiz.image;

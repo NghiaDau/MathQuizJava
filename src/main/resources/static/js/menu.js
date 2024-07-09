@@ -35,15 +35,33 @@ function refresh(){
     });
 
 }
-clearMenuCache('cachedMenus');
+function createMenu(){
+    const li = document.createElement('li');
+    const div = document.createElement('div');
+    div.className = 'logo-container';
+    const a = document.createElement('a');
+    a.href = '/';
+    const img = document.createElement('img');
+    img.src = '/icons/logo.png';
+    img.style.height = '40px';
+    img.alt = 'Logo';
+    a.appendChild(img);
+    div.appendChild(a);
+    li.appendChild(div);
+    document.getElementById('menu').appendChild(li);
+}
+
+// clearMenuCache('cachedMenus');
 let cachedMenus = getCachedData('cachedMenus');
 const menuContainer = document.getElementById("menu");
 if (cachedMenus) {
     const menuContainer = document.getElementById("menu");
     menuContainer.innerHTML = '';
     console.log('Using cached menus', cachedMenus );
+    createMenu();
     displayMenuIds(cachedMenus, menuContainer);
 } else {
+    createMenu();
     dataMenus().then(function (menus) {
         console.log('Fetched menus from API', menus);
         displayMenuIds(menus, menuContainer);

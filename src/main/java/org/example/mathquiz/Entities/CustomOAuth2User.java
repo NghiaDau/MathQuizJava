@@ -6,6 +6,8 @@ import java.util.Map;
 
 import jakarta.persistence.Column;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +22,8 @@ public class CustomOAuth2User implements OAuth2User,UserDetails   {
     private String AvatarUrl;
     private OAuth2User oauth2User;
 
+    @Setter
+    @Getter
     private User user;
     public CustomOAuth2User(OAuth2User oauth2User,User user) {
         this.oauth2User = oauth2User;
@@ -37,10 +41,10 @@ public class CustomOAuth2User implements OAuth2User,UserDetails   {
     public String disPlayAvatar(){
         return user==null ? null:user.getAvatarUrl();
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return oauth2User.getAuthorities();
-
+        return user.getAuthorities();
     }
 
     @Override

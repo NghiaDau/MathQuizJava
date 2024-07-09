@@ -1,14 +1,12 @@
 package org.example.mathquiz.Controller.API;
 
-import org.example.mathquiz.Entities.Chapter;
-import org.example.mathquiz.Entities.Grade;
-import org.example.mathquiz.Entities.MathType;
-import org.example.mathquiz.Entities.QuizMatrix;
+import org.example.mathquiz.Entities.*;
 import org.example.mathquiz.RequesEntities.RequestChapterJson;
 import org.example.mathquiz.RequesEntities.RequestJson;
 import org.example.mathquiz.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -105,5 +103,12 @@ public class ApiChapterController {
             }
         }
         return ResponseEntity.ok(newGrades);
+    }
+
+    @GetMapping("/editQuizMatrix/{id}")
+    public ResponseEntity<?> editQuizMatrices (@PathVariable String id){
+        QuizMatrix quizMatrix = quizMatrixService.getQuizMatrixById(id);
+        List<Quiz> quizList = quizMatrix.getQuizs();
+        return  ResponseEntity.ok(quizList);
     }
 }
