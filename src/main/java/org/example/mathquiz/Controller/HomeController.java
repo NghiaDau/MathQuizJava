@@ -53,8 +53,10 @@ public class HomeController {
         }
 
         User user = userService.findByUserName(username);
-        String fullName = user.getFullName();
-        model.addAttribute("fullName", fullName == null ? user.getUsername() : fullName);
+        if (user != null) {
+            String fullName = user.getFullName();
+            model.addAttribute("fullName", fullName == null ? user.getUsername() : fullName);
+        }
         model.addAttribute("levels", levels);
         return "home/index";
     }
