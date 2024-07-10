@@ -169,7 +169,8 @@
                 data.forEach(result=>{
                     const date = new Date(result[2]);
                     const formattedDate = date.toISOString().split('T')[0];
-                    ub.innerHTML+= `<li class="list-group-item">`+`${result[0]}` + ` - ` + ` điểm: `+ `${result[1]}` + ` - ` + `${formattedDate}`+ `</li>`;
+                    const hf = `/results/resultDetail/`+ result[3];
+                    ub.innerHTML+= `<a href="${hf}" class="list-group-item">`+`${result[0]}` + ` - ` + ` điểm: `+ `${result[1]}` + ` - ` + `${formattedDate}`+ `</a>`;
                 })
             })
     }
