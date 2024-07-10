@@ -17,27 +17,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SercurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
-
+    @Autowired
     private final UserService userService;
 
-    @Autowired
-    private FailureHandle failureHandle;
+    @Bean
+    public AuthenticationFailureHandler failureHandler() {
+        return new FailureHandle(userService);
+    }
     @Bean
     public AuthenticationSuccessHandler successHandler() {
         return new SuccessHandle(userService);
     }
-
     @Bean
     public AuthenticationSuccessHandler oauth2SuccessHandler() {
         return new SuccessHandleOauth(userService);
     }
-
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserService();
@@ -76,10 +78,9 @@ public class SercurityConfig {
                                 .passwordParameter("passwordHash")
                                 .loginProcessingUrl("/login")
                                 .successHandler(successHandler())
-                                .failureHandler(failureHandle)
+                                .failureHandler(failureHandler())
 //                                .defaultSuccessUrl("/")
-                                .failureUrl("/login?error=true")
-//                                .failureHandler(authenticationFailureHandler())
+
                                 .permitAll()
                 )
                 .oauth2Login(
@@ -90,8 +91,7 @@ public class SercurityConfig {
                                                 .userService(customOAuth2UserService)
                                 )
                                 .successHandler(oauth2SuccessHandler())
-                                .failureHandler(failureHandle)
-                                .failureUrl("/login?error")
+//                                .failureHandler(failureHandler())
 //                                .successHandler(
 //                                        (request, response,
 //                                         authentication) -> {
@@ -118,8 +118,5 @@ public class SercurityConfig {
                 .httpBasic(httpBasic -> httpBasic.realmName("hutech"))
                 .build();
     }
-    @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new CustomAuthenticationFailureHandler();
-    }
+
 }
