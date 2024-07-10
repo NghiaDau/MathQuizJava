@@ -16,4 +16,13 @@ public interface IQuizMatrixRepository extends JpaRepository<QuizMatrix, String>
     List<QuizMatrix> findQuizMatricesByChapter (String id);
     List<QuizMatrix> findByChapterId(String chapterId);
 
+    @Query("select q.name,count(q) as takenTimes,q.id  from QuizMatrix q inner join Exam e on q.id = e.quizMatrix.id inner join Result r on r.exam.id = e.id where YEAR(r.startTime) = YEAR(current_date) group by q.id order by takenTimes DESC")
+    List<Object[]> findQuizMatrixByCurrentYear();
+    @Query("select q.name,count(q) as takenTimes,q.id  from QuizMatrix q inner join Exam e on q.id = e.quizMatrix.id inner join Result r on r.exam.id = e.id where YEAR(r.startTime) = YEAR(current_date) and month(r.startTime) = month(current_date) group by q.id order by takenTimes DESC")
+    List<Object[]> findQuizMatrixByCurrentMonth();
+    @Query("select q.name,count(q) as takenTimes,q.id  from QuizMatrix q inner join Exam e on q.id = e.quizMatrix.id inner join Result r on r.exam.id = e.id where YEAR(r.startTime) = YEAR(current_date) and month(r.startTime) = month(current_date) and day(r.startTime) = day(current_date) group by q.id order by takenTimes DESC")
+    List<Object[]> findQuizMatrixByCurrentDay();
+
+    @Query("select q.name,q.createDate,q.id from QuizMatrix q order by q.createDate desc")
+    List<Object[]> findNewestQuizMatrix();
 }

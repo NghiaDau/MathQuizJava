@@ -207,5 +207,14 @@ public class UserService implements UserDetailsService {
         message.setText(emailContent);
         emailSender.send(message);
     }
+    public List<Object[]> findUsersByDay(){
+        return userRepository.findUsersByDay();
+    }
+    public List<Object[]> findUsersByMonth(){
+        return userRepository.findUsersByMonth();
+    }
+    public List<Object[]> findUsersByYear(){
+        return userRepository.findUsersByYear();
+    }
 }
 
