@@ -45,16 +45,24 @@ public class HomeController {
         System.out.println(levels.size());
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
-
         if (principal instanceof UserDetails) {
             username = ((UserDetails) principal).getUsername();
         } else {
             username = principal.toString();
         }
-
         User user = userService.findByUserName(username);
-        String fullName = user.getFullName();
-        model.addAttribute("fullName", fullName == null ? user.getUsername() : fullName);
+        String fullName ="";
+        if(user != null) {
+            if(user.getFullName()!=null)
+                fullName = user.getFullName();
+            else
+                fullName = user.getUsername();
+        }
+        else {
+            fullName = "Anonymous";
+        }
+        // == "" ? user.getUsername() : fullName
+        model.addAttribute("fullName", fullName);
         model.addAttribute("levels", levels);
         return "home/index";
     }
