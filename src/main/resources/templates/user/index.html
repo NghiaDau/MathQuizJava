@@ -32,6 +32,7 @@
                                 <th data-sort-initial="true" data-toggle="true">Số Điện Thoại </th>
 <!--                                <th data-sort-initial="true" data-toggle="true">Active</th>-->
                                 <th data-sort-initial="true" data-toggle="true">Ảnh</th>
+                                <th data-sort-initial="true" data-toggle="true">Trạng Thái</th>
                                 <th data-sort-ignore="true" class="min-width">Thao Tác</th>
                             </tr>
                             </thead>
@@ -63,9 +64,19 @@
                                     <img th:src="@{'getimage/' + ${user.avatarUrl}}"  alt="user-img" class="img-circle" style="width: 50px;height: 50px">
                                 </td>
 
-
+                                <td th:text="${user.isEnabled()==true ? 'Bị ban' :'Đang Hoạt động'}"></td>
 
                                 <td>
+
+
+                                <a th:href="@{'/user/locker/'+${user.id}}" type="button"
+                                   class="btn btn-sm btn-icon btn-pure btn-outline "
+                                   data-toggle="tooltip" style="color:red"
+                                   onclick="return confirm('Bạn có muốn khóa tài khoản không ?')">Khóa</a>
+                                <a th:href="@{'/user/unlocker/'+${user.id}}" type="button"
+                                   class="btn btn-sm btn-icon btn-pure btn-outline "
+                                   data-toggle="tooltip" style="color:red"
+                                   onclick="return confirm('Bạn có muốn mở khóa tài khoản khoan không ?')">Mở Khóa</a>
 <!--                                    <a th:href="@{'/user/delete/'+${user.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn" data-toggle="tooltip" style="color:red" data-original-title="Delete">Khóa</a>-->
                                     <a th:href="@{'/user/edit/'+${user.id}}" type="button" class="btn btn-sm btn-icon btn-pure btn-outline update-row-btn" >Cập nhật</a>
                                 </td>
