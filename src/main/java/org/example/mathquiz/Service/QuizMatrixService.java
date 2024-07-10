@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.mathquiz.Entities.Chapter;
 import org.example.mathquiz.Entities.Quiz;
 import org.example.mathquiz.Entities.QuizMatrix;
+import org.example.mathquiz.Entities.Result;
 import org.example.mathquiz.Repositories.IChapterRepository;
 import org.example.mathquiz.Repositories.IQuizMatrixRepository;
 import org.example.mathquiz.RequesEntities.RequestModel;
@@ -66,4 +67,11 @@ public class QuizMatrixService {
     public List<Object[]> findQuizMatrixByMonth(){return quizMatrixRepository.findQuizMatrixByCurrentMonth();}
     public List<Object[]> findQuizMatrixByYear(){return quizMatrixRepository.findQuizMatrixByCurrentYear();}
     public List<Object[]> findNewestQuizMatrix(){return quizMatrixRepository.findNewestQuizMatrix();}
+    public List<Object[]> findQuizMatrixResultByQuizMatrixId(String quizMatrixId){
+        return quizMatrixRepository.findQuizMatrixResultByQuizMatrixId(quizMatrixId);
+    }
+    public List<Object[]> findQuizMatrixResultByQuizMatrixIdAndUserName( String quizMatrixId, String userName){
+        return quizMatrixRepository.findQuizMatrixResultByQuizMatrixIdAndUserName(quizMatrixId,userName);
+    }
+
 }
