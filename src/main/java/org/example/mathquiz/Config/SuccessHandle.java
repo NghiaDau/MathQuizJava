@@ -29,15 +29,15 @@ public class SuccessHandle extends SimpleUrlAuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         User user = ((User)authentication.getPrincipal());
         request.getSession().setAttribute("userLogin", user);
-//        if(user.isEnabled()){
-//            userService.resetLockAccount(user);
-//        }else{
-//            if(user.getLockExpired().getTime()<System.currentTimeMillis()){
-//                throw new ServletException("User is locked");
-//            }else{
-//                userService.resetLockAccount(user);
-//            }
-//        }
+        if(user.isEnabled()){
+            userService.resetLockAccount(user);
+        }else{
+            if(user.getLockExpired().getTime()<System.currentTimeMillis()){
+                throw new ServletException("User is locked");
+            }else{
+                userService.resetLockAccount(user);
+            }
+        }
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
         if(isAdmin){
             setDefaultTargetUrl("/user");
