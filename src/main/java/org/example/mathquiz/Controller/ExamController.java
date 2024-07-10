@@ -224,7 +224,8 @@ public class ExamController {
     public String showResult(@RequestParam("score") double score,
                              @RequestParam("correctAnswers") int correctAnswers,
                              @RequestParam("startTime") String startTime,
-                             @RequestParam("endTime") String endTime, Model model) {
+                             @RequestParam("endTime") String endTime,
+                             @RequestParam("id") String id, Model model) {
         // Adjust the pattern to match the date-time string format being received
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
         LocalDateTime start = LocalDateTime.parse(startTime, formatter);
@@ -235,6 +236,7 @@ public class ExamController {
         model.addAttribute("correctAnswers", correctAnswers);
         model.addAttribute("endTime", endTime);
         model.addAttribute("duration", seconds);
+        model.addAttribute("id", id);
         return "result/examResult";
     }
 

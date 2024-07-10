@@ -28,17 +28,29 @@ public class SuccessHandle extends SimpleUrlAuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         User user = ((User)authentication.getPrincipal());
-        System.out.println("AAA");
         request.getSession().setAttribute("userLogin", user);
-        if(user.isEnabled()){
+        if(!user.isEnabled() ){
             userService.resetLockAccount(user);
         }else{
-            if(user.getLockExpired().getTime()<System.currentTimeMillis()){
-                throw new ServletException("User is locked");
-            }else{
-                userService.resetLockAccount(user);
+            String errorMessage;
+            if (user.getLockExpired() == null) {
+                errorMessage = "Vui lòng liên hệ Admin";
+                request.getSession().setAttribute("errorMessage", errorMessage);
+                setDefaultTargetUrl("/login?error=true");
+                super.onAuthenticationSuccess(request, response, authentication);
+            } else {
+                if(user.getLockExpired().getTime() > System.currentTimeMillis()){
+                    errorMessage = "Tài Khoản Bị Khóa";
+                    request.getSession().setAttribute("errorMessage", errorMessage);
+                    setDefaultTargetUrl("/login?error=true");
+                    super.onAuthenticationSuccess(request, response, authentication);
+                }
+                else{
+                    userService.resetLockAccount(user);
+                }
             }
         }
+
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
         if(isAdmin){
             setDefaultTargetUrl("/user");

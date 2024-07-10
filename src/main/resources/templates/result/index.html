@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:replace="/libary/lib.html::head('Lịch sử làm bài')"></head>
 
@@ -54,12 +54,12 @@
                                     <td th:text="${result.getScore()}"></td>
                                     <td th:text="${result.getStartTime()}"></td>
                                     <td th:text="${result.getEndTime()}"></td>
-                                    <td>
-                                        <a th:href="@{'/results/edit/'+${result.id}}" type="button"
+                                    <td >
+                                        <a sec:authorize="!isAuthenticated()" th:href="@{'/results/edit/'+${result.id}}" type="button"
                                            class="btn btn-sm btn-icon btn-pure btn-outline update-row-btn"
                                            data-toggle="tooltip" style="color:darkgreen" data-original-title="Cập nhật">Cập
                                             nhật</a>
-                                        <a th:href="@{'/results/delete/'+${result.id}}" type="button"
+                                        <a sec:authorize="!isAuthenticated()" th:href="@{'/results/delete/'+${result.id}}" type="button"
                                            class="btn btn-sm btn-icon btn-pure btn-outline delete-row-btn"
                                            data-toggle="tooltip" style="color:red" data-original-title="Xoá">Xoá</a>
                                         <a th:href="@{'/results/resultDetail/'+${result.id}}" type="button"

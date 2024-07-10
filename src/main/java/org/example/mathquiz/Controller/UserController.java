@@ -218,5 +218,15 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user/locker/{id}")
+    public String lockAccount(@PathVariable String id) {
+        userService.lockAccount(id);
+        return "redirect:/user";
+    }
 
+    @GetMapping("/user/unlocker/{id}")
+    public String unLockAccount(@PathVariable String id) {
+        userService.unLockAccount(id);
+        return "redirect:/user";
+    }
 }
