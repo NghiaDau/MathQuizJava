@@ -49,7 +49,7 @@
 </div>
 <section id="wrapper" class="login-register">
     <div class="login-box">
-        <div class="white-box">
+        <div class="white-box white-login-box">
             <form class="form-horizontal form-material" id="loginform" action="index.html" th:action="@{/login}" method="post">
                 <h3 class="box-title m-b-20">Đăng Nhập</h3>
 <!--                <span class="text-danger" id="newPasswordError" th:if="${param.error}"-->
@@ -59,12 +59,12 @@
                 </div>
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        <input class="form-control" oninput="clearErrorAndParam(this)" type="text" required="" id="userName" name="userName" placeholder="Tài Khoản ">
+                        <input class="form-control" oninput="clearError('userError')" type="text" required="" id="userName" name="userName" placeholder="Tài Khoản ">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-xs-12">
-                        <input class="form-control"  oninput="clearErrorAndParam(this)" type="password" required="" id="passwordHash" name="passwordHash" placeholder="Mật Khẩu">
+                        <input class="form-control"  oninput="clearError('userError')" type="password" required="" id="passwordHash" name="passwordHash" placeholder="Mật Khẩu">
                     </div>
                 </div>
                 <div class="form-group">
@@ -125,6 +125,15 @@
             history.replaceState({}, document.title, newUrl);
         }
     });
+    function clearError(errorId) {
+        var errorSpan = document.getElementById(errorId);
+        if (errorSpan) {
+            // Xóa nội dung của phần tử hiển thị thông báo lỗi
+            errorSpan.textContent = '';
+            // Xóa lớp hiển thị lỗi nếu có
+            errorSpan.classList.remove('text-danger');
+        }
+    }
 </script>
 <!-- jQuery -->
 <script src="/plugins/bower_components/jquery/dist/jquery.min.js"></script>

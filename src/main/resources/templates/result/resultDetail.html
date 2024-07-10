@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/libary/lib.html::head('Lịch sử làm bài')"></head>
+<style>
+    .timer-circle {
+        width: 60px;
+        height: 60px;
+        border: 2px solid #1c80c3;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        color: black;
+    }
+
+    .question-navigation {
+        height: 100%;
+    }
+
+    .question-navigation ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+        gap: 10px;
+        list-style: none;
+        padding: 0;
+    }
+
+    .question-navigation li {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .question-navigation li a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        border: 2px solid #1c80c3;
+        border-radius: 50%;
+        text-decoration: none;
+        color: #1c80c3;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    .question-navigation li.answered a {
+        background-color: limegreen;
+        /*border: 2px solid limegreen;*/
+        color: white !important;
+    }
+
+    .question-navigation li.incorrect a {
+        background-color: red;
+        color: white !important;
+
+    }
+
+    .question-navigation li a:hover {
+        background-color: #1C80C3;
+        border: 2px solid #1C80C3;
+        color: white !important;
+    }
+
+
+    .white-box {
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+
+    #quiz-container {
+        margin-bottom: 20px;
+    }
+
+    .question {
+        display: none;
+    }
+
+    .question.active {
+        display: block;
+    }
+
+    .question.inactive {
+        display: none;
+    }
+</style>
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="white-box">
+
+                        <div id="quiz-container">
+                            <div th:each="resultDetail, resultDetailStat : ${resultDetailList}"
+                                 th:attr="data-index=${resultDetailStat.index}" class="question"
+                                 th:classappend="${resultDetailStat.index == currentIndex} ? 'active' : 'inactive'">
+                                <p class="font-weight-bold">Câu [[${resultDetailStat.index + 1}]]: <span
+                                        class="latex-content" th:utext="${resultDetail.getQuiz().getStatement()}"></span>
+                                </p>
+                                <div th:if="${resultDetail.getQuiz().getImage()} != null" class="mb-3">
+                                    <img th:src="${resultDetail.getQuiz().getImage()}" alt="Quiz Image"
+                                         class="img-fluid rounded">
+                                </div>
+                                <h5>Đáp án:</h5>
+                                <ul class="list-group">
+                                    <li th:each="quizOption, optStat : ${resultDetail.getQuiz().getQuizOptions()}"
+                                        class="list-group-item" th:class="${quizOption.getIsCorrect()} ? 'list-group-item-success list-group-item' : ''"
+                                        th:classappend="${resultDetail.getYourQuizOption() != null and resultDetail.getYourQuizOption().getId() == quizOption.getId() and  quizOption.getIsCorrect() == false} ? 'list-group-item-danger list-group-item' : 'list-group-item'">
+                                        <label class="d-flex align-items-center">
+                                            <span th:text="${'ABCD'.charAt(optStat.index)} + '. '"></span>
+                                            <span class="latex-content ml-2" th:utext="${quizOption.getOption()}"></span>
+                                            <img th:if="${quizOption.getQuizOptionImage()} != null"
+                                                 th:src="${quizOption.getQuizOptionImage()}" class="img-fluid">
+                                        </label>
+                                    </li>
+                                </ul>
+                                <div th:if="${resultDetail.getYourQuizOption()} == null">
+                                    <span class="text-warning">Bạn đã không chọn đáp án</span>
+                                </div>
+                                <h5 class="mt-4">Lời giải:</h5>
+                                <div th:if="${resultDetail.getQuiz().getImageSolution()} != null" class="mb-3">
+                                    <img th:src="${resultDetail.getQuiz().getImageSolution()}"
+                                         class="img-fluid rounded">
+                                </div>
+                                <div th:if="${resultDetail.getQuiz().getSolution()} != null">
+                                    <p th:text="${resultDetail.getQuiz().getSolution()}"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <img id="prevBtn" src="/icons/previous_icon.png" alt="Câu trước" style="width: 40px"
+                                 onclick="changeQuestion(-1)"/>
+
+                            <img id="nextBtn" src="/icons/next_icon.png" alt="Câu sau" style="width: 40px"
+                                 onclick="changeQuestion(1)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="white-box">
+                        <div class="question-navigation">
+                            <h2>Danh sách câu hỏi</h2>
+                            <h4 th:text="'Đề thi: ' + ${result.getExam().getName()}"></h4>
+                            <h4 th:text="'Học sinh: ' + ${result.getUser().getFullName()}"></h4>
+                            <br>
+                            <ul>
+                                <li th:each="resultDetail, resultDetailStat : ${resultDetailList}"
+                                    th:attr="data-index=${resultDetailStat.index}"
+                                    th:class="${resultDetail.getYourQuizOption() == null || (resultDetail.getYourQuizOption() != null
+                                                && resultDetail.getYourQuizOption().getIsCorrect() == null || !resultDetail.getYourQuizOption().getIsCorrect()) ?
+                                                'incorrect' : (resultDetail.getYourQuizOption() != null
+                                                && resultDetail.getYourQuizOption().getIsCorrect() != null
+                                                && resultDetail.getYourQuizOption().getIsCorrect()) ? 'answered' : 'incorrect'}">
+                                    <a href="javascript:void(0)" th:onclick="navigateToQuestion([[${resultDetailStat.index}]])">
+                                        <span th:text="${resultDetailStat.index + 1}"></span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="/libary/lib.html::foot"></th:block>
+
+<script th:inline="javascript">
+    let currentIndex = 0;
+    let resultDetails = [[${resultDetailList}]];
+
+    if (!Array.isArray(resultDetails)) {
+        resultDetails = [];
+    }
+
+    function showQuestion(index) {
+        const questions = document.querySelectorAll('.question');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        questions.forEach((question, idx) => {
+            question.style.display = idx === index ? 'block' : 'none';
+        });
+
+        prevBtn.style.display = index === 0 ? 'none' : 'inline-block';
+        nextBtn.style.display = index === questions.length - 1 ? 'none' : 'inline-block';
+
+        updateNavigation();
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+                {left: "\\begin{align}", right: "\\end{align}", display: true},
+                {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+                {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+                {left: "\\begin{CD}", right: "\\end{CD}", display: true},
+                {left: "\\begin{tikzpicture}", right: "\\end{tikzpicture}", display: true}
+            ]
+        });
+    }
+
+    function changeQuestion(direction) {
+        currentIndex += direction;
+        if (currentIndex < 0) {
+            currentIndex = 0;
+        } else if (currentIndex >= resultDetails.length) {
+            currentIndex = resultDetails.length - 1;
+        }
+        showQuestion(currentIndex);
+    }
+
+    function navigateToQuestion(index) {
+        currentIndex = index;
+        showQuestion(currentIndex);
+    }
+
+    function updateNavigation() {
+        const navItems = document.querySelectorAll('.question-navigation li a');
+        navItems.forEach((navItem, idx) => {
+            if (idx === currentIndex) {
+                navItem.style.backgroundColor = '#1c80b3';
+                navItem.style.color = 'white';
+                navItem.style.border = '2px solid #1c80c3'
+
+            } else {
+                navItem.style.backgroundColor = '';
+                navItem.style.color = '#1c80b3';
+            }
+        });
+    }
+
+    function updateTimer() {
+        const timerElement = document.getElementById('timer');
+        let duration = [[${remainingTime}]];
+
+        const timerInterval = setInterval(() => {
+            const minutes = Math.floor(duration / 60);
+            const seconds = duration % 60;
+            timerElement.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (duration <= 0) {
+                clearInterval(timerInterval);
+                // Handle the timer end (e.g., submit the quiz)
+            }
+
+            duration--;
+        }, 1000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        showQuestion(currentIndex);
+        updateTimer();
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+                {left: "\\begin{align}", right: "\\end{align}", display: true},
+                {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+                {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+                {left: "\\begin{CD}", right: "\\end{CD}", display: true},
+                {left: "\\begin{tikzpicture}", right: "\\end{tikzpicture}", display: true}
+            ]
+        });
+    });
+</script>
+
+</body>
+</html>

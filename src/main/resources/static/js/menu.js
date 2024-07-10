@@ -51,7 +51,7 @@ function createMenu(){
     document.getElementById('menu').appendChild(li);
 }
 
-// clearMenuCache('cachedMenus');
+clearMenuCache('cachedMenus');
 let cachedMenus = getCachedData('cachedMenus');
 const menuContainer = document.getElementById("menu");
 if (cachedMenus) {
@@ -70,7 +70,7 @@ if (cachedMenus) {
 
 function displayMenuIds(data, parentElement) {
     data.forEach(item => {
-        if (item.level >= 3) {
+        if (item.level >= 2) {
             parentElement.style.top = '0%';
             parentElement.style.left = '160px';
             parentElement.style.position = 'absolute';
@@ -82,11 +82,14 @@ function displayMenuIds(data, parentElement) {
         const a = document.createElement('a');
         a.className = 'waves-effect waves-light';
         a.href = item.url;
-        if (item.level > 1) {
-            li.style.width = '160px';
+        li.style.width = '160px';
+        if (item.level >= 1) {
+            // li.style.width = '160px';
             li.style.height = '42px';
         }
-
+        // if (item.level === 0){
+        //     li.style.width = '160px';
+        // }
         const span = document.createElement('span');
         span.className = 'hidden-xs';
         span.textContent = item.name;

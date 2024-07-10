@@ -26,10 +26,10 @@
 </head>
 
 <body class="fix-sidebar">
-<!-- Preloader -->
-<!--<div class="preloader" id="spinner">-->
-<!--    <div class="cssload-speeding-wheel"></div>-->
-<!--</div>-->
+ Preloader
+<div class="preloader" id="spinner">
+    <div class="cssload-speeding-wheel"></div>
+</div>
 <div id="wrapper">
     <nav th:replace="/libary/lib.html::nav"></nav>
     <div th:replace="/libary/lib.html::left_side"></div>
@@ -38,20 +38,54 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="white-box">
-                        <form th:action="@{/quizMatrices/editQuizMatrix}" method="post" id="chapterForm"
-                              th:object="${quizMatrix}">
-                            <div th:each=" quiz : ${quizMatrix}">
-                                <p><strong>Câu 1: </strong> <textarea th:value="${quiz.statement}"
-                                                                      th:text="${quiz.statement}"
-                                                                      class="editable-textarea"
-                                                                      style="min-width: 400px; width: 100%; min-height: 100px"></textarea>
-                                </p>
+<!--                        <form th:action="@{/quizMatrices/editQuizMatrix}" method="post" id="chapterForm"-->
+<!--                              th:object="${quizMatrix}">-->
+<!--                            <div class="mb-4" th:each=" quiz : ${quizMatrix}">-->
+<!--                                <label>-->
+<!--                                    <input  type="hidden"  th:value="${quiz.id}"/>-->
+<!--                                </label>-->
+<!--                                <p><strong>Câu <span th:text="${quizStat.index + 1}"></span>: </strong> <textarea-->
+<!--                                        th:value="${quiz.statement}"-->
+<!--                                        th:text="${quiz.statement}"-->
+<!--                                        class="editable-textarea form-control"-->
+<!--                                        style="min-width: 400px; width: 100%; min-height: 100px"></textarea>-->
+<!--                                </p>-->
+<!--                                <img th:if="${quiz.image != null}" th:src="@{${quiz.image}}" alt="Quiz Image">-->
+<!--                                <div class="option mb-4" th:each=" quizOption : ${quiz.quizOptions}">-->
+<!--                                    <label></label>-->
+<!--                                    <input type="hidden" >-->
+<!--                                    <img th:if="${quizOption.quizOptionImage != null}"-->
+<!--                                         th:src="@{${quizOption.quizOptionImage}}" alt="Quiz Image">-->
+<!--                                    <div class="option">-->
+<!--                                        <label style="display: flex; align-items: center;">-->
+<!--                                            <input style="transform: scale(1.5); margin-right: 10px; vertical-align: middle;"-->
+<!--                                                   type="radio" th:checked="${quizOption.isCorrect != null}">-->
+<!--                                            <span th:text="${'ABCD'.charAt(quizOptionStat.index)} + '. '"></span>-->
+<!--                                            <textarea-->
+<!--                                                    th:value="${quizOption.option}"-->
+<!--                                                    th:text="${quizOption.option}"-->
+<!--                                                    class="editable-textarea form-control"-->
+<!--                                                    style="margin-left: 5px; vertical-align: middle;"></textarea>-->
+<!--                                        </label>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <p><strong>Lời Giải:</strong> <textarea th:value="${quiz.solution}"-->
+<!--                                                                        th:text="${quiz.solution}"-->
+<!--                                                                        class="editable-textarea form-control"-->
+<!--                                                                        style="min-width: 400px; width: 100%; min-height: 100px"></textarea>-->
+<!--                                </p>-->
+<!--                                <img th:if="${quiz.imageSolution != null}" th:src="@{${quiz.imageSolution}}"-->
+<!--                                     alt="Quiz Image">-->
+<!--                            </div>-->
+<!--                            <div class="d-flex justify-content-between">-->
+<!--                                <input type="submit" class="btn btn-primary" value="Cập nhật"/>-->
+<!--                                <a th:href="@{/quizMatrices}" class="btn btn-secondary">Trở lại danh sách</a>-->
+<!--                            </div>-->
+<!--                        </form>-->
+                        <div class="container" id="previewDataWrapper">
+                            <div id="previewData" class="border p-3">
                             </div>
-                        </form>
-                        <!--                        <div class="container" id="previewDataWrapper">-->
-                        <!--                            <div id="previewData" class="border p-3">-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -80,49 +114,83 @@
                     var count = 1;
                     data.forEach(function (quiz) {
                         var quizContainer = document.createElement('div');
+                        quizContainer.id = quiz.id;
                         quizContainer.classList.add('quiz');
-
+                        quizContainer.dataset.examDetails = JSON.stringify(quiz.examDetails);
                         var imageSolutionUrl = quiz.imageSolution;
                         var imageUrl = quiz.image;
+
                         quizContainer.classList.add('quiz-container');
                         var quizHTML = '';
 
                         quizHTML += '<label></label>';
-                        quizHTML += '<p><strong>Câu ' + count + ': </strong> <textarea class="editable-textarea" style="min-width: 400px; width: 100% ; min-height: 100px" >' + quiz.statement + '</textarea></p>';
+                        quizHTML += '<p><strong>Câu ' + count + ': </strong> <textarea id="question' + quiz.id + '" class="editable-textarea" style="min-width: 400px; width: 100%; min-height: 100px">' + quiz.statement + '</textarea></p>';
                         count += 1;
 
                         if (imageUrl != null) {
-                            quizHTML += '<img src="' + imageUrl + '">';
+                            quizHTML += '<img id="image' + quiz.id + '" src="' + imageUrl + '">';
                         }
                         quizHTML += '<div class="options">';
                         quizHTML += '<label></label>';
                         var letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
                         quiz.quizOptions.forEach(function (option, index) {
                             var letter = letters[index];
-                            quizHTML += '<div class="option">';
-                            quizHTML += '<label  style="display: flex; align-items: center;" for="text' + quiz.id + '-' + letter + '">';
-                            quizHTML += '<input  style="transform: scale(1.5); margin-right: 10px; vertical-align: middle;" type="radio" value="' + option.id + '"';
+                            var optionHTML = '<div class="option">';
+
+                            optionHTML += '<label style="display: flex; align-items: center;" for="text' + quiz.id + '-' + letter + '">';
+                            optionHTML += '<input style="transform: scale(1.5); margin-right: 10px; vertical-align: middle;" type="radio" value="' + option.id + '"';
                             if (option.isCorrect) {
-                                quizHTML += ' checked';
+                                optionHTML += ' checked';
                             }
-                            quizHTML += '>';
-                            quizHTML += letter + '. <textarea class="editable-textarea" style="margin-left: 5px; vertical-align: middle;">' + option.option + '</textarea>';
-                            quizHTML += '</label>';
-                            quizHTML += '</div>';
+                            optionHTML += '>';
+                            optionHTML += letter + '. <textarea class="editable-textarea" style="margin-left: 5px; vertical-align: middle;">' + option.option + '</textarea>';
+                            optionHTML += '</label>';
+
+                            var imageOption = option.quizOptionImage;
+                            if (imageOption != null) {
+                                optionHTML += '<img id="imagesolution' + quiz.id + '" src="' + imageOption + '">';
+                            }
+
+                            var examDetails = option.examDetails ? JSON.stringify(option.examDetails) : '';
+                            optionHTML += '<div class="exam-details" data-exam-details=\'' + examDetails + '\'></div>';
+
+                            optionHTML += '</div>';
+
+                            quizHTML += optionHTML;
                         });
 
 
                         quizHTML += '</div>';
                         quizHTML += '<label></label>';
-                        quizHTML += '<p><strong>Lời Giải:</strong> <textarea class="editable-textarea" style="min-width: 400px; width: 100% ; min-height: 100px" >' + quiz.solution + '</textarea></p>';
+                        quizHTML += '<p><strong>Lời Giải:</strong> <textarea id="solution' + quiz.id + '" class="editable-textarea" style="min-width: 400px; width: 100%; min-height: 100px">' + quiz.solution + '</textarea></p>';
 
-                        if (imageSolutionUrl) {
+                        if (imageSolutionUrl != null) {
                             quizHTML += '<img src="' + imageSolutionUrl + '">';
                         }
-
                         quizContainer.innerHTML = quizHTML;
                         fileContentDiv.appendChild(quizContainer);
                     });
+                    var divContainer = document.createElement('div');
+                    divContainer.classList.add('d-flex', 'justify-content-between');
+
+                    var submitButton = document.createElement('input');
+                    submitButton.type = 'submit';
+                    submitButton.value = 'Lưu';
+                    submitButton.classList.add('btn', 'btn-primary');
+
+                    submitButton.addEventListener('click', function() {
+                        submitQuizData(quizMatrixId);
+                    });
+
+                    var returnLink = document.createElement('a');
+                    returnLink.href = '/quizMatrices';
+                    returnLink.textContent = 'Trở lại danh sách';
+                    returnLink.classList.add('btn', 'btn-danger');
+
+                    divContainer.appendChild(submitButton);
+                    divContainer.appendChild(returnLink);
+
+                    fileContentDiv.appendChild(divContainer);
                     renderMathInElement(document.body, {
                         delimiters: [
                             {left: '$$', right: '$$', display: true},
@@ -140,17 +208,100 @@
                         throwOnError: false
                     });
 
+                    spinner.classList.remove('show');
+                    spinner.classList.add('hidden');
                 })
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);
-                })
-                .finally(() => {
-                    spinner.classList.add('hidden');
                     spinner.classList.remove('show');
+                    spinner.classList.add('hidden');
                 });
         }
-
     });
+
+    function submitQuizData(quizMatrixId) {
+        var quizData = getQuizInfo();
+        fetch('/api/submitQuizData', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                stringValue: quizMatrixId,
+                quizArray: quizData
+            }),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Server response:', data);
+
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+
+    }
+
+    function getQuizInfo() {
+        var quizInfo = [];
+
+        var quizzes = document.querySelectorAll('.quiz');
+        quizzes.forEach(function (quiz) {
+            var quizId = quiz.id;
+
+            var questionTextarea = quiz.querySelector('textarea[id^="question"]');
+            var questionText = questionTextarea ? questionTextarea.value : null;
+
+            var solutionTextarea = quiz.querySelector('textarea[id^="solution"]');
+            var solutionText = solutionTextarea ? solutionTextarea.value : null;
+
+            var questionImage = quiz.querySelector('img[id^="image"]');
+
+            var questionImageUrl = questionImage ? questionImage.src : null;
+
+            var questionImageSolution = quiz.querySelector('img[id^="imagesolution"]');
+            var questionImageSolutionUrl = questionImageSolution ? questionImageSolution.src : null;
+
+            var options = [];
+            quiz.querySelectorAll('.option').forEach(function (optionElement) {
+                var optionInput = optionElement.querySelector('input[type="radio"]');
+                var optionId = optionInput ? optionInput.value : '';
+                var isCorrect = optionInput ? optionInput.checked : false;
+
+                var optionTextarea = optionElement.querySelector('textarea');
+                var optionText = optionTextarea ? optionTextarea.value : null;
+
+                var optionImage = optionElement.querySelector('img');
+                var optionImageUrl = optionImage ? optionImage.src : null;
+                var examDetailsDiv = optionElement.querySelector('.exam-details');
+                var examDetails = examDetailsDiv ? JSON.parse(examDetailsDiv.dataset.examDetails) : [];
+                options.push({
+                    id: optionId,
+                    option: optionText,
+                    isCorrect: isCorrect,
+                    quizOptionImage: optionImageUrl,
+                    examDetails: examDetails,
+                });
+            });
+            var examDetails = JSON.parse(quiz.dataset.examDetails);
+            quizInfo.push({
+                id: quizId,
+                statement: questionText,
+                image: questionImageUrl,
+                solution: solutionText,
+                quizOptions: options,
+                imageSolution: questionImageSolutionUrl,
+                examDetails: examDetails
+            });
+        });
+        return quizInfo;
+    }
+
 </script>
 <th:block th:replace="/libary/lib.html::foot"></th:block>
 </body>

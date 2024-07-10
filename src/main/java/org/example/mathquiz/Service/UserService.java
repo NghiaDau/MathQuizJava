@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.util.Date;
 import java.util.List;
 
@@ -40,8 +39,6 @@ public class UserService implements UserDetailsService {
     @Autowired
     private IRoleRepository roleRepository;
 
-
-
     @Autowired
     private JavaMailSender emailSender;
 
@@ -49,7 +46,6 @@ public class UserService implements UserDetailsService {
         List<User> users = userRepository.findAll();
         return users;
     }
-
 
     public User addNewUser(RequestUser requesUser, MultipartFile multipartFile) {
         try {
@@ -102,9 +98,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-
-    @Transactional(isolation = Isolation.SERIALIZABLE,
-            rollbackFor = {Exception.class, Throwable.class})
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = { Exception.class, Throwable.class })
     public void save(@NotNull RequestUser requesUser) {
         try {
             User user = new User();
@@ -112,14 +106,13 @@ public class UserService implements UserDetailsService {
             user.setEmail(requesUser.getEmail());
             user.setPasswordHash(new BCryptPasswordEncoder()
                     .encode(requesUser.getPasswordHash()));
-        userRepository.save(user);
+            userRepository.save(user);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE,
-            rollbackFor = {Exception.class, Throwable.class})
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = { Exception.class, Throwable.class })
     public void setDefaultRole(String username) {
         userRepository.findUserByUserName(username)
                 .getRoles()
@@ -131,19 +124,19 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user = userRepository.findUserByUserName(userName);
         return user;
-//        return org.springframework.security.core.userdetails.User
-//                .withUsername(user.getUsername())
-//                .password(user.getPassword())
-//                .authorities(user.getAuthorities())
-//                .accountExpired(false)
-//                .accountLocked(false)
-//                .credentialsExpired(false)
-//                .disabled(false)
-//                .build();
+        // return org.springframework.security.core.userdetails.User
+        // .withUsername(user.getUsername())
+        // .password(user.getPassword())
+        // .authorities(user.getAuthorities())
+        // .accountExpired(false)
+        // .accountLocked(false)
+        // .credentialsExpired(false)
+        // .disabled(false)
+        // .build();
     }
 
     public void saveOauthUser(String email) {
-        if(userRepository.findByEmail(email)!=null)
+        if (userRepository.findByEmail(email) != null)
             return;
         var user = new User();
         user.setUserName(email);
@@ -155,9 +148,11 @@ public class UserService implements UserDetailsService {
         user.getRoles().add(roleRepository.findFirstById(Role.USER.value));
         userRepository.save(user);
     }
+
     public void updatePrincipal(User user) {
         UserDetails userDetails = user;
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),
+                userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
@@ -166,9 +161,9 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-//    public boolean checkPass(User user, String oldPassword) {
-//        return passwordEncoder.matches(oldPassword, user.getPasswordHash());
-//    }
+    // public boolean checkPass(User user, String oldPassword) {
+    // return passwordEncoder.matches(oldPassword, user.getPasswordHash());
+    // }
 
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -192,29 +187,55 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-
     public void SendMail(String DesMail, String URL, String username) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("todream@gmail.com");
         message.setTo(DesMail);
         message.setSubject("Reset Your Password");
-        String emailContent =
-                "Hello, " + username + "\n" +
-                        "You have requested to reset your password.\n" +
-                        "Click the link below to change your password:" + URL + "\n" +
-                        "Ignore this email if you remember your password or you have not made this request.\n" +
-                        "Thanh you!";
+        String emailContent = "Hello, " + username + "\n" +
+                "You have requested to reset your password.\n" +
+                "Click the link below to change your password:" + URL + "\n" +
+                "Ignore this email if you remember your password or you have not made this request.\n" +
+                "Thank you!";
         message.setText(emailContent);
         emailSender.send(message);
     }
-    public List<Object[]> findUsersByDay(){
+
+    public List<Object[]> findUsersByDay() {
         return userRepository.findUsersByDay();
     }
-    public List<Object[]> findUsersByMonth(){
+
+    public List<Object[]> findUsersByMonth() {
         return userRepository.findUsersByMonth();
     }
+
     public List<Object[]> findUsersByYear(){
         return userRepository.findUsersByYear();
+
+    public void UpdateCountFail(User user) {
+        if (user.isEnabled()) {
+            int count = userRepository.countFail(user.getUsername());
+            count += 1;
+            user.setCountFail(count);
+            if (count == 4) {
+                user.setEnabled(false);
+                user.setCountFail(0);
+                user.setLockExpired(new Date(System.currentTimeMillis() + 10 * 2 * 1000));
+            }
+        } else {
+            if (user.getLockExpired() != null) {
+                if (user.getLockExpired().getTime() < System.currentTimeMillis()) {
+                    user.setLockExpired(null);
+                    user.setEnabled(true);
+                }
+            }
+        }
+        userRepository.save(user);
+    }
+
+    public void resetLockAccount(User user) {
+        user.setCountFail(0);
+        user.setLockExpired(null);
+        userRepository.save(user);
     }
 }
-

@@ -3,9 +3,47 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:replace="/libary/lib.html::head('Trang chủ')">
-</head>
+<head th:replace="/libary/lib.html::head('Trang chủ')"></head>
 <style>
+    .intro-text {
+
+
+        color: black;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid #1c80c3;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+
+    }
+
+    .intro-text2 {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;
+        color: white;
+        text-align: center;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 850px;
+    }
+
+    .intro-text h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .intro-text2 h1 {
+        font-size: 72px;
+    }
+
+    .intro-text p {
+        margin: 10px 0 0;
+        font-size: 16px;
+    }
+
     .quiz-matrix-list {
         list-style-type: none;
         padding: 0;
@@ -27,6 +65,9 @@
     .quiz-matrix-list li a:hover {
         background-color: #e0e0e0;
     }
+
+
+    }
 </style>
 <body class="fix-sidebar">
 <!-- Preloader -->
@@ -43,7 +84,21 @@
     <!-- Page Content -->
     <div id="page-wrapper">
         <div class="container-fluid">
-            <div class="white-box">
+            <div class="white-box" sec:authorize="isAnonymous()">
+                <img src="/images/bg.png" alt="Background Image">
+                <div class="intro-text2" style="display: flex;flex-direction: column; align-items: center">
+                    <h1 class="mb-4"><span style="color: #1c80c3">Math</span><span style="color: black">Quiz</span></h1>
+                    <div class="intro-text">
+                        <h2>Xin chào!</h2>
+                        <p>Nâng cao kỹ năng toán học của bạn với các bài kiểm tra trắc nghiệm của chúng tôi.
+                            Dù bạn là học sinh chuẩn bị cho các kỳ thi hay chỉ là người đam mê toán học.
+                            Hãy đăng ký ngay để thử thách kiến thức của bạn!</p>
+                        <a href="/register" class="btn btn-primary m-t-5" style="border-radius: 5px" >Đăng ký</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="white-box" sec:authorize="isAuthenticated()">
                 <h3 class="box-title m-b-20">Chọn đề thi</h3>
                 <div class="row">
                     <div class="col-md-6">
@@ -116,7 +171,6 @@
             <!-- /.right-sidebar -->
 
         <!-- /.container-fluid -->
-        <footer th:replace="/libary/lib.html::footer"></footer>
     </div>
     <!-- /#page-wrapper -->
 </div>

@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/libary/lib.html::head('Đề thi')"></head>
-<body >
+<body>
 <!-- Preloader -->
 <div id="loading-spinner" class="preloader">
     <div class="cssload-speeding-wheel"></div>
 </div>
-<div >
+<div>
     <!-- Top Navigation -->
-    <nav  class="navbar navbar-default">
+    <nav class="navbar navbar-default">
         <div class="examcontainer-fluid">
             <div class="examnavbar-header">
-                <a  class="examnavbar-brand"  th:text="'Học sinh: ' + ${session.fullName}"></a>
+                <a class="examnavbar-brand" th:text="'Học sinh: ' + ${session.fullName}"></a>
             </div>
             <ul class="nav examnavbar-nav examnavbar-right">
                 <li>
-                    <button class="btn btn-danger" id="exitExamBtn" onclick="confirmExitExam()">Thoát khỏi bài thi</button>
+                    <button class="btn btn-danger" id="exitExamBtn" onclick="confirmExitExam()">Thoát khỏi bài thi
+                    </button>
                 </li>
             </ul>
         </div>
@@ -25,7 +26,7 @@
 
     <!-- Left navbar-header end -->
     <!-- Page Content -->
-    <div >
+    <div>
         <div class="container-fluid" style="padding: 20px ">
             <div class="row">
                 <div class="col-lg-9">
@@ -36,15 +37,23 @@
                                 <div id="timer" class="timer-circle"></div> <!-- Timer Display -->
                             </div>
                             <div id="quiz-container">
-                                <div th:each="examDetail, iterStat : ${examDetailList}" th:attr="data-index=${iterStat.index}" class="question" th:classappend="${iterStat.index == currentIndex} ? 'active' : 'inactive'">
-                                    <p class="font-weight-bold">Câu [[${iterStat.index + 1}]]: <span class="latex-content" th:utext="${examDetail.getQuiz().statement}"></span></p>
+                                <div th:each="examDetail, iterStat : ${examDetailList}"
+                                     th:attr="data-index=${iterStat.index}" class="question"
+                                     th:classappend="${iterStat.index == currentIndex} ? 'active' : 'inactive'">
+                                    <p class="font-weight-bold">Câu [[${iterStat.index + 1}]]: <span
+                                            class="latex-content" th:utext="${examDetail.getQuiz().statement}"></span>
+                                    </p>
                                     <p th:if="${examDetail.getQuiz().getImage()} != null">
                                         <img th:src="${examDetail.getQuiz().getImage()}" alt="">
                                     </p>
                                     <ul class="list-group">
-                                        <li th:each="quizOption, optStat : ${examDetail.getQuiz().quizOptions}" class="list-group-item">
+                                        <li th:each="quizOption, optStat : ${examDetail.getQuiz().quizOptions}"
+                                            class="list-group-item">
                                             <label class="d-flex align-items-center">
-                                                <input type="radio" th:name="${'option_' + iterStat.index}" th:checked="${examDetail.selectedOption != null and examDetail.selectedOption.id == quizOption.id}" th:onchange="updateSelectedOption([[${examDetail}]], [[${quizOption}]])" class="mr-2">
+                                                <input type="radio" th:name="${'option_' + iterStat.index}"
+                                                       th:checked="${examDetail.selectedOption != null and examDetail.selectedOption.id == quizOption.id}"
+                                                       th:onchange="updateSelectedOption([[${examDetail}]], [[${quizOption}]])"
+                                                       class="mr-2">
                                                 <span th:text="${'ABCD'.charAt(optStat.index)} + '. '"></span>
                                                 <span class="latex-content ml-2" th:utext="${quizOption.option}"></span>
                                             </label>
@@ -57,10 +66,14 @@
                             <div class="d-flex justify-content-between">
 
 
-                                <img id="prevBtn" src="/icons/previous_icon.png" alt="Câu trước" style="width: 40px" onclick="changeQuestion(-1)" />
+                                <img id="prevBtn" src="/icons/previous_icon.png" alt="Câu trước" style="width: 40px"
+                                     onclick="changeQuestion(-1)"/>
 
-                                <img id="nextBtn" src="/icons/next_icon.png" alt="Câu trước" style="width: 40px" onclick="changeQuestion(1)">
-                                <button id="submitBtn" class="btn btn-success" style="display:none" onclick="checkSubmitExam()">Nộp bài</button>
+                                <img id="nextBtn" src="/icons/next_icon.png" alt="Câu trước" style="width: 40px"
+                                     onclick="changeQuestion(1)">
+                                <button id="submitBtn" class="btn btn-success" style="display:none"
+                                        onclick="checkSubmitExam()">Nộp bài
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -71,7 +84,9 @@
                         <div class="question-navigation">
                             <h2>Danh sách câu hỏi</h2>
                             <ul>
-                                <li th:each="examDetail, iterStat : ${examDetailList}" th:attr="data-index=${iterStat.index}" th:classappend="${examDetail.selectedOption != null} ? 'answered' : '' + (examDetail.review ? ' review' : '')">
+                                <li th:each="examDetail, iterStat : ${examDetailList}"
+                                    th:attr="data-index=${iterStat.index}"
+                                    th:classappend="${examDetail.selectedOption != null} ? 'answered' : '' + (examDetail.review ? ' review' : '')">
                                     <a href="javascript:void(0)" th:onclick="navigateToQuestion([[${iterStat.index}]])">
                                         <span th:text="${iterStat.index + 1}"></span>
                                     </a>
@@ -183,6 +198,7 @@
         }
         submitExam();
     }
+
     function confirmExitExam() {
         const unanswered = examDetails.some(detail => !detail.selectedOption);
         if (unanswered) {
@@ -208,7 +224,9 @@
                 if (response.ok) {
                     return response.json();
                 } else {
-                    return response.text().then(text => { throw new Error(text) });
+                    return response.text().then(text => {
+                        throw new Error(text)
+                    });
                 }
             })
             .then(result => {
@@ -235,8 +253,8 @@
                 console.error('Error submitting exam:', error);
             })
             .finally(() => {
-                    document.getElementById('loading-spinner').style.display = 'none'; // Hide the loading spinner
-                });
+                document.getElementById('loading-spinner').style.display = 'none'; // Hide the loading spinner
+            });
     }
 
     document.addEventListener('DOMContentLoaded', function () {
