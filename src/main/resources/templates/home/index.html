@@ -140,27 +140,27 @@
                     </div>
                 </div>
             </div>
-            <div class="white-box">
+            <div class="white-box" sec:authorize="isAuthenticated()">
                 <div class="row align-items-start">
                     <div class="col">
-                        <h3 class="box-title m-b-20">Recent update</h3>
+                        <h3 class="box-title m-b-20">Đề mới cập nhật</h3>
                         <ol class="list-group list-group-numbered" id="newestQuiz"></ol>
                     </div>
                     <div class="col">
-                        <h3 class="box-title m-b-20">Most taken test</h3>
-                        <div class="row align-items-start">
-                            <button value="day" type="button" class="btn btn-outline-primary" onclick="periodClick('day')" id="quiz-day-btn">Day</button>
-                            <button value="month" type="button" class="btn btn-outline-primary" onclick="periodClick('month')" id="quiz-month-btn">Month</button>
-                            <button value="year" type="button" class="btn btn-outline-primary" onclick="periodClick('year')" id="quiz-year-btn">Year</button>
+                        <h3 class="box-title m-b-20">TOP đề được làm nhiều nhất</h3>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <button value="day" type="button" class="btn btn-outline-primary" onclick="periodClick('day')" id="quiz-day-btn">Theo ngày</button>
+                            <button value="month" type="button" class="btn btn-outline-primary" onclick="periodClick('month')" id="quiz-month-btn">Theo tháng</button>
+                            <button value="year" type="button" class="btn btn-outline-primary" onclick="periodClick('year')" id="quiz-year-btn">Theo năm</button>
                         </div>
                         <ol class="list-group list-group-numbered" id="quizMatrix-ranking"></ol>
                     </div>
                     <div class="col">
-                        <h3 class="box-title m-b-20">Most active member</h3>
-                        <div class="row align-items-start">
-                            <button value="day" type="button" class="btn btn-outline-primary" onclick="mostActiveMemtime('day')" id="user-day-btn">Day</button>
-                            <button value="month" type="button" class="btn btn-outline-primary" onclick="mostActiveMemtime('month')" id="user-month-btn">Month</button>
-                            <button value="year" type="button" class="btn btn-outline-primary" onclick="mostActiveMemtime('year')" id="user-year-btn">Year</button>
+                        <h3 class="box-title m-b-20">Những thành viên tích cực</h3>
+                        <div class="btn-group btn-group-toggle">
+                            <button value="day" type="button" class="btn btn-outline-primary" onclick="mostActiveMemtime('day')" id="user-day-btn">Theo ngày</button>
+                            <button value="month" type="button" class="btn btn-outline-primary" onclick="mostActiveMemtime('month')" id="user-month-btn">Theo tháng</button>
+                            <button value="year" type="button" class="btn btn-outline-primary" onclick="mostActiveMemtime('year')" id="user-year-btn">Theo năm</button>
                         </div>
                         <ol class="list-group list-group-numbered" id="user-ranking"></ol>
                     </div>
@@ -185,7 +185,7 @@
                     const hf = `/quizMatrices/quizMatrixPreview?quizMatrixId=`+result[2];
                     const date = new Date(result[1]);
                     const formattedDate = date.toISOString().split('T')[0];
-                    nq.innerHTML+= `<a href="${hf}" class="list-group-item">` + `${result[0]}` +`-`+ `${formattedDate}` + `</a>`;
+                    nq.innerHTML+= `<a href="${hf}" class="list-group-item">` + `${result[0]}` +` - `+ `${formattedDate}` + `</a>`;
                     })
             })
     }
@@ -205,7 +205,7 @@
                     const hf = `/quizMatrices/quizMatrixPreview?quizMatrixId=`+result[2];
                     // const li = document.createElement('li');
                     // li.textContent = `${result[0].getQuizMatrix().name} : ${result[1]}` + "times";
-                    qr.innerHTML+= `<a href="${hf}" class="list-group-item">` +`${result[0]}:     ${result[1]}`+ 'lần được chọn' + `</a>`;
+                    qr.innerHTML+= `<a href="${hf}" class="list-group-item">` +`${result[0]}:     ${result[1]}`+ ' lần được chọn' + `</a>`;
                 });
             });
     }
@@ -221,7 +221,7 @@
                 const ur = document.getElementById("user-ranking");
                 ur.innerHTML='';
                 data.forEach(result =>{
-                    ur.innerHTML+= `<li class="list-group-item">` + `${result[0]}` + `-` + `${result[1]}` + `lần làm bài test`+`</li>`;
+                    ur.innerHTML+= `<li class="list-group-item">` + `${result[0]}` + ` - ` + `${result[1]}` + ` lần làm bài test`+`</li>`;
                 })
             }))
     }

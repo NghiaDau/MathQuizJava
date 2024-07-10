@@ -209,8 +209,9 @@ public class UserService implements UserDetailsService {
         return userRepository.findUsersByMonth();
     }
 
-    public List<Object[]> findUsersByYear(){
+    public List<Object[]> findUsersByYear() {
         return userRepository.findUsersByYear();
+    }
 
     public void UpdateCountFail(User user) {
         if (user.isEnabled()) {
