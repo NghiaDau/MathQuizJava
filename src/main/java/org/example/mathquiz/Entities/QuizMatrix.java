@@ -54,6 +54,7 @@ public class QuizMatrix {
         importQuestionVM.setChapter(requestModel.getChapter());
         importQuestionVM.setName(requestModel.getName_quizMatrix());
         importQuestionVM.setQuizs(quizs);
+        importQuestionVM.setStatus(true);
         importQuestionVM.setCreateDate(new Date());
         importQuestionVM.setNumOfQuiz(quizs.size());
         importQuestionVM.setDefaultDuration(requestModel.getDefaultDuration());

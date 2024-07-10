@@ -37,7 +37,7 @@ public class MenuController {
     @PostMapping("add")
     public String newMenu(Menu menu){
         menu.setEnabled(true);
-        menu.setLevel(menu.getParent() == null ? 1: menu.getParent().getLevel() + 1);
+        menu.setLevel(menu.getParent() == null ? 0: menu.getParent().getLevel() + 1);
         menuService.saveMenu(menu);
         return "redirect:/menus";
     }
@@ -79,5 +79,11 @@ public class MenuController {
                         menuTmp -> menuService.deleteMenu(menuTmp),
                         () -> { throw new IllegalArgumentException("Menu not found"); });
         return "redirect:/menus";
+    }
+
+    @GetMapping("/table/{id}")
+    public String indexTale(@PathVariable String id , Model model) {
+        model.addAttribute("stringid",id);
+        return "menu/table";
     }
 }
