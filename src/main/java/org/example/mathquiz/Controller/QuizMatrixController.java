@@ -43,13 +43,13 @@ public class QuizMatrixController {
     private ExamDetailService examDetailService;
 
     @GetMapping()
-    public String showAllGrade (@NotNull Model model) {
+    public String showAllGrade(@NotNull Model model) {
         model.addAttribute("grades", gradeService.getAllGrades());
         return "quizMatrices/index";
     }
 
     @GetMapping("/add")
-    public String addChapterForm(@NotNull Model model,@RequestParam("chapterId") String chapterId) {
+    public String addChapterForm(@NotNull Model model, @RequestParam("chapterId") String chapterId) {
         ChapterId = chapterId;
         model.addAttribute("chapterModel", new RequestModel());
         return "quizMatrices/add";
@@ -65,7 +65,7 @@ public class QuizMatrixController {
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .toArray(String[]::new);
             model.addAttribute("errors", errors);
-            for(var error : errors) {
+            for (var error : errors) {
                 System.out.println(error);
             }
             return "quizMatrices/add";
@@ -76,14 +76,14 @@ public class QuizMatrixController {
         Chapter savedChapter = chapterService.getChapterByIdNon(ChapterId);
         System.out.println(savedChapter);
         chapterModel.setChapter(savedChapter);
-        QuizMatrix quizMatrix =  quizMatrixService.addQuizMatrix(chapterModel,questionVMs);
-        for (Quiz quiz: questionVMs){
+        QuizMatrix quizMatrix = quizMatrixService.addQuizMatrix(chapterModel, questionVMs);
+        for (Quiz quiz : questionVMs) {
             quiz.setQuizMatrix(quizMatrix);
         }
 
-        List<Quiz> quizDemon =  quizService.addQuiz(questionVMs);
-        for (Quiz quiz: quizDemon){
-            for ( QuizOption quizOption : quiz.getQuizOptions()){
+        List<Quiz> quizDemon = quizService.addQuiz(questionVMs);
+        for (Quiz quiz : quizDemon) {
+            for (QuizOption quizOption : quiz.getQuizOptions()) {
                 quizOption.setQuiz(quiz);
                 quizOptionList.add(quizOption);
             }
@@ -94,11 +94,11 @@ public class QuizMatrixController {
 
     @GetMapping("/edit/{id}")
     public String editQuizMatrixForm(@NotNull Model model, @PathVariable String id) {
-        try{
+        try {
             QuizMatrix quizMatrixModel = quizMatrixService.getQuizMatrixById(id);
             idQuiz = id;
             model.addAttribute("quizMatrix", quizMatrixModel);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("QuizMatrix Not Found");
         }
         return "quizMatrices/edit";
@@ -134,7 +134,9 @@ public class QuizMatrixController {
         quizMatrixService.getQuizMatrixByIdNon(quizMatrix.getId())
                 .ifPresentOrElse(
                         quizM -> quizMatrixService.deleteQuizMatrix(quizM),
-                        () -> { throw new IllegalArgumentException("QuizMatrix not found"); });
+                        () -> {
+                            throw new IllegalArgumentException("QuizMatrix not found");
+                        });
         return "redirect:/quizMatrices";
     }
 
@@ -161,10 +163,32 @@ public class QuizMatrixController {
     }
 
     @GetMapping("/editQuizMatrix/{id}")
-    public String editQuizMatrices (@PathVariable String id,Model model){
-        QuizMatrix quizMatrix = quizMatrixService.getQuizMatrixById(id);
-        List<Quiz> quizList = quizMatrix.getQuizs();
-        model.addAttribute("quizMatrix", quizList);
+    public String editQuizMatrices(@PathVariable String id, Model model) {
+//        QuizMatrix quizMatrix = quizMatrixService.getQuizMatrixById(id);
+//        List<Quiz> quizList = quizMatrix.getQuizs();
+//        model.addAttribute("quizMatrix", quizList);
         return "quizMatrices/editQuizMatrix";
     }
+
+//    @PostMapping("/editQuizMatrix")
+//    public String editQuizMatrices(@ModelAttribute("quizMatrix") List<Quiz> listQuiz, BindingResult bindingResult,Model model) {
+//        if (bindingResult.hasErrors()) {
+//            var errors = bindingResult.getAllErrors()
+//                    .stream()
+//                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+//                    .toArray(String[]::new);
+//            model.addAttribute("errors", errors);
+//            return "quizMatrices/editQuizMatrix";
+//        }
+//        List<QuizOption> quizOptionList = new ArrayList<>();
+//        List<Quiz> quizDemon = quizService.addQuiz(listQuiz);
+//        for (Quiz quiz : quizDemon) {
+//            for (QuizOption quizOption : quiz.getQuizOptions()) {
+//                quizOption.setQuiz(quiz);
+//                quizOptionList.add(quizOption);
+//            }
+//        }
+//        quizOptionService.addQuizOption(quizOptionList);
+//        return "redirect:/quizMatrices";
+//    }
 }
