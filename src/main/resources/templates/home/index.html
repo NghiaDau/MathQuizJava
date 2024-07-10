@@ -85,14 +85,35 @@
                     </div>
                 </div>
             </div>
+            <div class="white-box">
+                <div class="row align-items-start">
+                    <div class="col">
+                        <p>Recent update</p>
+                    </div>
+                    <div class="col">
+                        <div class="row align-items-start">
+                            <button value="day" id="day-btn">Day</button>
+                            <button value="month" id="month-btn">Month</button>
+                            <button value="year" id="year-btn">Year</button>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <p>Most active</p>
+                    </div>
+                </div>
+            </div>
+        </div>
             <script src="/js/fetchHomeDropdown.js"></script>
             <!-- /.right-sidebar -->
-        </div>
+
         <!-- /.container-fluid -->
         <footer th:replace="/libary/lib.html::footer"></footer>
     </div>
     <!-- /#page-wrapper -->
 </div>
+<script th:inline="javascript">
+
+</script>
 <th:block th:replace="/libary/lib.html :: foot"></th:block>
 </body>
 
