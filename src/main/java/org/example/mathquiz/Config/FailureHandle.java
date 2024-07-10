@@ -29,6 +29,7 @@ public class FailureHandle extends SimpleUrlAuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
         String username = request.getParameter("userName");
+
         User user = userService.findByUserName(username);
         if (user != null) {
             userService.UpdateCountFail(user);

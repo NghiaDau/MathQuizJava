@@ -32,7 +32,7 @@ public class SuccessHandle extends SimpleUrlAuthenticationSuccessHandler {
         if(!user.isEnabled()){
             userService.resetLockAccount(user);
         }else{
-            if(user.getLockExpired().getTime() > System.currentTimeMillis()){
+            if(user.getLockExpired()!= null && user.getLockExpired().getTime() > System.currentTimeMillis()){
                 String errorMessage = "Tài Khoản Bị Khóa";
                 request.getSession().setAttribute("errorMessage", errorMessage);
                 setDefaultTargetUrl("/login?error=true");

@@ -62,6 +62,7 @@ public class MenuController {
             model.addAttribute("errors", errors);
             return "menu/edit";
         }
+        menu.setLevel(menu.getParent() == null ? 0: menu.getParent().getLevel() + 1);
         menuService.saveMenu(menu);
         return "redirect:/menus";
     }

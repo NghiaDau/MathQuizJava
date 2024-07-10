@@ -13,4 +13,6 @@ public class RequestJson {
     private String name;
     private String id;
     private String status;
+    private Integer defaultDuration;
+    private Integer numOfQuiz;
 }

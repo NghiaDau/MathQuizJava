@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, String> {
-    @Query("SELECT m FROM Menu m WHERE m.parent IS NULL")
+    @Query("SELECT m FROM Menu m WHERE m.parent IS NULL ORDER BY m.name")
     List<Menu> findAllMenus();
+
+    @Query("SELECT m FROM Menu m ORDER BY m.level, m.name")
+    List<Menu> findAll();
 }
