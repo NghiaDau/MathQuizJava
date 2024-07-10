@@ -39,9 +39,10 @@
 
                             <p class="card-text">Số câu đúng: <span th:text="${correctAnswers}" class="font-weight-bold"></span></p>
                             <p class="card-text">Thời gian làm bài: <span id="duration" class="font-weight-bold"></span></p>
+                            <a th:href="@{/results/resultDetail/{id}(id=${id})}">Xem lại bài thi</a>
+                        </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 </div>

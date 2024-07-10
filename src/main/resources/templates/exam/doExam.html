@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="/libary/lib.html::head('Đề thi')"></head>
+<style>
+    img {
+        max-width: 300px;
+    }
+</style>
 <body>
 <!-- Preloader -->
 <div id="loading-spinner" class="preloader">
@@ -247,7 +252,7 @@
                 const formattedEndTime = formatDateTime(result.endTime);
 
                 // Redirect with properly formatted times
-                window.location.href = `/exams/examResult?score=${result.score}&correctAnswers=${result.correctAnswers}&startTime=${formattedStartTime}&endTime=${formattedEndTime}`;
+                window.location.href = `/exams/examResult?score=${result.score}&correctAnswers=${result.correctAnswers}&startTime=${formattedStartTime}&endTime=${formattedEndTime}&id=${result.id}`;
             })
             .catch(error => {
                 console.error('Error submitting exam:', error);
