@@ -5,12 +5,15 @@ import org.example.mathquiz.Entities.*;
 import org.example.mathquiz.RequesEntities.RequestQuizMatrix;
 import org.example.mathquiz.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,13 +35,30 @@ public class HomeController {
 
     @Autowired
     private QuizMatrixService quizMatrixService;
+
+    @Autowired
+    private UserService userService;
+
     @GetMapping("")
-    public String homePage(Model model){
+    public String homePage(Model model) {
         List<Level> levels = levelService.getAllLevels();
         System.out.println(levels.size());
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        User user = userService.findByUserName(username);
+        String fullName = user.getFullName();
+        model.addAttribute("fullName", fullName == null ? user.getUsername() : fullName);
         model.addAttribute("levels", levels);
         return "home/index";
     }
+
     @GetMapping("/getGradesByLevel")
     @ResponseBody
     public List<Grade> getGradesByLevel(@RequestParam String levelId) {
