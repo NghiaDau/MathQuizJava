@@ -31,6 +31,9 @@ function refresh(){
     clearMenuCache('cachedMenus');
     dataMenus().then(function (menus) {
         console.log('Fetched menus from API',menus);
+        menus.forEach(menu => {
+            sortChildrenByName(menu);
+        });
         displayMenuIds(menus, menuContainer);
     });
 
@@ -51,7 +54,7 @@ function createMenu(){
     document.getElementById('menu').appendChild(li);
 }
 
-clearMenuCache('cachedMenus');
+// clearMenuCache('cachedMenus');
 let cachedMenus = getCachedData('cachedMenus');
 const menuContainer = document.getElementById("menu");
 if (cachedMenus) {
@@ -59,15 +62,29 @@ if (cachedMenus) {
     menuContainer.innerHTML = '';
     console.log('Using cached menus', cachedMenus );
     createMenu();
+    cachedMenus.forEach(menu => {
+        sortChildrenByName(menu);
+    });
     displayMenuIds(cachedMenus, menuContainer);
 } else {
     createMenu();
     dataMenus().then(function (menus) {
         console.log('Fetched menus from API', menus);
+        menus.forEach(menu => {
+            sortChildrenByName(menu);
+        });
         displayMenuIds(menus, menuContainer);
     });
 }
+function sortChildrenByName(menu) {
+    if (menu.children && Array.isArray(menu.children)) {
+        // Sắp xếp các children của menu hiện tại
+        menu.children.sort((a, b) => a.name.localeCompare(b.name));
 
+        // Đệ quy để sắp xếp các children của từng children
+        menu.children.forEach(child => sortChildrenByName(child));
+    }
+}
 function displayMenuIds(data, parentElement) {
     data.forEach(item => {
         if (item.level >= 2) {

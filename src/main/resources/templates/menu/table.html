@@ -186,32 +186,103 @@
                 break;
         }
     }
-
     function createTableBody(dataS, size, currentPage, functionName) {
         let tbody = document.querySelector('#demo-foo-addrow tbody');
-        // let tbody = document.querySelector('#table-first');
         tbody.innerHTML = '';
         let x = (currentPage - 1) * size;
+
+        // CSS definitions
+        const css = `
+        .data-cell {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .data-container {
+            display: flex;
+            flex-direction: column;
+        }
+        .name-div {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .name-div i, .info-div i {
+            margin-right: 5px;
+            font-size: 1.2em; /* Size of icons */
+        }
+        .info-div i {
+            margin-right: 5px;
+            font-size: 1.2em; /* Adjusted size of icons */
+        }
+        .info-div i:before {
+            content: attr(title); /* Display tooltip text before icons */
+            margin-right: 3px;
+            font-size: 0.9em;
+        }
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+    `;
+
+        // Create style element and append to head
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        style.appendChild(document.createTextNode(css));
+        document.head.appendChild(style);
+
+        // Loop through data and populate table rows
         for (let i = x; i < size * currentPage && i < dataS.length; i++) {
             const data = dataS[i];
             let tr = tbody.insertRow();
             tr.id = `grade-${data.id}`;
 
             let td = tr.insertCell();
-            let div = document.createElement('div');
-            div.className = 'clickable-div';
-            div.setAttribute('data-parameter1', data.id);
+            td.className = 'data-cell';
 
-            let a = document.createElement('a');
-            a.href = '#';
-            a.style.textDecoration = 'none';
-            a.style.color = 'inherit';
-            a.textContent = data.name;
-            div.appendChild(a);
-            div.addEventListener('click', () => functionName(data.id));
+            let div = document.createElement('div');
+            div.className = 'data-container';
+
+            // Create name section
+            let nameDiv = document.createElement('div');
+            nameDiv.className = 'name-div';
+            nameDiv.setAttribute('data-parameter1', data.id);
+
+            let nameLink = document.createElement('a');
+            nameLink.href = '#';
+            nameLink.style.textDecoration = 'none';
+            nameLink.style.color = 'inherit';
+            nameLink.textContent = data.name;
+            nameDiv.appendChild(nameLink);
+            nameDiv.addEventListener('click', () => functionName(data.id));
+
+            let nameIcon = document.createElement('i');
+            nameIcon.className = 'fa fa-user';
+            nameDiv.prepend(nameIcon);
+
+            // Create info section
+            let infoDiv = document.createElement('div');
+            infoDiv.className = 'info-div';
+
+            // Create question icon with tooltip
+            let questionIcon = document.createElement('i');
+            questionIcon.className = 'fa fa-question-circle';
+            questionIcon.title = 'Số câu hỏi: ' + data.numOfQuiz;
+            infoDiv.appendChild(questionIcon);
+
+            // Create time icon with tooltip
+            let timeIcon = document.createElement('i');
+            timeIcon.className = 'fa fa-clock';
+            timeIcon.title = 'Thời gian thi: ' + data.defaultDuration; // Tooltip text
+            infoDiv.appendChild(timeIcon);
+
+            // Append elements to main div
+            div.appendChild(nameDiv);
+            div.appendChild(infoDiv);
             td.appendChild(div);
         }
     }
+
+
 
     function createTableHeader(columnName) {
         let thead = document.querySelector('#table-head');

@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -98,6 +99,8 @@ public class ApiChapterController {
         for (QuizMatrix grade : quizMatrices) {
             try {
                 RequestJson newGrade = new RequestJson();
+                newGrade.setNumOfQuiz(grade.getNumOfQuiz());
+                newGrade.setDefaultDuration(grade.getDefaultDuration());
                 newGrade.setId(grade.getId());
                 newGrade.setName(grade.getName());
                 newGrade.setStatus((grade.isStatus() == true) ? "Đang Sử Dụng": "Không Sử Dụng" );
@@ -106,6 +109,8 @@ public class ApiChapterController {
                 System.out.println(e.getMessage());
             }
         }
+        newGrades.sort(Comparator.comparing(RequestJson::getName));
+
         return ResponseEntity.ok(newGrades);
     }
 
