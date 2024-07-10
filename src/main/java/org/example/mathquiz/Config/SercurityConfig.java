@@ -18,105 +18,100 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 @RequiredArgsConstructor
 public class SercurityConfig {
-    private final CustomOAuth2UserService customOAuth2UserService;
-    @Autowired
-    private final UserService userService;
+        private final CustomOAuth2UserService customOAuth2UserService;
+        @Autowired
+        private final UserService userService;
 
-    @Bean
-    public AuthenticationFailureHandler failureHandler() {
-        return new FailureHandle(userService);
-    }
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        return new SuccessHandle(userService);
-    }
-    @Bean
-    public AuthenticationSuccessHandler oauth2SuccessHandler() {
-        return new SuccessHandleOauth(userService);
-    }
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserService();
-    }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        var auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userDetailsService());
-        auth.setPasswordEncoder(passwordEncoder());
-        return auth;
-    }
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/css/**", "/js/**", "/","/**","/bootstrap/**","/icons/**","/less/**","/plugins/**","/images/**",
-                                "/register","/forgotpassword","forgot_password", "/error")
-                        .permitAll()
-                        .anyRequest().authenticated()
-                )
-                .logout(logout ->
-                        logout.logoutUrl("/logout")
-                                .logoutSuccessUrl("/login")
-                                .deleteCookies("JSESSIONID")
-                                .invalidateHttpSession(true)
-                                .clearAuthentication(true)
-                                .permitAll()
-                )
-                .formLogin(formLogin ->
-                        formLogin.loginPage("/login")
-                                .usernameParameter("userName")
-                                .passwordParameter("passwordHash")
-                                .loginProcessingUrl("/login")
-                                .successHandler(successHandler())
-                                .failureHandler(failureHandler())
-//                                .defaultSuccessUrl("/")
+        @Bean
+        public AuthenticationFailureHandler failureHandler() {
+                return new FailureHandle(userService);
+        }
 
-                                .permitAll()
-                )
-                .oauth2Login(
-                        oauth2Login -> oauth2Login
-                                .loginPage("/login")
-                                .userInfoEndpoint(userInfoEndpoint ->
-                                        userInfoEndpoint
-                                                .userService(customOAuth2UserService)
-                                )
-                                .successHandler(oauth2SuccessHandler())
-//                                .failureHandler(failureHandler())
-//                                .successHandler(
-//                                        (request, response,
-//                                         authentication) -> {
-//                                            CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-//                                            userService.saveOauthUser(oauthUser.getEmail());
-//                                            response.sendRedirect("/");
-//                                        }
-//                                )
+        @Bean
+        public AuthenticationSuccessHandler successHandler() {
+                return new SuccessHandle(userService);
+        }
 
-                                .permitAll()
-                )
-                .rememberMe(rememberMe ->
-                        rememberMe.key("hutech")
-                                .rememberMeCookieName("hutech")
-                                .tokenValiditySeconds(24 * 60 * 60)
-                                .userDetailsService(userDetailsService())
-                )
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.accessDeniedPage("/403"))
-                .sessionManagement(sessionManagement ->
-                        sessionManagement.maximumSessions(1)
-                                .expiredUrl("/login")
-                )
-                .httpBasic(httpBasic -> httpBasic.realmName("hutech"))
-                .build();
-    }
+        @Bean
+        public AuthenticationSuccessHandler oauth2SuccessHandler() {
+                return new SuccessHandleOauth(userService);
+        }
+
+        @Bean
+        public UserDetailsService userDetailsService() {
+                return new UserService();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        public DaoAuthenticationProvider authenticationProvider() {
+                var auth = new DaoAuthenticationProvider();
+                auth.setUserDetailsService(userDetailsService());
+                auth.setPasswordEncoder(passwordEncoder());
+                return auth;
+        }
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                return http.csrf(csrf -> csrf.disable())
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/css/**", "/js/**", "/", "/**", "/bootstrap/**",
+                                                                "/icons/**", "/less/**", "/plugins/**", "/images/**",
+                                                                "/register", "/forgotpassword", "forgot_password",
+                                                                "/error")
+                                                .permitAll()
+                                                .anyRequest().authenticated())
+                                .logout(logout -> logout.logoutUrl("/logout")
+                                                .logoutSuccessUrl("/login")
+                                                .deleteCookies("JSESSIONID")
+                                                .invalidateHttpSession(true)
+                                                .clearAuthentication(true)
+                                                .permitAll())
+                                .formLogin(formLogin -> formLogin.loginPage("/login")
+                                                .usernameParameter("userName")
+                                                .passwordParameter("passwordHash")
+                                                .loginProcessingUrl("/login")
+                                                .successHandler(successHandler())
+                                                .failureHandler(failureHandler())
+                                                // .defaultSuccessUrl("/")
+
+                                                .permitAll())
+                                .oauth2Login(
+                                                oauth2Login -> oauth2Login
+                                                                .loginPage("/login")
+                                                                .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
+                                                                                .userService(customOAuth2UserService))
+                                                                .successHandler(oauth2SuccessHandler())
+                                                                // .failureHandler(failureHandler())
+                                                                // .successHandler(
+                                                                // (request, response,
+                                                                // authentication) -> {
+                                                                // CustomOAuth2User oauthUser = (CustomOAuth2User)
+                                                                // authentication.getPrincipal();
+                                                                // userService.saveOauthUser(oauthUser.getEmail());
+                                                                // response.sendRedirect("/");
+                                                                // }
+                                                                // )
+
+                                                                .permitAll())
+                                .rememberMe(rememberMe -> rememberMe.key("hutech")
+                                                .rememberMeCookieName("hutech")
+                                                .tokenValiditySeconds(24 * 60 * 60)
+                                                .userDetailsService(userDetailsService()))
+                                .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedPage("/403"))
+                                .sessionManagement(sessionManagement -> sessionManagement.maximumSessions(1)
+                                                .expiredUrl("/login"))
+                                .httpBasic(httpBasic -> httpBasic.realmName("hutech"))
+                                .build();
+        }
 
 }

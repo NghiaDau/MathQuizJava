@@ -26,9 +26,15 @@ public class FailureHandle extends SimpleUrlAuthenticationFailureHandler {
     }
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        System.out.println("AAA");
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException exception) throws IOException, ServletException {
+        String username = request.getParameter("username");
+        User user = userService.findByUserName(username);
+        if (user != null) {
+            userService.UpdateCountFail(user);
+        }
         String errorMessage = "Sai tên tài khoản hoặc mật khẩu";
+        // System.out.println("AAA");
         request.getSession().setAttribute("errorMessage", errorMessage);
         response.sendRedirect("/login?error=true");
     }

@@ -20,5 +20,6 @@ public interface UserRepository extends JpaRepository<User, String> {
      User findByUserName(String userName);
      @Query("select u from User u where u.phoneNumber=?1")
      User findByPhone(String phone);
-
+     @Query("select u.countFail from User u where  u.userName=?1")
+     int countFail(String username);
 }
