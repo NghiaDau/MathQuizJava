@@ -28,6 +28,7 @@ public class SuccessHandle extends SimpleUrlAuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         User user = ((User)authentication.getPrincipal());
+        System.out.println("AAA");
         request.getSession().setAttribute("userLogin", user);
         if(user.isEnabled()){
             userService.resetLockAccount(user);

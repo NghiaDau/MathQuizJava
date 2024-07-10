@@ -57,4 +57,13 @@ public class ResultService {
     public List<Result> findByUserId(String userId) {
         return resultRepository.findResultByUserId(userId);
     }
+    public List<Object[]> findByCurrentYear(){
+        return resultRepository.findResultByCurrentYear();
+    }
+    public List<Object[]> findByCurrentMonth(){
+        return resultRepository.findResultByCurrentMonth();
+    }
+    public List<Object[]> findByCurrentDay(){
+        return resultRepository.findResultByCurrentDay();
+    }
 }

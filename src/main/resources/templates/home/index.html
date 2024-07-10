@@ -152,13 +152,93 @@
                     </div>
                 </div>
             </div>
+            <div class="white-box" sec:authorize="isAuthenticated()">
+                <div class="row align-items-start">
+                    <div class="col">
+                        <h3 class="box-title m-b-20">Đề mới cập nhật</h3>
+                        <ol class="list-group list-group-numbered" id="newestQuiz"></ol>
+                    </div>
+                    <div class="col">
+                        <h3 class="box-title m-b-20">TOP đề được làm nhiều nhất</h3>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <button value="day" type="button" class="btn btn-outline-primary" onclick="periodClick('day')" id="quiz-day-btn">Theo ngày</button>
+                            <button value="month" type="button" class="btn btn-outline-primary" onclick="periodClick('month')" id="quiz-month-btn">Theo tháng</button>
+                            <button value="year" type="button" class="btn btn-outline-primary" onclick="periodClick('year')" id="quiz-year-btn">Theo năm</button>
+                        </div>
+                        <ol class="list-group list-group-numbered" id="quizMatrix-ranking"></ol>
+                    </div>
+                    <div class="col">
+                        <h3 class="box-title m-b-20">Những thành viên tích cực</h3>
+                        <div class="btn-group btn-group-toggle">
+                            <button value="day" type="button" class="btn btn-outline-primary" onclick="mostActiveMemtime('day')" id="user-day-btn">Theo ngày</button>
+                            <button value="month" type="button" class="btn btn-outline-primary" onclick="mostActiveMemtime('month')" id="user-month-btn">Theo tháng</button>
+                            <button value="year" type="button" class="btn btn-outline-primary" onclick="mostActiveMemtime('year')" id="user-year-btn">Theo năm</button>
+                        </div>
+                        <ol class="list-group list-group-numbered" id="user-ranking"></ol>
+                    </div>
+                </div>
+            </div>
+        </div>
             <script src="/js/fetchHomeDropdown.js"></script>
             <!-- /.right-sidebar -->
-        </div>
+
         <!-- /.container-fluid -->
     </div>
     <!-- /#page-wrapper -->
 </div>
+<script th:inline="javascript">
+    function newestQuizMatrix(){
+        fetch('http://localhost:8080/api/quizmatrices/newest')
+            .then(reponse=>reponse.json())
+            .then(data=>{
+                const nq = document.getElementById("newestQuiz");
+                nq.innerHTML='';
+                data.forEach(result=>{
+                    const hf = `/quizMatrices/quizMatrixPreview?quizMatrixId=`+result[2];
+                    const date = new Date(result[1]);
+                    const formattedDate = date.toISOString().split('T')[0];
+                    nq.innerHTML+= `<a href="${hf}" class="list-group-item">` + `${result[0]}` +` - `+ `${formattedDate}` + `</a>`;
+                    })
+            })
+    }
+    newestQuizMatrix();
+</script>
+
+<script th:inline="javascript">
+    function periodClick(time){
+        const period = time;
+        const apiUrl = `http://localhost:8080/api/ranking/quizmatrix/${period}`;
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data=>{
+                const qr = document.getElementById("quizMatrix-ranking");
+                qr.innerHTML='';
+                data.forEach(result=>{
+                    const hf = `/quizMatrices/quizMatrixPreview?quizMatrixId=`+result[2];
+                    // const li = document.createElement('li');
+                    // li.textContent = `${result[0].getQuizMatrix().name} : ${result[1]}` + "times";
+                    qr.innerHTML+= `<a href="${hf}" class="list-group-item">` +`${result[0]}:     ${result[1]}`+ ' lần được chọn' + `</a>`;
+                });
+            });
+    }
+    periodClick('year');
+</script>
+<script th:inline="javascript">
+    function mostActiveMemtime(time){
+        const period = time;
+        const  apiUrl= `http://localhost:8080/api/ranking/users/${period}`;
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then((data=>{
+                const ur = document.getElementById("user-ranking");
+                ur.innerHTML='';
+                data.forEach(result =>{
+                    ur.innerHTML+= `<li class="list-group-item">` + `${result[0]}` + ` - ` + `${result[1]}` + ` lần làm bài test`+`</li>`;
+                })
+            }))
+    }
+    mostActiveMemtime('year');
+</script>
 <th:block th:replace="/libary/lib.html :: foot"></th:block>
 </body>
 
