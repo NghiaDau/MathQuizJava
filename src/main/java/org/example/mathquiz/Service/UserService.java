@@ -240,4 +240,17 @@ public class UserService implements UserDetailsService {
         user.setLockExpired(null);
         userRepository.save(user);
     }
+    public void lockAccount(String id){
+        User user = userRepository.findFirstById(id);
+        user.setEnabled(true);
+        user.setLockExpired(null);
+        userRepository.save(user);
+    }
+
+    public void unLockAccount(String id){
+        User user = userRepository.findFirstById(id);
+        user.setEnabled(false);
+        user.setLockExpired(null);
+        userRepository.save(user);
+    }
 }

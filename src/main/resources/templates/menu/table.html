@@ -224,13 +224,11 @@
         }
     `;
 
-        // Create style element and append to head
         const style = document.createElement('style');
         style.type = 'text/css';
         style.appendChild(document.createTextNode(css));
         document.head.appendChild(style);
 
-        // Loop through data and populate table rows
         for (let i = x; i < size * currentPage && i < dataS.length; i++) {
             const data = dataS[i];
             let tr = tbody.insertRow();
@@ -259,17 +257,14 @@
             nameIcon.className = 'fa fa-user';
             nameDiv.prepend(nameIcon);
 
-            // Create info section
             let infoDiv = document.createElement('div');
             infoDiv.className = 'info-div';
 
-            // Create question icon with tooltip
             let questionIcon = document.createElement('i');
             questionIcon.className = 'fa fa-question-circle';
             questionIcon.title = 'Số câu hỏi: ' + data.numOfQuiz;
             infoDiv.appendChild(questionIcon);
 
-            // Create time icon with tooltip
             let timeIcon = document.createElement('i');
             timeIcon.className = 'fa fa-clock';
             timeIcon.title = 'Thời gian thi: ' + data.defaultDuration; // Tooltip text
