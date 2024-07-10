@@ -38,14 +38,14 @@ public class User implements UserDetails {
 
     private String passwordHash;
     private String email;
-    private Boolean emailConfirmed;
     private String phoneNumber;
-    private Date activeDate;
     private String avatarUrl;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createDate;
     private String fullName;
-
+    private int countFail;
+    private Date lockExpired;
+    private boolean enabled;
     private String resetPasswordToken;
     private Date resetPasswordTokenExpired;
 

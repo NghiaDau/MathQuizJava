@@ -203,9 +203,34 @@ public class UserService implements UserDetailsService {
                         "You have requested to reset your password.\n" +
                         "Click the link below to change your password:" + URL + "\n" +
                         "Ignore this email if you remember your password or you have not made this request.\n" +
-                        "Thanh you!";
+                        "Thank you!";
         message.setText(emailContent);
         emailSender.send(message);
+    }
+    public void UpdateCountFail(User user) {
+        if (user.isEnabled()) {
+            int count = userRepository.countFail(user.getUsername());
+            count += 1;
+            user.setCountFail(count);
+            if (count == 4) {
+                user.setEnabled(false);
+                user.setCountFail(0);
+                user.setLockExpired(new Date(System.currentTimeMillis() + 10 * 2 * 1000));
+            }
+        } else {
+            if (user.getLockExpired() != null) {
+                if (user.getLockExpired().getTime() < System.currentTimeMillis()) {
+                    user.setLockExpired(null);
+                    user.setEnabled(true);
+                }
+            }
+        }
+        userRepository.save(user);
+    }
+    public void resetLockAccount(User user){
+        user.setCountFail(0);
+        user.setLockExpired(null);
+        userRepository.save(user);
     }
 }
 

@@ -77,9 +77,9 @@ public class SercurityConfig {
                                 .loginProcessingUrl("/login")
                                 .successHandler(successHandler())
                                 .failureHandler(failureHandle)
-//                                .defaultSuccessUrl("/")
+                                .defaultSuccessUrl("/")
                                 .failureUrl("/login?error=true")
-//                                .failureHandler(authenticationFailureHandler())
+                                .failureHandler(authenticationFailureHandler())
                                 .permitAll()
                 )
                 .oauth2Login(

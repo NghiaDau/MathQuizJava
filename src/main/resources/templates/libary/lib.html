@@ -443,8 +443,8 @@
                     </div>
                 </div>
             </div>
-            <ul class="wp-side-menu"  sec:authorize="hasAnyAuthority('ADMIN')">
-                <li>
+            <ul class="wp-side-menu"  >
+                <li sec:authorize="hasAnyAuthority('ADMIN')">
                     <a href="javascript:void(0)" class="">
                         <i class="fas fa-user" style="width: 20px"></i>
                         <span class="hide-menu">
@@ -457,15 +457,15 @@
                         <li><a href="/user/new">Thêm tài khoản</a></li>
                     </ul>
                 </li>
-                <li><a href="javascript:void(0);" class="waves-effect">
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="javascript:void(0);" class="waves-effect">
                     <i class="fas fa-layer-group" style="width: 20px"></i>
                     <span class="hide-menu"> Quản lý cấp  <span class="fas fa-chevron-right arrow"></span></span></a>
                     <ul class="nav-second-level">
-                        <li><a href="/rank">Danh sách cấp</a></li>
-                        <li><a href="/rank/new">Thêm cấp</a></li>
+                        <li><a href="/levels">Danh sách cấp</a></li>
+                        <li><a href="/levels/add">Thêm cấp</a></li>
                     </ul>
                 </li>
-                <li><a href="javascript:void(0);" class="waves-effect">
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="javascript:void(0);" class="waves-effect">
                     <i class="fas fa-graduation-cap" style="width: 20px"></i>
                     <span class="hide-menu"> Quản lý lớp  <span class="fas fa-chevron-right arrow"></span> </span></a>
                     <ul class="nav nav-second-level">
@@ -473,7 +473,7 @@
                         <li><a href="/grades/add">Thêm lớp</a></li>
                     </ul>
                 </li>
-                <li><a href="javascript:void(0);" class="waves-effect">
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="javascript:void(0);" class="waves-effect">
                     <i class="fas fa-book-open" style="width: 20px"></i>
                     <span class="hide-menu"> Quản lý chương  <span
                             class="fas fa-chevron-right arrow"></span> </span></a>
@@ -482,9 +482,13 @@
                         <li><a href="/chapters/add">Thêm chương</a></li>
                     </ul>
                 </li>
-                <li><a href="/quizMatrices" class="waves-effect">
+                <li sec:authorize="hasAnyAuthority('ADMIN')"><a href="/quizMatrices" class="waves-effect">
                     <i class="fas fa-file-alt" style="width: 20px"></i>
                     <span class="hide-menu"> Quản lý đề thi </span></a>
+                </li>
+                <li sec:authorize="hasAnyAuthority('USER')"><a href="/results" class="waves-effect" >
+                    <i class="fas fa-history" style="width: 20px"></i>
+                    <span class="hide-menu"> Lịch sử làm bài </span></a>
                 </li>
             </ul>
         </div>
