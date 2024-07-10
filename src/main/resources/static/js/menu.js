@@ -72,7 +72,7 @@ function displayMenuIds(data, parentElement) {
     data.forEach(item => {
         if (item.level >= 2) {
             parentElement.style.top = '0%';
-            parentElement.style.left = '160px';
+            parentElement.style.left = '200px';
             parentElement.style.position = 'absolute';
         }
 
@@ -82,7 +82,7 @@ function displayMenuIds(data, parentElement) {
         const a = document.createElement('a');
         a.className = 'waves-effect waves-light';
         a.href = item.url;
-        li.style.width = '160px';
+        li.style.width = '200px';
         if (item.level >= 1) {
             // li.style.width = '160px';
             li.style.height = '42px';

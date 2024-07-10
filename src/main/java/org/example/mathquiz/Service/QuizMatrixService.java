@@ -62,4 +62,8 @@ public class QuizMatrixService {
     public Optional<QuizMatrix> getQuizMatrixByIdNon(String id) {
         return quizMatrixRepository.findById(id);
     }
+    public List<Object[]> findQuizMatrixByDay(){return quizMatrixRepository.findQuizMatrixByCurrentDay();}
+    public List<Object[]> findQuizMatrixByMonth(){return quizMatrixRepository.findQuizMatrixByCurrentMonth();}
+    public List<Object[]> findQuizMatrixByYear(){return quizMatrixRepository.findQuizMatrixByCurrentYear();}
+    public List<Object[]> findNewestQuizMatrix(){return quizMatrixRepository.findNewestQuizMatrix();}
 }
