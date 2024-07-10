@@ -65,8 +65,12 @@
     .quiz-matrix-list li a:hover {
         background-color: #e0e0e0;
     }
-
-
+    .white-box img {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        /*transform: translateY(-550px); !* Crops 70px from the top *!*/
     }
 </style>
 <body class="fix-sidebar">
@@ -96,8 +100,16 @@
                         <a href="/register" class="btn btn-primary m-t-5" style="border-radius: 5px" >Đăng ký</a>
                     </div>
                 </div>
-
             </div>
+            <div class="white-box" sec:authorize="isAuthenticated()" style="padding: 0; position: relative;">
+                <img src="/images/bg-index.png" alt="Background Image" style="width: 100%; height: auto;">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <h1 class="">
+                        <span style="color: #1c80c3">Xin chào</span><span style="color: black" th:text="' ' + ${fullName}"></span>
+                    </h1>
+                </div>
+            </div>
+
             <div class="white-box" sec:authorize="isAuthenticated()">
                 <h3 class="box-title m-b-20">Chọn đề thi</h3>
                 <div class="row">
