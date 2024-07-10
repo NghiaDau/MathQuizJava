@@ -213,9 +213,9 @@ public class UserService implements UserDetailsService {
             count += 1;
             user.setCountFail(count);
             if (count == 4) {
-                user.setEnabled(false);
+                user.setEnabled(true);
                 user.setCountFail(0);
-                user.setLockExpired(new Date(System.currentTimeMillis() + 10 * 2 * 1000));
+                user.setLockExpired(new Date(System.currentTimeMillis() + 10 * 2 * 10000000));
             }
         } else {
             if (user.getLockExpired() != null) {
@@ -229,6 +229,7 @@ public class UserService implements UserDetailsService {
     }
     public void resetLockAccount(User user){
         user.setCountFail(0);
+        user.setEnabled(false);
         user.setLockExpired(null);
         userRepository.save(user);
     }
