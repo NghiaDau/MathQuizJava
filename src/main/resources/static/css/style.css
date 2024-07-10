@@ -19313,3 +19313,13 @@ px;min-height:568px;background:#edf1f5}.footer{bottom:0;color:#58666e;left:0;pad
 .white-login-box {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
+.white-box {
+    width: 100%; /* Or specify a specific width if needed */
+    overflow: hidden; /* Ensures that content does not overflow the box */
+}
+
+.white-box img {
+    width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Removes bottom space/gap */
+}
