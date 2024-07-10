@@ -120,7 +120,7 @@
                     cureentTotal = Math.round(event.state.data.length/size);
                     currentPage = 1;
                     createTableHeader('Các Đề');
-                    createTableChapter(event.state.data, size, 1);
+                    createTableChapter(event.state.data, size, 1,editQuizMatrix);
                     createPagin(createTableQuizMatrices,tmpChapterId);
                     change_active('page'+currentPage);
                     break;
@@ -229,12 +229,17 @@
                 cureentTotal = Math.round(data.length/size);
                 currentPage = 1;
                 createTableHeader('Các Đề');
-                createTableChapter(data, size, 1);
+                createTableChapter(data, size, 1, editQuizMatrix);
                 createPagin(createTableQuizMatrices,chapterId);
                 change_active('page'+currentPage);
             }).catch(error => {
             console.error('Fetch error:', error);
         });
+    }
+
+    function editQuizMatrix(gradeId) {
+        const url = "quizMatrices/editQuizMatrix/" + gradeId;
+        window.location.href = url;
     }
 
     function createTable(grades, size, currentPage,functionName) {
@@ -290,7 +295,6 @@
         let nextArrow = `<li class="footable-page-arrow"><a id="next" onclick="check(this, createTable)">›</a></li>
                      <li class="footable-page-arrow"><a id="last" onclick="check(this, createTable)">»</a></li>`;
         paginationUl.innerHTML += nextArrow;
-
     }
     function change(element){
         const activeElement = document.querySelector('.footable-page.active');

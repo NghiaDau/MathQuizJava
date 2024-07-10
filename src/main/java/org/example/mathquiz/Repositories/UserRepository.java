@@ -40,4 +40,6 @@ public interface UserRepository extends JpaRepository<User, String> {
              "where YEAR(r.startTime) = YEAR(current_date)"+
              "group by u.userName order by testTaken desc")
      List<Object[]> findUsersByYear();
+     @Query("select u.countFail from User u where  u.userName=?1")
+     int countFail(String username);
 }

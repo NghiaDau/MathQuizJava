@@ -5,6 +5,7 @@ import org.example.mathquiz.RequesEntities.RequestChapterJson;
 import org.example.mathquiz.RequesEntities.RequestJson;
 import org.example.mathquiz.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,10 @@ public class ApiChapterController {
     private QuizMatrixService quizMatrixService;
     @Autowired
     private MathTypeService mathTypeService;
-
+    @Autowired
+    private QuizService quizService;
+    @Autowired
+    private QuizOptionService quizOptionService;
     private static String save_gradeId;
     @GetMapping("/chapters")
     public ResponseEntity<?> getAllChapter(){
@@ -111,4 +115,28 @@ public class ApiChapterController {
         List<Quiz> quizList = quizMatrix.getQuizs();
         return  ResponseEntity.ok(quizList);
     }
+
+    @PostMapping("/submitQuizData")
+    public ResponseEntity<?> editQuizMatrices(@RequestBody DataRequest dataRequest) {
+        try {
+            String quizMatrixId = dataRequest.getStringValue();
+            List<Quiz> quizList = dataRequest.getQuizArray();
+            for (Quiz quiz : quizList) {
+                quiz.setQuizMatrix(quizMatrixService.getQuizMatrixById(quizMatrixId));
+            }
+            List<Quiz> savedQuizzes = quizService.addQuiz(quizList);
+            List<QuizOption> quizOptionList = new ArrayList<>();
+            for (Quiz quiz : quizList) {
+                for (QuizOption quizOption : quiz.getQuizOptions()) {
+                    quizOption.setQuiz(quiz);
+                    quizOptionList.add(quizOption);
+                }
+            }
+            quizOptionService.addQuizOption(quizOptionList);
+            return ResponseEntity.ok(savedQuizzes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
