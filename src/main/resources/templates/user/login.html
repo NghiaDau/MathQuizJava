@@ -62,10 +62,13 @@
                         <input class="form-control" oninput="clearError('userError')" type="text" required="" id="userName" name="userName" placeholder="Tài Khoản ">
                     </div>
                 </div>
+
                 <div class="form-group">
                     <div class="col-xs-12">
                         <input class="form-control"  oninput="clearError('userError')" type="password" required="" id="passwordHash" name="passwordHash" placeholder="Mật Khẩu">
                     </div>
+                </div>
+                <div class="g-recaptcha mb-4" th:data-sitekey="${@environment.getProperty('recaptcha.key')}">
                 </div>
                 <div class="form-group">
                     <div class="col-md-12">
@@ -135,6 +138,8 @@
         }
     }
 </script>
+<script src="https://www.google.com/recaptcha/api.js" async defer> </script>
+
 <!-- jQuery -->
 <script src="/plugins/bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap Core JavaScript -->

@@ -380,10 +380,21 @@
                             <input class="form-control" oninput="clearErrorAndParam(this)" type="text" required="" id="userName" name="userName" placeholder="Tên đăng nhập ">
                         </div>
                     </div>
+
                     <div class="form-group">
                         <div class="col-xs-12">
                             <input class="form-control"  oninput="clearErrorAndParam(this)" type="password" required="" id="passwordHash" name="passwordHash" placeholder="Mật khẩu">
                         </div>
+                    </div>
+                    <div class="g-recaptcha" style="transform: scale(0.63);display: flex;
+                                justify-content: center;
+                                align-items: center ;
+                                margin-left: 64px !important;
+                                /*margin-bottom: 15px !important;*/
+                                transform-origin: 0 0;
+                                width: 120px ;
+                                height: 50px;
+                            } " th:data-sitekey="${@environment.getProperty('recaptcha.key')}">
                     </div>
                     <a href="/forgotpassword" id="to-recover" style="color: white" class="d-block text-right col-xs-2"> Quên mật khẩu?</a>
                     <div class="row align-items-center">
@@ -528,10 +539,11 @@
     </div>
     <!-- /#page-wrapper -->
 </div>
+
 <!-- /#wrapper -->
 <!-- jQuery -->
 <th:block th:fragment="foot()">
-
+    <script src="https://www.google.com/recaptcha/api.js" async defer> </script>
     <script src="/plugins/bower_components/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="/bootstrap/dist/js/tether.min.js"></script>
