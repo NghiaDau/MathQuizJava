@@ -2,7 +2,6 @@ package org.example.mathquiz.Repositories;
 
 import org.example.mathquiz.Entities.Chapter;
 import org.example.mathquiz.Entities.QuizMatrix;
-import org.example.mathquiz.Entities.Result;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,9 +26,9 @@ public interface IQuizMatrixRepository extends JpaRepository<QuizMatrix, String>
     @Query("select q.name,q.createDate,q.id from QuizMatrix q order by q.createDate desc")
     List<Object[]> findNewestQuizMatrix();
 
-    @Query("select r.user.userName,r.score,r.endTime,r.id from QuizMatrix q inner join Exam e on q.id = e.quizMatrix.id inner join Result r on e.id = r.exam.id where q.id =?1 order by r.endTime desc")
+    @Query("select r.user.userName, r.score, r.endTime, r.id from QuizMatrix q inner join Exam e on q.id = e.quizMatrix.id inner join Result r on e.id = r.exam.id where q.id = ?1 and r.endTime is not null order by r.endTime desc")
     List<Object[]> findQuizMatrixResultByQuizMatrixId(String quizMatrixId);
 
-    @Query("select r.user.userName,r.score,r.endTime,r.id from QuizMatrix q inner join Exam e on q.id = e.quizMatrix.id inner join Result r on e.id = r.exam.id where q.id =?1 and r.user.userName = ?2 order by r.endTime desc")
+    @Query("select r.user.userName,r.score,r.endTime,r.id from QuizMatrix q inner join Exam e on q.id = e.quizMatrix.id inner join Result r on e.id = r.exam.id where q.id =?1 and r.user.userName = ?2 and r.endTime is not null order by r.endTime desc")
     List<Object[]> findQuizMatrixResultByQuizMatrixIdAndUserName(String quizMatrixId, String userName);
 }

@@ -51,9 +51,9 @@
     }
 
     .question-navigation li.answered a {
-        background-color: limegreen;
+        background-color: #5eea5e;
         /*border: 2px solid limegreen;*/
-        color: white !important;
+        color: #1C80C3 !important;
     }
 
     .question-navigation li.incorrect a {
@@ -127,7 +127,7 @@
                                 <ul class="list-group">
                                     <li th:each="quizOption, optStat : ${resultDetail.getQuiz().getQuizOptions()}"
                                         class="list-group-item" th:class="${quizOption.getIsCorrect()} ? 'list-group-item-success list-group-item' : ''"
-                                        th:classappend="${resultDetail.getYourQuizOption() != null and resultDetail.getYourQuizOption().getId() == quizOption.getId() and  quizOption.getIsCorrect() == false} ? 'list-group-item-danger list-group-item' : 'list-group-item'">
+                                        th:classappend="${resultDetail.getYourQuizOption() != null and resultDetail.getYourQuizOption().getId() == quizOption.getId() and  quizOption.getIsCorrect() == null} ? 'list-group-item-danger list-group-item' : 'list-group-item'">
                                         <label class="d-flex align-items-center">
                                             <span th:text="${'ABCD'.charAt(optStat.index)} + '. '"></span>
                                             <span class="latex-content ml-2" th:utext="${quizOption.getOption()}"></span>
