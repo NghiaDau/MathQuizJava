@@ -29,7 +29,7 @@ public class SuccessHandle extends SimpleUrlAuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         User user = ((User)authentication.getPrincipal());
         request.getSession().setAttribute("userLogin", user);
-        if(!user.isEnabled() ){
+        if(!user.isStatus()){
             userService.resetLockAccount(user);
         }else{
             String errorMessage;
@@ -45,10 +45,8 @@ public class SuccessHandle extends SimpleUrlAuthenticationSuccessHandler {
                     setDefaultTargetUrl("/login?error=true");
                     super.onAuthenticationSuccess(request, response, authentication);
                 }
-                else{
-                    userService.resetLockAccount(user);
-                }
             }
+            userService.resetLockAccount(user);
         }
 
         boolean isAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));

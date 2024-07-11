@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <footer th:replace="/libary/lib.html::footer"></footer>
+<!--        <footer th:replace="/libary/lib.html::footer"></footer>-->
     </div>
 </div>
 <th:block th:replace="/libary/lib.html::foot"></th:block>
@@ -194,41 +194,59 @@
         // CSS definitions
         const css = `
         .data-cell {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
         }
         .data-container {
             display: flex;
             flex-direction: column;
+            gap: 10px;
         }
         .name-div {
             cursor: pointer;
             display: flex;
             align-items: center;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            transition: color 0.3s;
         }
-        .name-div i, .info-div i {
-            margin-right: 5px;
-            font-size: 1.2em; /* Size of icons */
+        .name-div:hover {
+            color: #007bff;
         }
-        .info-div i {
-            margin-right: 5px;
-            font-size: 1.2em; /* Adjusted size of icons */
+        .name-div img {
+            margin-right: 10px;
+            width: 24px; /* Adjust icon size as needed */
+            height: 24px;
         }
-        .info-div i:before {
-            content: attr(title); /* Display tooltip text before icons */
-            margin-right: 3px;
+        .info-div {
+            display: flex;
+            align-items: center;
+            gap: 15px;
             font-size: 0.9em;
+            color: #666;
         }
-        tbody tr:hover {
-            background-color: #f5f5f5;
+        .info-div img {
+            margin-right: 5px;
+            width: 20px; /* Adjust icon size as needed */
+            height: 20px;
+        }
+        .info-text {
+            margin-left: 5px;
+        }
+        tbody tr:hover .data-cell {
+            background-color: #f9f9f9;
         }
     `;
 
+        // Inject CSS into the document head
         const style = document.createElement('style');
         style.type = 'text/css';
         style.appendChild(document.createTextNode(css));
         document.head.appendChild(style);
 
+        // Populate table body
         for (let i = x; i < size * currentPage && i < dataS.length; i++) {
             const data = dataS[i];
             let tr = tbody.insertRow();
@@ -252,25 +270,31 @@
             nameLink.textContent = data.name;
             nameDiv.appendChild(nameLink);
             nameDiv.addEventListener('click', () => functionName(data.id));
+            let nameText = document.createTextNode('Đề thi: ');
+            nameDiv.prepend(nameText)
+            let nameIcon = document.createElement('img');
 
-            let nameIcon = document.createElement('i');
-            nameIcon.className = 'fa fa-user';
+            nameIcon.src = '/icons/mixtype_icon.png';
             nameDiv.prepend(nameIcon);
 
             let infoDiv = document.createElement('div');
             infoDiv.className = 'info-div';
-
-            let questionIcon = document.createElement('i');
-            questionIcon.className = 'fa fa-question-circle';
-            questionIcon.title = 'Số câu hỏi: ' + data.numOfQuiz;
+            let questionIcon = document.createElement('img');
+            questionIcon.src = '/icons/num_of_quiz_icon.png';
             infoDiv.appendChild(questionIcon);
+            let questionText = document.createElement('span');
+            questionText.className = 'info-text';
+            questionText.textContent = 'Số câu hỏi: ' + data.numOfQuiz;
+            infoDiv.appendChild(questionText);
 
-            let timeIcon = document.createElement('i');
-            timeIcon.className = 'fa fa-clock';
-            timeIcon.title = 'Thời gian thi: ' + data.defaultDuration; // Tooltip text
+            let timeIcon = document.createElement('img');
+            timeIcon.src = '/icons/time_icon.png';
             infoDiv.appendChild(timeIcon);
+            let timeText = document.createElement('span');
+            timeText.className = 'info-text';
+            timeText.textContent = 'Thời gian thi: ' + data.defaultDuration;
+            infoDiv.appendChild(timeText);
 
-            // Append elements to main div
             div.appendChild(nameDiv);
             div.appendChild(infoDiv);
             td.appendChild(div);
