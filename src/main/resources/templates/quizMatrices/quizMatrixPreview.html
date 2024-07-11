@@ -122,13 +122,61 @@
                         </div>
                     </div>
                 </div>
-                <br>
+                <div class="col ">
+                    <div class="row white-box justify-content-center">
+                        <div class="col">
+                            <h3 class="box-title m-b-20">Thành tích gần đây</h3>
+                            <ol class="list-group list-group-numbered" id="all"></ol>
+                        </div>
+
+                    </div>
+                    <div class="row white-box justify-content-center">
+                        <div class="col">
+                            <h3 class="box-title m-b-20">Thành tích gần đây của bạn</h3>
+                            <ol class="list-group list-group-numbered" id="user"></ol>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         </div>
         <footer th:replace="/libary/lib.html::footer"></footer>
     </div>
 </div>
+<script th:inline="javascript">
+    let quiz = [[${quizMatrix.id}]]
+    function latestResult(){
+        const apiUrl = `http://localhost:8080/api/quizmatrices/all/${quiz}`;
+        fetch(apiUrl)
+            .then(reponse=>reponse.json())
+            .then(data=>{
+                const ab = document.getElementById("all");
+                ab.innerHTML='';
+                data.forEach(result=>{
+                    const date = new Date(result[2]);
+                    const formattedDate = date.toISOString().split('T')[0];
+                    ab.innerHTML+= `<li class="list-group-item">`+`${result[0]}` + ` - ` + ` điểm: `+ `${result[1]}` + ` - ` + `${formattedDate}`+ `</li>`;
+                })
+            })
+    }
+    function latestUserResult(){
+        const apiUrl = `http://localhost:8080/api/quizmatrices/user/${quiz}`;
+        fetch(apiUrl)
+            .then(reponse=>reponse.json())
+            .then(data=>{
+                const ub = document.getElementById("user");
+                ub.innerHTML='';
+                data.forEach(result=>{
+                    const date = new Date(result[2]);
+                    const formattedDate = date.toISOString().split('T')[0];
+                    const hf = `/results/resultDetail/`+ result[3];
+                    ub.innerHTML+= `<a href="${hf}" class="list-group-item">`+`${result[0]}` + ` - ` + ` điểm: `+ `${result[1]}` + ` - ` + `${formattedDate}`+ `</a>`;
+                })
+            })
+    }
+    latestResult();
+    latestUserResult();
+</script>
 
 <th:block th:replace="/libary/lib.html::foot"></th:block>
 </body>

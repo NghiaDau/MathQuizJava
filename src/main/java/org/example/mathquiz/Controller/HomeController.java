@@ -45,13 +45,11 @@ public class HomeController {
         System.out.println(levels.size());
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
-
         if (principal instanceof UserDetails) {
             username = ((UserDetails) principal).getUsername();
         } else {
             username = principal.toString();
         }
-
         User user = userService.findByUserName(username);
         if (user != null) {
             String fullName = user.getFullName();

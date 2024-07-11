@@ -66,4 +66,10 @@ public class ResultService {
     public List<Object[]> findByCurrentDay(){
         return resultRepository.findResultByCurrentDay();
     }
+    public List<Result> findAndOrderResultByExamId(String examId) {
+        return resultRepository.findAndOrderResultByExamId(examId);
+    }
+    public List<Result> findAndOrderResultByExamIdAndUserName(String examId, String userName) {
+        return resultRepository.findAndOrderResultByExamIdAndUserName(examId, userName);
+    }
 }
