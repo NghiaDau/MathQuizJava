@@ -89,17 +89,18 @@ public class UserController {
 
     @GetMapping("/user/edit/{id}")
     public String edit(@PathVariable String id,
-                       Model model,
-                       RedirectAttributes redirectAttributes) {
+                       Model model) {
         model.addAttribute("user", userService.findById(id));
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
+
         return "user/edit";
     }
 
     @PostMapping("/user/save_change")
     public String saveChange(RequestUpdateUser requestUpdateUser,
-                             @RequestParam("photo") MultipartFile multipartFile) {
+                             @RequestParam("photo") MultipartFile multipartFile,
+                             RedirectAttributes redirectAttributes) {
         userService.UpdateUser(requestUpdateUser, multipartFile);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
         return "redirect:/user";
 
     }
