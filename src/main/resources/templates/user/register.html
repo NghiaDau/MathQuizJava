@@ -51,7 +51,11 @@
     <div class="login-box">
         <div class="white-box white-login-box">
             <form class="form-horizontal form-material" id="loginform" action="index.html" th:action="@{/register}" method="post" th:object="${user}">
+
                 <h3 class="box-title m-b-20">Đăng Ký</h3>
+                <div class="form-group" >
+                    <span class="text-danger" id="catchaError" th:text="${errorsVerify}"></span>
+                </div>
 <!--                <div th:if="${errors}" class="alert alertdanger justify-content-center" role="alert">-->
 <!--                    <ul>-->
 <!--                        <li th:each="error : ${errors}"-->
@@ -87,6 +91,9 @@
                         <div id="passwordError" style="color: red;"></div>
                     </div>
                 </div>
+                <div class="g-recaptcha mb-4" th:data-sitekey="${@environment.getProperty('recaptcha.key')}">
+                </div>
+
                 <div class="form-group text-center m-t-20">
                     <div class="col-xs-12">
                         <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Đăng Ký</button>
@@ -101,6 +108,8 @@
         </div>
     </div>
 </section>
+<script src="https://www.google.com/recaptcha/api.js" async defer> </script>
+
 <!-- jQuery -->
 <!--<script src="/plugins/bower_components/jquery/dist/jquery.min.js"></script>-->
 <!--&lt;!&ndash; Bootstrap Core JavaScript &ndash;&gt;-->

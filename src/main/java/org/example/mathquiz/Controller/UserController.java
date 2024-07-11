@@ -1,5 +1,7 @@
 package org.example.mathquiz.Controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,18 +12,28 @@ import org.example.mathquiz.RequesEntities.RequestUser;
 import org.example.mathquiz.RequesEntities.RequestChangePassUser;
 import org.example.mathquiz.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +44,20 @@ import java.util.stream.Stream;
 @RequestMapping("")
 @RequiredArgsConstructor
 public class UserController {
+    @Value("${recaptcha.secret}")
+    private String recaptchaSecret;
+
+    @Value("${recaptcha.url}")
+    private String recaptchaServerURL;
+
+    @Bean
+    public static RestTemplate restTemplate(RestTemplateBuilder bulider) {
+        return bulider.build();
+    }
+
+    @Autowired
+    private RestTemplate restTemplate;
+
     @Autowired
     private UserService userService;
 
@@ -85,7 +111,15 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute("user") RequestUser requestUser, BindingResult bindingResult, Model model) {
+    public String register(@Valid @ModelAttribute("user") RequestUser requestUser, BindingResult bindingResult, Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String gRecaptchaReponse = request.getParameter("g-recaptcha-response");
+
+        if(!verifyReCAPCHA(gRecaptchaReponse)) {
+            response.reset();
+            String errorMessage1 = "Please Verify captcha response";
+            model.addAttribute("errorsVerify", errorMessage1);
+            return "user/register";
+        }
         if (bindingResult.hasErrors()) {
             var errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toArray(String[]::new);
             model.addAttribute("errors", errors);
@@ -228,5 +262,27 @@ public class UserController {
     public String unLockAccount(@PathVariable String id) {
         userService.unLockAccount(id);
         return "redirect:/user";
+    }
+
+    private boolean verifyReCAPCHA(String RecaptchaResponse) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("secret", recaptchaSecret);
+        params.add("response", RecaptchaResponse);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+        ReCaptchaResponse response = restTemplate.postForObject(recaptchaServerURL, request , ReCaptchaResponse.class);
+
+        System.out.println("Successfully recaptcha response: " + response.isSuccess());
+        System.out.println("HostName: " + response.getHostname());
+        System.out.println("Challenge: " + response.getChallenge_ts());
+        if(response.getErrorCode() != null) {
+            for (String error : response.getErrorCode()) {
+                System.out.println("\t" + error);
+            }
+        }
+        return response.isSuccess();
     }
 }
