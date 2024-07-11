@@ -65,7 +65,6 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     @GetMapping("/user")
     public String displayAllUser(Model model) {
-
         List<User> users = userService.getAllUser();
         System.out.println(users);
         model.addAttribute("list_user", users);
@@ -80,21 +79,26 @@ public class UserController {
 
 
     @PostMapping("/user/add_new")
-    public String addNewUser(@ModelAttribute("user") RequestUser requesUser, Model model, @RequestParam("photo") MultipartFile multipartFile, RedirectAttributes redirectAttributes) {
+    public String addNewUser(@ModelAttribute("user") RequestUser requesUser,
+                             @RequestParam("photo") MultipartFile multipartFile,
+                             RedirectAttributes redirectAttributes) {
         User use = userService.addNewUser(requesUser, multipartFile);
         redirectAttributes.addFlashAttribute("successMessage", "Thêm tài khoản thành công");
         return "redirect:/user";
     }
 
     @GetMapping("/user/edit/{id}")
-    public String edit(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
+    public String edit(@PathVariable String id,
+                       Model model,
+                       RedirectAttributes redirectAttributes) {
         model.addAttribute("user", userService.findById(id));
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
         return "user/edit";
     }
 
     @PostMapping("/user/save_change")
-    public String saveChange(RequestUpdateUser requestUpdateUser, @RequestParam("photo") MultipartFile multipartFile) {
+    public String saveChange(RequestUpdateUser requestUpdateUser,
+                             @RequestParam("photo") MultipartFile multipartFile) {
         userService.UpdateUser(requestUpdateUser, multipartFile);
         return "redirect:/user";
 
@@ -141,7 +145,6 @@ public class UserController {
         else
             user = userService.findById(user1.getId());
         model.addAttribute("user", user);
-//        session.setAttribute("user", user);
         return "/user/profile";
     }
 
@@ -180,7 +183,8 @@ public class UserController {
     }
 
     @GetMapping("/user/change_password")
-    public String ChangePassword(@AuthenticationPrincipal User user, Model model) {
+    public String ChangePassword(@AuthenticationPrincipal User user,
+                                 Model model) {
         RequestChangePassUser requestChangePassUser = new RequestChangePassUser();
         requestChangePassUser.setId(user.getId());
         model.addAttribute("user", requestChangePassUser);
@@ -188,7 +192,9 @@ public class UserController {
     }
 
     @PostMapping("/user/save_change_password")
-    public String ChangePassword_Submit(@AuthenticationPrincipal User user, @ModelAttribute("user") RequestChangePassUser requestChangePassUser, Model model, RedirectAttributes redirectAttributes) {
+    public String ChangePassword_Submit(@AuthenticationPrincipal User user,
+                                        @ModelAttribute("user") RequestChangePassUser requestChangePassUser,
+                                        RedirectAttributes redirectAttributes) {
         try {
             boolean checkpass = passwordEncoder.matches(requestChangePassUser.getOldPassword(), user.getPasswordHash());
             if (checkpass) {
@@ -210,7 +216,9 @@ public class UserController {
     }
 
     @PostMapping("/forgot_password")
-    public String ForgotPassword_Submit(@RequestParam("email") String email, RedirectAttributes redirectAttributes,Model model) {
+    public String ForgotPassword_Submit(@RequestParam("email") String email,
+                                        RedirectAttributes redirectAttributes,
+                                        Model model) {
         User user = userService.findUserByEmail(email);
         if (user != null) {
             user = userService.createTokenResetPassword(user);
@@ -225,7 +233,9 @@ public class UserController {
     }
 
     @GetMapping("/reset_password")
-    public String ResetPassword(@Param("token") String token, Model model, RedirectAttributes redirectAttributes) {
+    public String ResetPassword(@Param("token") String token,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
         User user = userService.findUserByResetPasswordToken(token);
         if (user == null) {
             return "redirect:/forgotpassword";
@@ -242,7 +252,8 @@ public class UserController {
     }
 
     @PostMapping("/reset_password")
-    public String ResetPassword_Submit(@RequestParam("token") String token, @RequestParam("password") String password) {
+    public String ResetPassword_Submit(@RequestParam("token") String token,
+                                       @RequestParam("password") String password) {
         User user = userService.findUserByResetPasswordToken(token);
         if (user == null) {
             return "redirect:/forgotpassword";
@@ -253,14 +264,18 @@ public class UserController {
     }
 
     @GetMapping("/user/locker/{id}")
-    public String lockAccount(@PathVariable String id) {
+    public String lockAccount(@PathVariable String id,
+                              RedirectAttributes redirectAttributes) {
         userService.lockAccount(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
         return "redirect:/user";
     }
 
     @GetMapping("/user/unlocker/{id}")
-    public String unLockAccount(@PathVariable String id) {
+    public String unLockAccount(@PathVariable String id,
+                                RedirectAttributes redirectAttributes) {
         userService.unLockAccount(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thành công");
         return "redirect:/user";
     }
 

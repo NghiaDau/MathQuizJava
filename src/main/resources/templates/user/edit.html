@@ -28,13 +28,13 @@
                             <div class="form-group row">
                                 <label for="email" class="col-2 col-form-label">Email</label>
                                 <div class="col-10">
-                                    <input class="form-control" type="email" value=""  th:field="*{email}" id="email" name="email">
+                                    <input class="form-control" type="email" value=""  th:field="*{email}" id="email" required name="email">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="firstname" class="col-2 col-form-label">Họ Tên</label>
                                 <div class="col-10">
-                                    <input class="form-control" type="text" value="" th:field="*{fullName}" id="firstName" name="firstName">
+                                    <input class="form-control" type="text" required value="" th:field="*{fullName}" id="firstName" name="firstName">
 
                                 </div>
                             </div>
@@ -42,13 +42,13 @@
                             <div class="form-group row">
                                 <label for="lastname" class="col-2 col-form-label">Số Điện Thoại</label>
                                 <div class="col-10">
-                                    <input class="form-control" type="text" value="" th:field="*{phoneNumber}" id="lastName" name="lastName">
+                                    <input class="form-control" type="text" required value="" th:field="*{phoneNumber}" id="lastName" name="lastName">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="photos" class="col-2 col-form-label">Ảnh </label>
                                 <div class="col-10">
-                                    <input class="form-control" type="file"  value="" id="photos" accept="image/*" name="photo">
+                                    <input class="form-control" type="file" required  value="" id="photos" accept="image/*" name="photo">
                                 </div>
                             </div>
 

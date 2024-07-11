@@ -19,7 +19,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 public class CustomOAuth2User implements OAuth2User,UserDetails   {
 
-    private String AvatarUrl;
     private OAuth2User oauth2User;
 
     @Setter

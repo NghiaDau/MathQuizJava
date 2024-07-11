@@ -80,7 +80,7 @@
 
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        <input class="form-control" type="text" required="" placeholder="Mật Khẩu" oninput="clearError(this.id+'Error')" id="newPassword" th:field="*{passwordHash}" >
+                        <input class="form-control" type="password" required="" placeholder="Mật Khẩu" oninput="clearError(this.id+'Error')" id="newPassword" th:field="*{passwordHash}" >
                         <span class="text-danger" id="newPasswordError" th:if="${#fields.hasErrors('passwordHash')}"
                               th:errors="*{passwordHash}"></span>
                     </div>
