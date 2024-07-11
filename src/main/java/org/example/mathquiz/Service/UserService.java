@@ -124,15 +124,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user = userRepository.findUserByUserName(userName);
         return user;
-        // return org.springframework.security.core.userdetails.User
-        // .withUsername(user.getUsername())
-        // .password(user.getPassword())
-        // .authorities(user.getAuthorities())
-        // .accountExpired(false)
-        // .accountLocked(false)
-        // .credentialsExpired(false)
-        // .disabled(false)
-        // .build();
+
     }
 
     public void saveOauthUser(String email) {
@@ -161,9 +153,6 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    // public boolean checkPass(User user, String oldPassword) {
-    // return passwordEncoder.matches(oldPassword, user.getPasswordHash());
-    // }
 
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
