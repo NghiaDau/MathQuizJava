@@ -117,5 +117,8 @@ public class User implements UserDetails {
         return true;
     }
 
+    public boolean isStatus(){
+        return enabled;
+    }
 
 }
