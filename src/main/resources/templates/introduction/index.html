@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="/libary/lib.html::head('Trang chủ')"></head>
+<style>
+    .intro-text {
+
+
+        color: black;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid #1c80c3;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+
+    }
+
+    .intro-text2 {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;
+        color: white;
+        text-align: center;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 850px;
+    }
+
+    .intro-text h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .intro-text2 h1 {
+        font-size: 72px;
+    }
+
+    .intro-text p {
+        margin: 10px 0 0;
+        font-size: 16px;
+    }
+
+    .quiz-matrix-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .quiz-matrix-list li {
+        margin-bottom: 5px;
+    }
+
+    .quiz-matrix-list li a {
+        display: block;
+        padding: 10px;
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .quiz-matrix-list li a:hover {
+        background-color: #e0e0e0;
+    }
+
+    .white-box img {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        /*transform: translateY(-550px); !* Crops 70px from the top *!*/
+    }
+</style>
+<body class="fix-sidebar">
+<!-- Preloader -->
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+<div id="wrapper">
+    <!-- Top Navigation -->
+    <nav th:replace="/libary/lib.html::nav"></nav>
+    <div th:replace="/libary/lib.html::left_side"></div>
+    <!-- End Top Navigation -->
+    <!-- Left navbar-header -->
+    <!-- Left navbar-header end -->
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="white-box" sec:authorize="isAuthenticated()" style="padding: 0; position: relative;">
+                <img src="/images/bg-index.png" alt="Background Image" style="width: 100%; height: auto;">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                    <h1 class="">
+                        <span style="color: black">Giới thiệu</span><span style="color:  #1c80c3"
+                                                                          th:text="' MathQuiz'"></span><span
+                            style="color: black">!</span>
+                    </h1>
+                </div>
+            </div>
+            <div class="white-box">
+                <h3>
+                    Chào mừng bạn đến với trang web thi trắc nghiệm toán MathQuiz! Nền tảng này cung cấp các bài kiểm
+                    tra toán hấp dẫn và giáo dục dành cho học sinh để nâng cao kỹ năng toán học của họ.
+                </h3>
+                <br>
+                <h3>
+                    Tính năng
+                </h3>
+                <h5>
+                    Xác thực người dùng: Hệ thống đăng nhập và đăng ký bảo mật cho học sinh và giáo viên.
+                </h5>
+                <h5>
+                    Nhiều bài kiểm tra: Câu hỏi trắc nghiệm bao gồm các chủ đề toán học và mức độ khó khác nhau.
+                </h5>
+                <h5>
+                    Tùy chọn câu hỏi động: Cập nhật theo thời gian thực cho các tùy chọn câu hỏi đã chọn để phù hợp với
+                    nhu cầu học tập cá nhân.
+
+                </h5>
+                <h5> Theo dõi kết quả: Theo dõi điểm số chi tiết và lịch sử cho học sinh để giám sát tiến trình của họ.
+                </h5>
+                <h5>
+                    Thiết kế đáp ứng: Truy cập trên nhiều thiết bị, đảm bảo trải nghiệm mượt mà trên cả máy tính để bàn
+                    và thiết bị di động.
+                </h5>
+            </div>
+
+        </div>
+        <script src="/js/fetchHomeDropdown.js"></script>
+        <!-- /.right-sidebar -->
+
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /#page-wrapper -->
+</div>
+<th:block th:replace="/libary/lib.html :: foot"></th:block>
+</body>
+
+</html>
