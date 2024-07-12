@@ -61,6 +61,9 @@
                                                        class="mr-2">
                                                 <span th:text="${'ABCD'.charAt(optStat.index)} + '. '"></span>
                                                 <span class="latex-content ml-2" th:utext="${quizOption.option}"></span>
+                                                <span th:if="${quizOption.getQuizOptionImage() != null}">
+                                                    <img th:src="${quizOption.getQuizOptionImage()}">
+                                                </span>
                                             </label>
                                         </li>
                                     </ul>
